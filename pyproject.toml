@@ -1,9 +1,10 @@
 [tool.poetry]
 name = "py2exe-gui"
-version = "0.0.1"
+version = "0.1.0"
 description = "基于PySide6的PyInstaller图形界面工具"
+keywords = ["PyInstaller", "GUI", "PySide6"]
 authors = ["muzing <muzi2001@foxmail.com>"]
-license = "GPL-3.0"
+license = "GPL-3.0-or-later"
 readme = "README.md"
 repository = "https://github.com/muziing/Py2exe-GUI"
 
@@ -12,14 +13,13 @@ python = ">=3.9,<3.11"
 PySide6 = "^6.3"
 
 [tool.poetry.dev-dependencies]
-black = "^22.8.0"
-isort = "^5.10.1"
+black = "^22"
+isort = "^5"
 mypy = "^0.971"
 pyinstaller = "^5.3"
 
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/muziing/Py2exe-GUI/issues"
 
 [tool.black]
 line-length = 88
@@ -32,3 +32,7 @@ line_length = 88
 [tool.mypy]
 python_version = "3.10"
 warn_return_any = true
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
