@@ -32,6 +32,9 @@ class CenterWidget(QWidget):
         self.script_browse_btn = QPushButton(self)
         self.script_path_le = QLineEdit(self)
 
+        self.name_label = QLabel(self)
+        self.name_le = QLineEdit(self)
+
         self.fd_label = QLabel(self)
         self.one_dir_btn = QRadioButton(self)
         self.one_file_btn = QRadioButton(self)
@@ -42,7 +45,7 @@ class CenterWidget(QWidget):
         self.icon_browse_btn = QPushButton(self)
         self.icon_path_le = QLineEdit(self)
 
-        # Windows/MacOS 独占，注意！！！
+        # Windows/MacOS 独占，注意后期处理成在Linux下不显示
         self.console_checkbox = QCheckBox(self)
 
         self.run_packaging_btn = QPushButton(self)
@@ -57,28 +60,31 @@ class CenterWidget(QWidget):
         :return: None
         """
 
-        self.script_path_label.setText("脚本路径")
+        self.script_path_label.setText("脚本路径：")
         self.script_path_le.setReadOnly(True)
         self.script_path_le.setPlaceholderText("Python入口文件路径")
         self.script_browse_btn.setText("浏览")
 
-        self.fd_label.setText("单文件/单目录")
+        self.name_label.setText("输出名称：")
+        self.name_le.setPlaceholderText("打包的应用程序名称")
+
+        self.fd_label.setText("单文件/单目录：")
         self.one_dir_btn.setText("打包至单个目录")
         self.one_dir_btn.setChecked(True)
         self.one_file_btn.setText("打包至单个文件")
         self.fd_group.addButton(self.one_dir_btn, 0)
         self.fd_group.addButton(self.one_file_btn, 1)
 
-        self.icon_path_label.setText("图标路径")
+        self.icon_path_label.setText("图标路径：")
         self.icon_path_le.setReadOnly(True)
         self.icon_path_le.setPlaceholderText("图标文件路径")
         self.icon_browse_btn.setText("浏览")
 
         # Windows/MacOS 独占，注意！！！
         self.console_checkbox.setText("为标准I/O启用终端")
-        self.console_checkbox.setChecked(True)
+        self.console_checkbox.setChecked(False)
 
-        self.run_packaging_btn.setText("运行打包！")
+        self.run_packaging_btn.setText("打包！")
         # self.run_packaging_btn.setEnabled(False)
 
     def connect_slots(self) -> None:
@@ -94,13 +100,15 @@ class CenterWidget(QWidget):
             :param file_path: 脚本文件路径
             :return: None
             """
-            # TODO 验证有效性
+            # TODO 验证有效性、将脚本名作为默认app名
             self.script_path_le.setText(file_path)
             self.parent().statusBar().showMessage(f"打开脚本路径：{file_path}")
             self.option_selected.emit(("script_path", file_path))
 
         self.script_browse_btn.clicked.connect(self.script_file_dlg.open)  # type: ignore
         self.script_file_dlg.fileSelected.connect(script_file_selected)  # type: ignore
+
+        # TODO name相关的槽函数
 
         @QtCore.Slot(int)
         def one_fd_selected(btn_id: int):
@@ -110,6 +118,16 @@ class CenterWidget(QWidget):
                 self.option_selected.emit(("FD", "One File"))
 
         self.fd_group.idToggled.connect(one_fd_selected)  # type: ignore
+
+        @QtCore.Slot(bool)
+        def console_selected(console: bool):
+            if console:
+                self.option_selected.emit(("console", "console"))
+            else:
+                self.option_selected.emit(("console", "windowed"))
+
+        # TODO 解决启动时不生效
+        self.console_checkbox.toggled.connect(console_selected)  # type: ignore
 
         @QtCore.Slot(str)
         def icon_file_selected(file_path: str) -> None:
@@ -137,6 +155,10 @@ class CenterWidget(QWidget):
         script_layout.addWidget(self.script_path_le, 1, 0)
         script_layout.addWidget(self.script_browse_btn, 1, 1)
 
+        name_layout = QVBoxLayout()
+        name_layout.addWidget(self.name_label)
+        name_layout.addWidget(self.name_le)
+
         fd_layout = QGridLayout()
         fd_layout.addWidget(self.fd_label, 0, 0, 1, 2)
         fd_layout.addWidget(self.one_dir_btn, 1, 0)
@@ -149,6 +171,7 @@ class CenterWidget(QWidget):
 
         main_layout = QVBoxLayout()
         main_layout.addLayout(script_layout)
+        main_layout.addLayout(name_layout)
         main_layout.addLayout(fd_layout)
         main_layout.addWidget(self.console_checkbox)
         main_layout.addLayout(icon_layout)
