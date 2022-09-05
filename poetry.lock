@@ -166,39 +166,14 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "pyside6"
-version = "6.3.1"
+version = "6.2.4"
 description = "Python bindings for the Qt cross-platform application and UI framework"
 category = "main"
 optional = false
-python-versions = "<3.11,>=3.6"
+python-versions = ">=3.6, <3.11"
 
 [package.dependencies]
-PySide6-Addons = "6.3.1"
-PySide6-Essentials = "6.3.1"
-shiboken6 = "6.3.1"
-
-[[package]]
-name = "pyside6-addons"
-version = "6.3.1"
-description = "Python bindings for the Qt cross-platform application and UI framework (Addons)"
-category = "main"
-optional = false
-python-versions = "<3.11,>=3.6"
-
-[package.dependencies]
-PySide6-Essentials = "6.3.1"
-shiboken6 = "6.3.1"
-
-[[package]]
-name = "pyside6-essentials"
-version = "6.3.1"
-description = "Python bindings for the Qt cross-platform application and UI framework (Essentials)"
-category = "main"
-optional = false
-python-versions = "<3.11,>=3.6"
-
-[package.dependencies]
-shiboken6 = "6.3.1"
+shiboken6 = "6.2.4"
 
 [[package]]
 name = "pywin32-ctypes"
@@ -210,11 +185,11 @@ python-versions = "*"
 
 [[package]]
 name = "shiboken6"
-version = "6.3.1"
-description = "Python/C++ bindings helper module"
+version = "6.2.4"
+description = "Python / C++ bindings helper module"
 category = "main"
 optional = false
-python-versions = "<3.11,>=3.6"
+python-versions = ">=3.6, <3.11"
 
 [[package]]
 name = "tomli"
@@ -235,7 +210,7 @@ python-versions = ">=3.7"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.9,<3.11"
-content-hash = "9f4242ebbda04ff10cf581c736e9b39e9c0907e4d577f90f126414737bf3c1c0"
+content-hash = "7d20dae693229cf03c1c856c653adf4a8a9d11ae522407932cd3842bc998553c"
 
 [metadata.files]
 altgraph = []
@@ -256,8 +231,6 @@ platformdirs = []
 pyinstaller = []
 pyinstaller-hooks-contrib = []
 pyside6 = []
-pyside6-addons = []
-pyside6-essentials = []
 pywin32-ctypes = []
 shiboken6 = []
 tomli = []
