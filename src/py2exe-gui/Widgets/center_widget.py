@@ -79,7 +79,7 @@ class CenterWidget(QWidget):
         self.console_checkbox.setChecked(True)
 
         self.run_packaging_btn.setText("运行打包！")
-        self.run_packaging_btn.setEnabled(False)
+        # self.run_packaging_btn.setEnabled(False)
 
     def connect_slots(self) -> None:
         """
@@ -105,11 +105,11 @@ class CenterWidget(QWidget):
         @QtCore.Slot(int)
         def one_fd_selected(btn_id: int):
             if btn_id == 0:
-                print("One Dir")
+                self.option_selected.emit(("FD", "One Dir"))
             elif btn_id == 1:
-                print("One File")
+                self.option_selected.emit(("FD", "One File"))
 
-        self.fd_group.idClicked.connect(one_fd_selected)  # type: ignore
+        self.fd_group.idToggled.connect(one_fd_selected)  # type: ignore
 
         @QtCore.Slot(str)
         def icon_file_selected(file_path: str) -> None:

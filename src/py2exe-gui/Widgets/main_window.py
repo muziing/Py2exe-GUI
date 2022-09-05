@@ -10,7 +10,7 @@ from .dialog_widgets import AboutMessage
 class MainWindow(QMainWindow):
     """主界面主窗口"""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
         self.center_widget = CenterWidget(self)

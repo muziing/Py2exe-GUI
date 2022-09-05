@@ -18,6 +18,7 @@ class ScriptFileDlg(QFileDialog):
         配置脚本路径对话框 \n
         :return: None
         """
+
         self.setAcceptMode(QFileDialog.AcceptOpen)
         self.setDefaultSuffix("py")
         self.setNameFilters(("Python脚本文件 (*.py *.pyw)", "All (*)"))
@@ -54,7 +55,7 @@ class IconFileDlg(QFileDialog):
 class AboutMessage(QMessageBox):
     """用于显示关于信息的对话框"""
 
-    def __init__(self, parent: QWidget = None):
+    def __init__(self, parent: QWidget = None) -> None:
         super(AboutMessage, self).__init__(parent=parent)
         self._about_text: str = ""
         self._setup()
@@ -64,6 +65,7 @@ class AboutMessage(QMessageBox):
         配置关于信息对话框 \n
         :return: None
         """
+
         self.setWindowTitle("关于Py2exe-GUI")
         self.setStandardButtons(QMessageBox.Ok)
         self.setTextFormat(Qt.MarkdownText)
@@ -75,7 +77,12 @@ class AboutMessage(QMessageBox):
         返回本程序的关于信息文本 \n
         :return: 关于信息
         """
-        self._about_text = """作者：[muzing](https://muzing.top/about)"""
+
+        self._about_text = (
+            "Py2exe-GUI 是一个[开源](https://github.com/muziing/Py2exe-GUI)程序。\n"
+            "旨在为 [PyInstaller](https://pyinstaller.org/) 提供简单易用的图形界面。\n"
+            "作者：[muzing](https://muzing.top/about)。"
+        )
         return self._about_text
 
 
