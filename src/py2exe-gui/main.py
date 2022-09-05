@@ -1,6 +1,6 @@
 import sys
 
-from Core import run_packaging_process
+from Core import Packaging
 from PySide6.QtWidgets import QApplication
 from Widgets import MainWindow
 
@@ -8,12 +8,9 @@ from Widgets import MainWindow
 class MainApp(MainWindow):
     def __init__(self, *args, **kwargs):
         super(MainApp, self).__init__(*args, **kwargs)
+        self.packager = Packaging()
 
-        def test_slot(file: str):
-            print(file)
-            print(run_packaging_process(["-v"]))
-
-        self.center_widget.script_file_dlg.fileSelected.connect(test_slot)
+        self.center_widget.option_selected.connect(self.packager.get_pyinstaller_args)
 
 
 if __name__ == "__main__":

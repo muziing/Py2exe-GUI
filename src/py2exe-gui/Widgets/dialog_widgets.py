@@ -20,7 +20,7 @@ class ScriptFileDlg(QFileDialog):
         """
         self.setAcceptMode(QFileDialog.AcceptOpen)
         self.setDefaultSuffix("py")
-        self.setNameFilters(("Python脚本文件 (*.py)", "All (*)"))
+        self.setNameFilters(("Python脚本文件 (*.py *.pyw)", "All (*)"))
         self.setFileMode(QFileDialog.ExistingFiles)
         self.setLabelText(QFileDialog.FileName, "Python入口文件")
         self.setLabelText(QFileDialog.FileType, "Python文件")
@@ -75,7 +75,7 @@ class AboutMessage(QMessageBox):
         返回本程序的关于信息文本 \n
         :return: 关于信息
         """
-        self._about_text = """author: muzing <muzi2001@foxmail.com>"""
+        self._about_text = """作者：[muzing](https://muzing.top/about)"""
         return self._about_text
 
 
