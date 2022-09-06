@@ -10,7 +10,7 @@ class ScriptFileDlg(QFileDialog):
     """用于获取入口脚本文件的对话框"""
 
     def __init__(self, parent: QWidget = None) -> None:
-        super().__init__(parent, Qt.Dialog)
+        super().__init__(parent)
         self._setup()
 
     def _setup(self) -> None:
@@ -33,7 +33,7 @@ class IconFileDlg(QFileDialog):
     """用于获取应用图标文件的对话框"""
 
     def __init__(self, parent: QWidget = None) -> None:
-        super(IconFileDlg, self).__init__(parent, Qt.Dialog)
+        super(IconFileDlg, self).__init__(parent)
         self._setup()
 
     def _setup(self) -> None:
@@ -79,8 +79,8 @@ class AboutMessage(QMessageBox):
         """
 
         self._about_text = (
-            "Py2exe-GUI 是一个[开源](https://github.com/muziing/Py2exe-GUI)程序。\n"
-            "旨在为 [PyInstaller](https://pyinstaller.org/) 提供简单易用的图形界面。\n"
+            "Py2exe-GUI 是一个[开源程序](https://github.com/muziing/Py2exe-GUI)。\n\n"
+            "旨在为 [PyInstaller](https://pyinstaller.org/) 提供简单易用的图形界面。\n\n"
             "作者：[muzing](https://muzing.top/about)。"
         )
         return self._about_text

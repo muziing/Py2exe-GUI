@@ -1,8 +1,8 @@
 import sys
 
-from Core import Packaging
+from Core.packaging import Packaging
 from PySide6.QtWidgets import QApplication
-from Widgets import MainWindow
+from Widgets.main_window import MainWindow
 
 
 class MainApp(MainWindow):

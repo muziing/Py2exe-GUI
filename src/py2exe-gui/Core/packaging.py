@@ -1,17 +1,25 @@
-import subprocess
-from typing import List
+from typing import List, Optional, Sequence
 
-from PySide6.QtCore import QProcess
+from PySide6 import QtCore
 
 
 class Packaging:
-    """执行打包的核心"""
+    """执行打包的类"""
+
+    # 自定义信号
+    args_settled = QtCore.Signal(tuple)
 
     def __init__(self):
-        pyinstaller_args: list = ["script_path", "icon_path", "FD", "console"]
+        pyinstaller_args: list = [
+            "script_path",
+            "icon_path",
+            "FD",
+            "console",
+            "out_name",
+        ]
         self.args_dict: dict = dict.fromkeys(pyinstaller_args, "")
         self._args: List[str] = []
-        self.p = None
+        self.subprocess: Optional[QSubProcessTool] = None
 
     def get_pyinstaller_args(self, arg: tuple[str, str]) -> None:
         """
@@ -30,22 +38,25 @@ class Packaging:
         """
 
         self._args = []  # 避免重复添加
-        full_args = self.args_dict
-        self._args.extend([full_args["script_path"]])
-        if full_args["icon_path"]:
-            self._args.extend(["--icon", full_args["icon_path"]])
-        if full_args["FD"]:
-            if full_args["FD"] == "One Dir":
+        self._args.extend([self.args_dict["script_path"]])
+        if self.args_dict["icon_path"]:
+            self._args.extend(["--icon", self.args_dict["icon_path"]])
+        if self.args_dict["FD"]:
+            if self.args_dict["FD"] == "One Dir":
                 self._args.extend(["--onedir"])
-            elif full_args["FD"] == "One File":
+            elif self.args_dict["FD"] == "One File":
                 self._args.extend(["--onefile"])
-        if full_args["console"]:
-            if full_args["console"] == "console":
+        if self.args_dict["console"]:
+            if self.args_dict["console"] == "console":
                 self._args.extend(["--console"])
-            elif full_args["console"] == "windowed":
+            elif self.args_dict["console"] == "windowed":
                 self._args.extend(["--windowed"])
+        if self.args_dict["out_name"]:
+            self._args.extend(["--name", self.args_dict["out_name"]])
 
-        print(self._args)  # 测试用
+        print(self._args)
+        # FIXME 修复无法发射信号的问题
+        # self.args_settled.emit(tuple(self._args))
 
     def run_packaging_process(self) -> None:
         """
@@ -53,44 +64,75 @@ class Packaging:
         :return: None
         """
 
-        self.p = QSubProcessTool()
-        self.p.start_process("pyinstaller", self._args)
+        self.subprocess = QSubProcessTool()
+        self.subprocess.start_process("pyinstaller", self._args)
 
 
 class QSubProcessTool:
     """自定义的辅助使用QProcess子进程的类"""
 
+    # TODO 将所有输出以信号形式发射
     def __init__(self):
-        self.process = None
+        self.process: Optional[QtCore.QProcess] = None
 
-    def start_process(self, program, arguments):
-        if self.process is None:
-            self.process = QProcess()
+    def start_process(self, program: str, arguments: Sequence[str]) -> None:
+        """
+        启动子进程 \n
+        :param program: 子进程命令
+        :param arguments: 子进程参数
+        :return: None
+        """
+
+        if self.process is None:  # 防止在子进程运行结束前重复启动
+            self.process = QtCore.QProcess()
             self.process.readyReadStandardOutput.connect(self.handle_stdout)  # type: ignore
+            self.process.readyReadStandardError.connect(self.handle_stderr)  # type: ignore
             self.process.stateChanged.connect(self.handle_state)  # type: ignore
             self.process.finished.connect(self.process_finished)  # type: ignore
             self.process.start(program, arguments)
 
-    def process_finished(self):
+    def process_finished(self) -> None:
+        """
+        处理子进程的槽 \n
+        :return: None
+        """
+
         print("Subprocess finished.")
         self.process = None
 
-    def handle_stdout(self):
-        data = self.process.readAllStandardOutput()
-        stdout = bytes(data).decode("utf8")
-        print(stdout)
+    def handle_stdout(self) -> None:
+        """
+        处理标准输出的槽 \n
+        :return: None
+        """
 
-    def handle_state(self, state):
+        if self.process:
+            data = self.process.readAllStandardOutput()
+            stdout = bytes(data).decode("utf8")
+            print(stdout)
+
+    def handle_stderr(self) -> None:
+        """
+        处理标准错误的槽 \n
+        :return: None
+        """
+
+        if self.process:
+            data = self.process.readAllStandardError()
+            stderr = bytes(data).decode("utf8")
+            print(stderr)
+
+    def handle_state(self, state: QtCore.QProcess.ProcessState) -> None:
+        """
+        将子进程运行状态转换为易读形式 \n
+        :param state: 进程运行状态
+        :return: None
+        """
+
         states = {
-            QProcess.NotRunning: 'Not running',
-            QProcess.Starting: 'Starting',
-            QProcess.Running: 'Running',
+            QtCore.QProcess.NotRunning: "Not running",
+            QtCore.QProcess.Starting: "Starting",
+            QtCore.QProcess.Running: "Running",
         }
         state_name = states[state]
         print(f"State changed: {state_name}")
-
-
-if __name__ == "__main__":
-    packager = Packaging()
-    packager._args += ["-v"]
-    print(packager.run_packaging_process())

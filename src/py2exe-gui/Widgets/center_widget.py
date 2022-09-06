@@ -1,8 +1,5 @@
-import sys
-
 from PySide6 import QtCore
 from PySide6.QtWidgets import (
-    QApplication,
     QButtonGroup,
     QCheckBox,
     QGridLayout,
@@ -51,7 +48,7 @@ class CenterWidget(QWidget):
         self.run_packaging_btn = QPushButton(self)
 
         self.setup_ui()
-        self.connect_slots()
+        self._connect_slots()
         self._set_layout()
 
     def setup_ui(self) -> None:
@@ -87,7 +84,7 @@ class CenterWidget(QWidget):
         self.run_packaging_btn.setText("打包！")
         # self.run_packaging_btn.setEnabled(False)
 
-    def connect_slots(self) -> None:
+    def _connect_slots(self) -> None:
         """
         定义、连接信号与槽 \n
         :return: None
@@ -101,6 +98,7 @@ class CenterWidget(QWidget):
             :return: None
             """
             # TODO 验证有效性、将脚本名作为默认app名
+            # 将字符串类型的文件路径转成pathlib型的？
             self.script_path_le.setText(file_path)
             self.parent().statusBar().showMessage(f"打开脚本路径：{file_path}")
             self.option_selected.emit(("script_path", file_path))
@@ -108,10 +106,25 @@ class CenterWidget(QWidget):
         self.script_browse_btn.clicked.connect(self.script_file_dlg.open)  # type: ignore
         self.script_file_dlg.fileSelected.connect(script_file_selected)  # type: ignore
 
-        # TODO name相关的槽函数
+        # FIXME 默认输出程序名称与入口脚本名称相同
+        @QtCore.Slot(str)
+        def project_name_selected() -> None:
+            """
+            输出程序名称完成输入的槽 \n
+            :return: None
+            """
+            pro_name: str = self.name_le.text()
+            self.option_selected.emit(("out_name", pro_name))
+
+        self.name_le.editingFinished.connect(project_name_selected)  # type: ignore
 
         @QtCore.Slot(int)
-        def one_fd_selected(btn_id: int):
+        def one_fd_selected(btn_id: int) -> None:
+            """
+            选择输出至单文件/单目录的槽 \n
+            :param btn_id: fd_group按钮组中按钮的id
+            :return: None
+            """
             if btn_id == 0:
                 self.option_selected.emit(("FD", "One Dir"))
             elif btn_id == 1:
@@ -120,13 +133,18 @@ class CenterWidget(QWidget):
         self.fd_group.idToggled.connect(one_fd_selected)  # type: ignore
 
         @QtCore.Slot(bool)
-        def console_selected(console: bool):
+        def console_selected(console: bool) -> None:
+            """
+            选择打包的程序是否为stdio启用终端的槽 \n
+            :param console: 是否启用终端
+            :return: None
+            """
             if console:
                 self.option_selected.emit(("console", "console"))
             else:
                 self.option_selected.emit(("console", "windowed"))
 
-        # TODO 解决启动时不生效
+        # FIXME 解决启动时不生效
         self.console_checkbox.toggled.connect(console_selected)  # type: ignore
 
         @QtCore.Slot(str)
@@ -136,7 +154,6 @@ class CenterWidget(QWidget):
             :param file_path: 图标路径
             :return: None
             """
-            # TODO 验证有效性
             self.icon_path_le.setText(file_path)
             self.parent().statusBar().showMessage(f"打开图标路径：{file_path}")
             self.option_selected.emit(("icon_path", file_path))
@@ -177,10 +194,3 @@ class CenterWidget(QWidget):
         main_layout.addLayout(icon_layout)
         main_layout.addWidget(self.run_packaging_btn)
         self.setLayout(main_layout)
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = CenterWidget()
-    window.show()
-    sys.exit(app.exec())
