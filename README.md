@@ -1,8 +1,14 @@
 # Py2exe-GUI
 
+![GitHub Repo stars](https://img.shields.io/github/stars/muziing/Py2exe-GUI)
+![GitHub forks](https://img.shields.io/github/forks/muziing/Py2exe-GUI)
+![License](https://img.shields.io/github/license/muziing/Py2exe-GUI)
+![GitHub Last Commit](https://img.shields.io/github/last-commit/muziing/Py2exe-GUI)
+
 [![PySide Version](https://img.shields.io/badge/PySide-6.2-blue)](https://doc.qt.io/qtforpython/index.html)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
+[![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
 
 Py2exe-GUI 是一个基于 [PySide6](https://doc.qt.io/qtforpython/index.html) 开发的 [PyInstaller](https://pyinstaller.org/) 辅助工具，旨在提供完整易用的图形化界面，方便用户进行 Python 项目的打包。
 
@@ -26,11 +32,12 @@ Py2exe-GUI 是一个基于 [PySide6](https://doc.qt.io/qtforpython/index.html) �
 
 ## TODO
 
-- [ ] 解决相对引用问题
+- [x] 解决相对引用问题
 - [x] 将参数拼接成完整调用命令（完成待优化）
 - [x] 使用 QProcess 替代 subprocess 以解决界面卡死问题
 - [ ] 将 PyInstaller 的输出显示至单独的弹出窗口
 - [ ] 子进程运行时阻塞主窗口关闭
+- [ ] 增加状态栏信息
 - [ ] Python 解释器选择器
 - [ ] 实现跨平台功能（不同平台间的差异功能）
 - [ ] 保存与读取打包项目文件（json? yaml? toml?）
