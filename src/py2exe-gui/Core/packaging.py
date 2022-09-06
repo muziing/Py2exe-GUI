@@ -1,15 +1,17 @@
 from typing import List, Optional, Sequence
 
 from PySide6 import QtCore
+from PySide6.QtCore import QObject
 
 
-class Packaging:
+class Packaging(QObject):
     """执行打包的类"""
 
     # 自定义信号
-    args_settled = QtCore.Signal(tuple)
+    args_settled = QtCore.Signal(list)
 
-    def __init__(self):
+    def __init__(self, parent: Optional[QObject] = None):
+        super(Packaging, self).__init__(parent)
         pyinstaller_args: list = [
             "script_path",
             "icon_path",
@@ -54,9 +56,7 @@ class Packaging:
         if self.args_dict["out_name"]:
             self._args.extend(["--name", self.args_dict["out_name"]])
 
-        print(self._args)
-        # FIXME 修复无法发射信号的问题
-        # self.args_settled.emit(tuple(self._args))
+        self.args_settled.emit(self._args)
 
     def run_packaging_process(self) -> None:
         """

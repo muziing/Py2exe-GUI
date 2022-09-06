@@ -8,6 +8,7 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QPushButton,
     QRadioButton,
+    QTextBrowser,
     QVBoxLayout,
     QWidget,
 )
@@ -24,28 +25,36 @@ class CenterWidget(QWidget):
     def __init__(self, parent: QMainWindow = None) -> None:
         super(CenterWidget, self).__init__(parent)
 
-        self.script_path_label = QLabel(self)
-        self.script_file_dlg = ScriptFileDlg(self)
-        self.script_browse_btn = QPushButton(self)
-        self.script_path_le = QLineEdit(self)
+        # 待打包的入口脚本
+        self.script_path_label = QLabel()
+        self.script_file_dlg = ScriptFileDlg()
+        self.script_browse_btn = QPushButton()
+        self.script_path_le = QLineEdit()
 
-        self.name_label = QLabel(self)
-        self.name_le = QLineEdit(self)
+        # 打包后输出的项目名称
+        self.name_label = QLabel()
+        self.name_le = QLineEdit()
 
-        self.fd_label = QLabel(self)
-        self.one_dir_btn = QRadioButton(self)
-        self.one_file_btn = QRadioButton(self)
-        self.fd_group = QButtonGroup(self)
+        # 输出至单目录/单文件
+        self.fd_label = QLabel()
+        self.one_dir_btn = QRadioButton()
+        self.one_file_btn = QRadioButton()
+        self.fd_group = QButtonGroup()
 
-        self.icon_path_label = QLabel(self)
-        self.icon_file_dlg = IconFileDlg(self)
-        self.icon_browse_btn = QPushButton(self)
-        self.icon_path_le = QLineEdit(self)
+        # 应用图标
+        self.icon_path_label = QLabel()
+        self.icon_file_dlg = IconFileDlg()
+        self.icon_browse_btn = QPushButton()
+        self.icon_path_le = QLineEdit()
 
         # Windows/MacOS 独占，注意后期处理成在Linux下不显示
-        self.console_checkbox = QCheckBox(self)
+        self.console_checkbox = QCheckBox()
 
-        self.run_packaging_btn = QPushButton(self)
+        # 预览生成的PyInstaller打包指令
+        self.pyinstaller_args_browser = QTextBrowser()
+
+        # 打包按钮
+        self.run_packaging_btn = QPushButton()
 
         self.setup_ui()
         self._connect_slots()
@@ -67,7 +76,7 @@ class CenterWidget(QWidget):
 
         self.fd_label.setText("单文件/单目录：")
         self.one_dir_btn.setText("打包至单个目录")
-        self.one_dir_btn.setChecked(True)
+        self.one_dir_btn.setChecked(True)  # 默认值
         self.one_file_btn.setText("打包至单个文件")
         self.fd_group.addButton(self.one_dir_btn, 0)
         self.fd_group.addButton(self.one_file_btn, 1)
@@ -79,9 +88,12 @@ class CenterWidget(QWidget):
 
         # Windows/MacOS 独占，注意！！！
         self.console_checkbox.setText("为标准I/O启用终端")
-        self.console_checkbox.setChecked(False)
+        self.console_checkbox.setChecked(True)  # 默认值
+
+        self.pyinstaller_args_browser.setMaximumHeight(80)
 
         self.run_packaging_btn.setText("打包！")
+        # TODO 在完成输入检查后再将打包按钮转为可用
         # self.run_packaging_btn.setEnabled(False)
 
     def _connect_slots(self) -> None:
@@ -130,7 +142,7 @@ class CenterWidget(QWidget):
             elif btn_id == 1:
                 self.option_selected.emit(("FD", "One File"))
 
-        self.fd_group.idToggled.connect(one_fd_selected)  # type: ignore
+        self.fd_group.idClicked.connect(one_fd_selected)  # type: ignore
 
         @QtCore.Slot(bool)
         def console_selected(console: bool) -> None:
@@ -144,7 +156,6 @@ class CenterWidget(QWidget):
             else:
                 self.option_selected.emit(("console", "windowed"))
 
-        # FIXME 解决启动时不生效
         self.console_checkbox.toggled.connect(console_selected)  # type: ignore
 
         @QtCore.Slot(str)
@@ -192,5 +203,6 @@ class CenterWidget(QWidget):
         main_layout.addLayout(fd_layout)
         main_layout.addWidget(self.console_checkbox)
         main_layout.addLayout(icon_layout)
+        main_layout.addWidget(self.pyinstaller_args_browser)
         main_layout.addWidget(self.run_packaging_btn)
         self.setLayout(main_layout)

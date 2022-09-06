@@ -13,6 +13,10 @@ class MainApp(MainWindow):
 
         self.packager = Packaging()
 
+        self.packager.args_settled.connect(
+            lambda val: self.center_widget.pyinstaller_args_browser.setText(str(val))
+        )
+
         self.center_widget.option_selected.connect(self.packager.get_pyinstaller_args)
         self.center_widget.run_packaging_btn.clicked.connect(
             self.packager.run_packaging_process
