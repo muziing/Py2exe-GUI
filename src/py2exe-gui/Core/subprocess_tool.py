@@ -1,3 +1,4 @@
+from sys import getdefaultencoding
 from typing import Optional, Sequence
 
 from PySide6 import QtCore
@@ -21,7 +22,7 @@ class QSubProcessTool(QtCore.QObject):
 
     def start_process(self, program: str, arguments: Sequence[str]) -> None:
         """
-        启动子进程 \n
+        使用给定参数启动指定子进程 \n
         :param program: 子进程命令
         :param arguments: 子进程参数
         :return: None
@@ -30,18 +31,27 @@ class QSubProcessTool(QtCore.QObject):
         if self.process is None:  # 防止在子进程运行结束前重复启动
             self.process = QtCore.QProcess()
 
+            self.process.stateChanged.connect(self._handle_state)  # type: ignore
             self.process.readyReadStandardOutput.connect(self._handle_stdout)  # type: ignore
             self.process.readyReadStandardError.connect(self._handle_stderr)  # type: ignore
-            self.process.stateChanged.connect(self._handle_state)  # type: ignore
+            self.process.started.connect(self._process_started)  # type: ignore
             self.process.finished.connect(self._process_finished)  # type: ignore
 
             self.process.start(program, arguments)
+
+    def _process_started(self) -> None:
+        """
+        处理子进程的槽 \n
+        :return: None
+        """
+        pass
 
     def _process_finished(self) -> None:
         """
         处理子进程的槽 \n
         :return: None
         """
+
         self.output.emit((self.FINISHED, "Subprocess finished."))
         self.process = None
 
@@ -53,7 +63,7 @@ class QSubProcessTool(QtCore.QObject):
 
         if self.process:
             data = self.process.readAllStandardOutput()
-            stdout = bytes(data).decode("utf8")
+            stdout = bytes(data).decode(getdefaultencoding())
             self.output.emit((self.STDOUT, stdout))
 
     def _handle_stderr(self) -> None:
@@ -64,7 +74,7 @@ class QSubProcessTool(QtCore.QObject):
 
         if self.process:
             data = self.process.readAllStandardError()
-            stderr = bytes(data).decode("utf8")
+            stderr = bytes(data).decode(getdefaultencoding())
             self.output.emit((self.STDERR, stderr))
 
     def _handle_state(self, state: QtCore.QProcess.ProcessState) -> None:

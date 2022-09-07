@@ -27,7 +27,7 @@ class Packaging(QObject):
 
     def get_pyinstaller_args(self, arg: tuple[str, str]) -> None:
         """
-        解析传递来的PyInstaller运行参数，并以正确的顺序添加至命令参数字典 \n
+        解析传递来的PyInstaller运行参数，并添加至命令参数字典 \n
         :param arg: 运行参数
         """
 
@@ -38,7 +38,8 @@ class Packaging(QObject):
 
     def set_pyinstaller_args(self) -> None:
         """
-        将命令参数字典中的参数按顺序添加到命令参数列表中
+        将命令参数字典中的参数按顺序添加到命令参数列表中 \n
+        :return: None
         """
 
         self._args = []  # 避免重复添加
@@ -66,6 +67,7 @@ class Packaging(QObject):
         :return: None
         """
 
-        self.subprocess = QSubProcessTool()
+        if self.subprocess is None:  # 确保只在首次调用时实例化一个QSubProcess对象
+            self.subprocess = QSubProcessTool()
         self.subprocess.output.connect(lambda val: print(val))  # 测试用
         self.subprocess.start_process("pyinstaller", self._args)
