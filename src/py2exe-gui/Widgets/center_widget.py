@@ -8,11 +8,11 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QPushButton,
     QRadioButton,
-    QTextBrowser,
     QVBoxLayout,
     QWidget,
 )
 
+from .arguments_browser import ArgumentsBrowser
 from .dialog_widgets import IconFileDlg, ScriptFileDlg
 
 
@@ -51,7 +51,7 @@ class CenterWidget(QWidget):
         self.console_checkbox = QCheckBox()
 
         # 预览生成的PyInstaller打包指令
-        self.pyinstaller_args_browser = QTextBrowser()
+        self.pyinstaller_args_browser = ArgumentsBrowser()
 
         # 打包按钮
         self.run_packaging_btn = QPushButton()
@@ -93,7 +93,7 @@ class CenterWidget(QWidget):
         self.pyinstaller_args_browser.setMaximumHeight(80)
 
         self.run_packaging_btn.setText("打包！")
-        # TODO 在完成输入检查后再将打包按钮转为可用
+        # TODO 完成输入检查前、子进程运行时打包按钮设置为不可用
         # self.run_packaging_btn.setEnabled(False)
 
     def _connect_slots(self) -> None:
