@@ -12,6 +12,8 @@
 
 Py2exe-GUI 是一个基于 [PySide6](https://doc.qt.io/qtforpython/index.html) 开发的 [PyInstaller](https://pyinstaller.org/) 辅助工具，旨在提供完整易用的图形化界面，方便用户进行 Python 项目的打包。
 
+![截图](docs/source/images/Py2exe-GUI_v0.1.0_screenshot.png)
+
 有如下特性：
 
 - 完全图形化界面，易用
@@ -21,9 +23,9 @@ Py2exe-GUI 是一个基于 [PySide6](https://doc.qt.io/qtforpython/index.html) �
 
 ## 项目结构
 
-- 项目所有代码均在 [py2exe-gui](src/py2exe-gui) 目录下
-- [Widgets](src/py2exe-gui/Widgets) 目录下包含所有界面控件
-- [Core](src/py2exe-gui/Core) 目录中为执行打包的代码
+- 项目所有代码均在 [py2exe-gui](src/py2exe_gui) 目录下
+- [Widgets](src/py2exe_gui/Widgets) 目录下包含所有界面控件
+- [Core](src/py2exe_gui/Core) 目录中为执行打包的代码
 
 仅为图形化界面工具，不依赖于需要打包的 Python 环境。也提供 exe 发布版。
 
