@@ -1,8 +1,9 @@
 import sys
 
-from Core.packaging import Packaging
 from PySide6.QtWidgets import QApplication
-from Widgets.main_window import MainWindow
+
+from .Core.packaging import Packaging
+from .Widgets.main_window import MainWindow
 
 
 class MainApp(MainWindow):
@@ -27,8 +28,7 @@ class MainApp(MainWindow):
         self.status_bar.showMessage("就绪")
 
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = MainApp()
-    window.show()
-    sys.exit(app.exec())
+app = QApplication(sys.argv)
+window = MainApp()
+window.show()
+sys.exit(app.exec())
