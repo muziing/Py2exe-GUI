@@ -3,7 +3,7 @@ from typing import List, Optional
 from PySide6 import QtCore
 from PySide6.QtCore import QObject
 
-from .subprocess_tool import QSubProcessTool
+from .subprocess_tool import SubProcessTool
 
 
 class Packaging(QObject):
@@ -23,9 +23,9 @@ class Packaging(QObject):
         ]
         self.args_dict: dict = dict.fromkeys(pyinstaller_args, "")
         self._args: List[str] = []
-        self.subprocess: QSubProcessTool = QSubProcessTool()
+        self._subprocess: SubProcessTool = SubProcessTool(self)
 
-    def get_pyinstaller_args(self, arg: tuple[str, str]) -> None:
+    def set_pyinstaller_args(self, arg: tuple[str, str]) -> None:
         """
         解析传递来的PyInstaller运行参数，并添加至命令参数字典 \n
         :param arg: 运行参数
@@ -34,9 +34,9 @@ class Packaging(QObject):
         arg_key, arg_value = arg
         if arg_key in self.args_dict.keys():
             self.args_dict[arg_key] = arg_value
-        self.set_pyinstaller_args()
+        self._add_pyinstaller_args()
 
-    def set_pyinstaller_args(self) -> None:
+    def _add_pyinstaller_args(self) -> None:
         """
         将命令参数字典中的参数按顺序添加到命令参数列表中 \n
         :return: None
@@ -67,5 +67,27 @@ class Packaging(QObject):
         :return: None
         """
 
-        # self.subprocess.output.connect(lambda val: print(val))  # 测试用
-        self.subprocess.start_process("pyinstaller", self._args)
+        # self._subprocess.output.connect(lambda val: print(val))  # 测试用
+        self._subprocess.start_process("pyinstaller", self._args)
+
+    def abort_process(self) -> int:
+        """
+        紧急终止打包进程 \n
+        :return: 子进程返回值
+        """
+
+        if self._subprocess.process:
+            result = 0
+
+            def handel(output: tuple):
+                """处理子进程的输出，获取进程结束的返回值"""
+                nonlocal result
+                if output[0] == 1:
+                    result = int(output[1])
+
+            self._subprocess.output.connect(handel)
+            self._subprocess.process.terminate()
+            self._subprocess.process.waitForFinished(10000)
+            return result
+        else:
+            return 0

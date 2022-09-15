@@ -4,10 +4,10 @@ from typing import Optional, Sequence
 from PySide6 import QtCore
 
 
-class QSubProcessTool(QtCore.QObject):
+class SubProcessTool(QtCore.QObject):
     """辅助使用QProcess创建并管理子进程的工具类"""
 
-    # 自定义信号，参数为 (output_type: QSubProcessTool.output_type, output_text: str)
+    # 自定义信号，参数为 tuple[output_type: SubProcessTool.output_type, output_text: str]
     output = QtCore.Signal(tuple)
 
     # output_types
@@ -17,7 +17,7 @@ class QSubProcessTool(QtCore.QObject):
     STDERR = 3
 
     def __init__(self, parent: Optional[QtCore.QObject] = None) -> None:
-        super(QSubProcessTool, self).__init__(parent)
+        super(SubProcessTool, self).__init__(parent)
         self.process: Optional[QtCore.QProcess] = None
 
     def start_process(self, program: str, arguments: Sequence[str]) -> None:
@@ -46,13 +46,15 @@ class QSubProcessTool(QtCore.QObject):
         """
         pass
 
-    def _process_finished(self) -> None:
+    def _process_finished(
+        self, exit_code: int, exit_status: QtCore.QProcess.ExitStatus
+    ) -> None:
         """
         处理子进程的槽 \n
         :return: None
         """
 
-        self.output.emit((self.FINISHED, "Subprocess finished."))
+        self.output.emit((self.FINISHED, str(exit_code)))
         self.process = None
 
     def _handle_stdout(self) -> None:
