@@ -23,7 +23,7 @@ class Packaging(QObject):
         ]
         self.args_dict: dict = dict.fromkeys(pyinstaller_args, "")
         self._args: List[str] = []
-        self.subprocess: Optional[QSubProcessTool] = None
+        self.subprocess: QSubProcessTool = QSubProcessTool()
 
     def get_pyinstaller_args(self, arg: tuple[str, str]) -> None:
         """
@@ -67,7 +67,5 @@ class Packaging(QObject):
         :return: None
         """
 
-        if self.subprocess is None:  # 确保只在首次调用时实例化一个QSubProcess对象
-            self.subprocess = QSubProcessTool()
-        self.subprocess.output.connect(lambda val: print(val))  # 测试用
+        # self.subprocess.output.connect(lambda val: print(val))  # 测试用
         self.subprocess.start_process("pyinstaller", self._args)
