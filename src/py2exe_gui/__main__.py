@@ -35,6 +35,16 @@ class MainApp(MainWindow):
 
         self.status_bar.showMessage("就绪")
 
+    def closeEvent(self, event):
+        """
+        重写关闭事件，进行收尾清理 \n
+        """
+
+        if self.packager.subprocess.process:
+            self.packager.subprocess.process.terminate()  # 终止尚未结束的子进程
+            self.packager.subprocess.process.waitForFinished()
+        super(MainApp, self).closeEvent(event)
+
 
 app = QApplication(sys.argv)
 window = MainApp()
