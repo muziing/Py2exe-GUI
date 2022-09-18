@@ -1,3 +1,4 @@
+import os.path
 from sys import getdefaultencoding
 from typing import Optional, Sequence
 
@@ -5,57 +6,125 @@ from PySide6 import QtCore
 
 
 class SubProcessTool(QtCore.QObject):
-    """辅助使用QProcess创建并管理子进程的工具类"""
+    """辅助QProcess使用的工具类，将所有直接对子进程进行的操作都封装在此类中"""
 
     # 自定义信号，参数为 tuple[output_type: SubProcessTool.output_type, output_text: str]
     output = QtCore.Signal(tuple)
 
     # output_types
-    STATE = 0
-    FINISHED = 1
+    STATE = 1
     STDOUT = 2
     STDERR = 3
+    FINISHED = 4
 
-    def __init__(self, parent: Optional[QtCore.QObject] = None) -> None:
-        super(SubProcessTool, self).__init__(parent)
-        self.process: Optional[QtCore.QProcess] = None
-
-    def start_process(self, program: str, arguments: Sequence[str]) -> None:
+    def __init__(
+        self,
+        parent: Optional[QtCore.QObject] = None,
+        *,
+        program: str = "",
+        arguments: Sequence[str] = (),
+        working_directory: str = "./",
+    ) -> None:
         """
-        使用给定参数启动指定子进程 \n
-        :param program: 子进程命令
-        :param arguments: 子进程参数
+        :param parent: 父对象
+        :param program: 待运行的子进程
+        :param arguments: 运行参数
+        :param working_directory: 子进程工作目录
         :return: None
         """
 
-        if self.process is None:  # 防止在子进程运行结束前重复启动
-            self.process = QtCore.QProcess()
+        super(SubProcessTool, self).__init__(parent)
 
-            self.process.stateChanged.connect(self._handle_state)  # type: ignore
-            self.process.readyReadStandardOutput.connect(self._handle_stdout)  # type: ignore
-            self.process.readyReadStandardError.connect(self._handle_stderr)  # type: ignore
-            self.process.started.connect(self._process_started)  # type: ignore
-            self.process.finished.connect(self._process_finished)  # type: ignore
+        self.program: str = program
+        self._arguments: Sequence[str] = arguments
+        self._working_directory: str = working_directory
+        self._process: Optional[QtCore.QProcess] = None
+        self.exit_code: int = 0
+        self.exit_status: QtCore.QProcess.ExitStatus = QtCore.QProcess.NormalExit
 
-            self.process.start(program, arguments)
+    def start_process(
+        self,
+        *,
+        mode: QtCore.QIODeviceBase.OpenMode = QtCore.QIODeviceBase.OpenModeFlag.ReadWrite,  # type: ignore
+    ) -> None:
+        """
+        创建并启动子进程 \n
+        :param mode: 设备打开的模式
+        :return: None
+        """
+
+        if self._process is None:  # 防止在子进程运行结束前重复启动
+            self._process = QtCore.QProcess(self)
+
+            self._process.stateChanged.connect(self._handle_state)  # type: ignore
+            self._process.readyReadStandardOutput.connect(self._handle_stdout)  # type: ignore
+            self._process.readyReadStandardError.connect(self._handle_stderr)  # type: ignore
+            self._process.started.connect(self._process_started)  # type: ignore
+            self._process.finished.connect(self._process_finished)  # type: ignore
+            self._process.errorOccurred.connect(self._handle_error)  # type: ignore
+
+            self._process.setWorkingDirectory(self._working_directory)
+            self._process.start(self.program, self._arguments, mode)
+            self._process.waitForStarted(1000)  # 阻塞，直到启动了子进程或超时（单位为毫秒）
+
+    def abort_process(self, timeout: int = 10000) -> bool:
+        """
+        终止子进程 \n
+        :param timeout: 超时时间，单位为毫秒
+        :return: 子进程是否完成
+        """
+
+        if self._process:
+            self._process.terminate()
+            finished = self._process.waitForFinished(timeout)  # 阻塞，直到进程终止或超时
+            if not finished:
+                self._process.kill()  # 超时后杀死子进程
+            return finished
+        else:
+            return True
+
+    def set_arguments(self, arguments: Sequence[str]) -> None:
+        """
+        设置子进程参数 \n
+        :param arguments: 参数列表
+        :return: None
+        """
+
+        self._arguments = arguments
+
+    def set_working_dir(self, work_dir: str) -> bool:
+        """
+        设置子进程工作目录 \n
+        :param work_dir: 工作目录
+        :return: 是否设置成功
+        """
+
+        if os.path.isdir(work_dir):
+            self._working_directory = work_dir
+            return True
+        else:
+            return False
 
     def _process_started(self) -> None:
         """
-        处理子进程的槽 \n
+        处理子进程开始的槽 \n
         :return: None
         """
+
         pass
 
-    def _process_finished(
-        self, exit_code: int, exit_status: QtCore.QProcess.ExitStatus
-    ) -> None:
+    def _process_finished(self, code: int, status: QtCore.QProcess.ExitStatus) -> None:
         """
-        处理子进程的槽 \n
+        处理子进程结束的槽 \n
+        :param code: 退出码
+        :param status: 退出状态
         :return: None
         """
 
-        self.output.emit((self.FINISHED, str(exit_code)))
-        self.process = None
+        self.exit_code = code
+        self.exit_status = status
+        self.output.emit((self.FINISHED, str(code)))
+        self._process = None
 
     def _handle_stdout(self) -> None:
         """
@@ -63,9 +132,9 @@ class SubProcessTool(QtCore.QObject):
         :return: None
         """
 
-        if self.process:
-            data = self.process.readAllStandardOutput()
-            stdout = bytes(data).decode(getdefaultencoding())
+        if self._process:
+            data = self._process.readAllStandardOutput()
+            stdout = bytes(data).decode(getdefaultencoding())  # 将QByteArray转为str
             self.output.emit((self.STDOUT, stdout))
 
     def _handle_stderr(self) -> None:
@@ -74,9 +143,9 @@ class SubProcessTool(QtCore.QObject):
         :return: None
         """
 
-        if self.process:
-            data = self.process.readAllStandardError()
-            stderr = bytes(data).decode(getdefaultencoding())
+        if self._process:
+            data = self._process.readAllStandardError()
+            stderr = bytes(data).decode(getdefaultencoding())  # 将QByteArray转为str
             self.output.emit((self.STDERR, stderr))
 
     def _handle_state(self, state: QtCore.QProcess.ProcessState) -> None:
@@ -93,3 +162,12 @@ class SubProcessTool(QtCore.QObject):
         }
         state_name = states[state]
         self.output.emit((self.STATE, state_name))
+
+    def _handle_error(self, error: QtCore.QProcess.ProcessError) -> None:
+        """
+        处理子进程错误 \n
+        :param error: 子进程错误
+        :return: None
+        """
+
+        pass
