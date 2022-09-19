@@ -23,7 +23,7 @@ class Packaging(QObject):
         ]
         self.args_dict: dict = dict.fromkeys(pyinstaller_args, "")
         self._args: List[str] = []
-        self._subprocess: SubProcessTool = SubProcessTool(self, program="pyinstaller")
+        self.subprocess: SubProcessTool = SubProcessTool(self, program="pyinstaller")
 
     def set_pyinstaller_args(self, arg: tuple[str, str]) -> None:
         """
@@ -68,27 +68,5 @@ class Packaging(QObject):
         """
 
         # self._subprocess.output.connect(lambda val: print(val))  # 测试用
-        self._subprocess.set_arguments(self._args)
-        self._subprocess.start_process()
-
-    def abort_process(self) -> int:
-        """
-        紧急终止打包进程 \n
-        :return: 子进程返回值
-        """
-
-        if self._subprocess._process:
-            result = 0
-
-            def handel(output: tuple):
-                """处理子进程的输出，获取进程结束的返回值"""
-                nonlocal result
-                if output[0] == 1:
-                    result = int(output[1])
-
-            self._subprocess.output.connect(handel)
-            self._subprocess.abort_process()
-
-            return result
-        else:
-            return 0
+        self.subprocess.set_arguments(self._args)
+        self.subprocess.start_process()
