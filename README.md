@@ -1,6 +1,6 @@
 # Py2exe-GUI
 
-更易用的 Python 打包工具！
+> 更易用的 Python 打包工具！
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/muziing/Py2exe-GUI)
 [![PyPI Version](https://img.shields.io/pypi/v/py2exe-gui)](https://pypi.org/project/py2exe-gui/)
@@ -53,15 +53,20 @@ python -m py2exe_gui
 
 ## TODO
 
-- [x] 解决相对引用问题
-- [x] 将参数拼接成完整调用命令（完成待优化）
-- [x] 使用 QProcess 替代 subprocess 以解决界面卡死问题
-- [ ] 将 PyInstaller 的输出显示至单独的弹出窗口
-- [ ] 子进程运行时阻塞主窗口关闭
-- [ ] 增加状态栏信息
-- [ ] Python 解释器选择器
+- [ ] 解决相对引用与作为包运行问题
+- [x] 选项参数获取
+  - [x] 将参数拼接成完整调用命令
+  - [x] 参数预览器控件
+  - [ ] 优化拼接代码
+- [x] 调用 `PyInstaller` 子进程
+  - [x] 使用 `QProcess` 替代 `subprocess` 以解决界面卡死问题
+  - [x] 将子进程的输出与状态显示至单独的弹出窗口
+  - [ ] 优化子进程相关代码，增强异常处理
+- [ ] 增加主界面功能控件
+  - [ ] Python 解释器选择器
+  - [ ] 增加状态栏信息
 - [ ] 实现跨平台功能（不同平台间的差异功能）
 - [ ] 保存与读取打包项目文件（json? yaml? toml?）
-- [ ] logging 日志记录
+- [ ] `logging` 日志记录
 - [ ] QSS 与美化
 - [ ] 翻译与国际化
