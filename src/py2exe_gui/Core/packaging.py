@@ -3,7 +3,7 @@ from typing import List, Optional
 from PySide6 import QtCore
 from PySide6.QtCore import QObject
 
-from .subprocess_tool import QSubProcessTool
+from .subprocess_tool import SubProcessTool
 
 
 class Packaging(QObject):
@@ -23,9 +23,9 @@ class Packaging(QObject):
         ]
         self.args_dict: dict = dict.fromkeys(pyinstaller_args, "")
         self._args: List[str] = []
-        self.subprocess: Optional[QSubProcessTool] = None
+        self.subprocess: SubProcessTool = SubProcessTool(self, program="pyinstaller")
 
-    def get_pyinstaller_args(self, arg: tuple[str, str]) -> None:
+    def set_pyinstaller_args(self, arg: tuple[str, str]) -> None:
         """
         解析传递来的PyInstaller运行参数，并添加至命令参数字典 \n
         :param arg: 运行参数
@@ -34,9 +34,9 @@ class Packaging(QObject):
         arg_key, arg_value = arg
         if arg_key in self.args_dict.keys():
             self.args_dict[arg_key] = arg_value
-        self.set_pyinstaller_args()
+        self._add_pyinstaller_args()
 
-    def set_pyinstaller_args(self) -> None:
+    def _add_pyinstaller_args(self) -> None:
         """
         将命令参数字典中的参数按顺序添加到命令参数列表中 \n
         :return: None
@@ -67,7 +67,6 @@ class Packaging(QObject):
         :return: None
         """
 
-        if self.subprocess is None:  # 确保只在首次调用时实例化一个QSubProcess对象
-            self.subprocess = QSubProcessTool()
-        self.subprocess.output.connect(lambda val: print(val))  # 测试用
-        self.subprocess.start_process("pyinstaller", self._args)
+        # self._subprocess.output.connect(lambda val: print(val))  # 测试用
+        self.subprocess.set_arguments(self._args)
+        self.subprocess.start_process()

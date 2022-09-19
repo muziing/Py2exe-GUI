@@ -1,16 +1,22 @@
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QFileDialog, QMessageBox, QWidget
+from PySide6.QtWidgets import (
+    QDialog,
+    QFileDialog,
+    QLabel,
+    QMessageBox,
+    QTextBrowser,
+    QVBoxLayout,
+    QWidget,
+)
 
-"""
-由于各种对话框的设置代码较繁琐且独立，故单独在本模块中配置
-"""
+from py2exe_gui.Core.subprocess_tool import SubProcessTool
 
 
 class ScriptFileDlg(QFileDialog):
     """用于获取入口脚本文件的对话框"""
 
     def __init__(self, parent: QWidget = None) -> None:
-        super().__init__(parent)
+        super(ScriptFileDlg, self).__init__(parent)
         self._setup()
 
     def _setup(self) -> None:
@@ -56,7 +62,7 @@ class AboutMessage(QMessageBox):
     """用于显示关于信息的对话框"""
 
     def __init__(self, parent: QWidget = None) -> None:
-        super(AboutMessage, self).__init__(parent=parent)
+        super(AboutMessage, self).__init__(parent)
         self._about_text: str = ""
         self._setup()
 
@@ -86,6 +92,46 @@ class AboutMessage(QMessageBox):
         return self._about_text
 
 
+class SubProcessDlg(QDialog):
+    """用于显示子进程信息的对话框"""
+
+    def __init__(self, parent: QWidget = None) -> None:
+        super(SubProcessDlg, self).__init__(parent)
+        self.info_label = QLabel(self)
+        self.browser = QTextBrowser(self)
+        self._setup()
+
+    def _setup(self) -> None:
+        """
+        配置子进程信息对话框 \n
+        """
+
+        self.setWindowTitle("PyInstaller")
+        self.setModal(True)
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.info_label)
+        layout.addWidget(self.browser)
+        self.setLayout(layout)
+
+    def handle_output(self, subprocess_output: tuple[int, str]) -> None:
+        """
+        处理子进程的输出 \n
+        :param subprocess_output: 子进程输出
+        :return: None
+        """
+
+        output_type, output_text = subprocess_output
+        if output_type == SubProcessTool.STDOUT:
+            self.browser.append(output_text)
+        elif output_type == SubProcessTool.STDERR:
+            self.browser.append(output_text)
+        elif output_type == SubProcessTool.FINISHED:
+            self.info_label.setText("打包完成！")
+        elif output_type == SubProcessTool.STATE:
+            self.info_label.setText(output_text)
+
+
 if __name__ == "__main__":
     import sys
 
@@ -95,6 +141,7 @@ if __name__ == "__main__":
     # window = ScriptFileDlg()
     # window = IconFileDlg()
     # window.fileSelected.connect(lambda f: print(f))  # type: ignore
-    window = AboutMessage()
+    # window = AboutMessage()
+    window = SubProcessDlg()
     window.open()
     sys.exit(app.exec())
