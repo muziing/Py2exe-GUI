@@ -4,16 +4,21 @@ from PySide6.QtWidgets import QTextBrowser, QWidget
 
 
 class ArgumentsBrowser(QTextBrowser):
-    """针对命令行参数列表特别优化的文本浏览器"""
+    """
+    针对命令行参数列表特别优化的文本浏览器
+    """
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
+        """
+        :param parent: 父控件对象
+        """
+
         super(ArgumentsBrowser, self).__init__(parent)
 
     def enrich_args_text(self, args_list: list[str]) -> None:
         """
         对参数进行一定高亮美化后显示 \n
         :param args_list: 参数列表
-        :return: None
         """
 
         text: list[str] = []

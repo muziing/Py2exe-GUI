@@ -13,16 +13,21 @@ from py2exe_gui.Core.subprocess_tool import SubProcessTool
 
 
 class ScriptFileDlg(QFileDialog):
-    """用于获取入口脚本文件的对话框"""
+    """
+    用于获取入口脚本文件的对话框
+    """
 
     def __init__(self, parent: QWidget = None) -> None:
+        """
+        :param parent: 父控件对象
+        """
+
         super(ScriptFileDlg, self).__init__(parent)
         self._setup()
 
     def _setup(self) -> None:
         """
         配置脚本路径对话框 \n
-        :return: None
         """
 
         self.setAcceptMode(QFileDialog.AcceptOpen)
@@ -36,16 +41,21 @@ class ScriptFileDlg(QFileDialog):
 
 
 class IconFileDlg(QFileDialog):
-    """用于获取应用图标文件的对话框"""
+    """
+    用于获取应用图标文件的对话框
+    """
 
     def __init__(self, parent: QWidget = None) -> None:
+        """
+        :param parent: 父控件对象
+        """
+
         super(IconFileDlg, self).__init__(parent)
         self._setup()
 
     def _setup(self) -> None:
         """
         配置应用图标对话框 \n
-        :return: None
         """
 
         self.setAcceptMode(QFileDialog.AcceptOpen)
@@ -59,9 +69,15 @@ class IconFileDlg(QFileDialog):
 
 
 class AboutMessage(QMessageBox):
-    """用于显示关于信息的对话框"""
+    """
+    用于显示关于信息的对话框
+    """
 
     def __init__(self, parent: QWidget = None) -> None:
+        """
+        :param parent: 父控件对象
+        """
+
         super(AboutMessage, self).__init__(parent)
         self._about_text: str = ""
         self._setup()
@@ -69,7 +85,6 @@ class AboutMessage(QMessageBox):
     def _setup(self) -> None:
         """
         配置关于信息对话框 \n
-        :return: None
         """
 
         self.setWindowTitle("关于Py2exe-GUI")
@@ -93,7 +108,9 @@ class AboutMessage(QMessageBox):
 
 
 class SubProcessDlg(QDialog):
-    """用于显示子进程信息的对话框"""
+    """
+    用于显示子进程信息的对话框
+    """
 
     def __init__(self, parent: QWidget = None) -> None:
         super(SubProcessDlg, self).__init__(parent)
@@ -118,7 +135,6 @@ class SubProcessDlg(QDialog):
         """
         处理子进程的输出 \n
         :param subprocess_output: 子进程输出
-        :return: None
         """
 
         output_type, output_text = subprocess_output

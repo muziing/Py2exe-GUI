@@ -9,7 +9,9 @@ from py2exe_gui.Widgets.main_window import MainWindow
 
 
 class MainApp(MainWindow):
-    """主程序"""
+    """
+    主程序
+    """
 
     def __init__(self, *args, **kwargs) -> None:
         super(MainApp, self).__init__(*args, **kwargs)
@@ -38,7 +40,6 @@ class MainApp(MainWindow):
         """
         重写关闭事件，进行收尾清理 \n
         :param event: 关闭事件
-        :return: None
         """
 
         self.packager.subprocess.abort_process()

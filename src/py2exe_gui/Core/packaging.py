@@ -1,18 +1,23 @@
 from typing import List, Optional
 
 from PySide6 import QtCore
-from PySide6.QtCore import QObject
 
 from .subprocess_tool import SubProcessTool
 
 
-class Packaging(QObject):
-    """执行打包的类"""
+class Packaging(QtCore.QObject):
+    """
+    执行打包的类
+    """
 
     # 自定义信号
     args_settled = QtCore.Signal(list)
 
-    def __init__(self, parent: Optional[QObject] = None):
+    def __init__(self, parent: Optional[QtCore.QObject] = None) -> None:
+        """
+        :param parent: 父控件对象
+        """
+
         super(Packaging, self).__init__(parent)
         pyinstaller_args: list = [
             "script_path",
@@ -39,7 +44,6 @@ class Packaging(QObject):
     def _add_pyinstaller_args(self) -> None:
         """
         将命令参数字典中的参数按顺序添加到命令参数列表中 \n
-        :return: None
         """
 
         self._args = []  # 避免重复添加
@@ -64,9 +68,8 @@ class Packaging(QObject):
     def run_packaging_process(self) -> None:
         """
         使用给定的参数启动打包子进程 \n
-        :return: None
         """
 
-        # self._subprocess.output.connect(lambda val: print(val))  # 测试用
+        # self.subprocess.output.connect(lambda val: print(val))  # 测试用
         self.subprocess.set_arguments(self._args)
         self.subprocess.start_process()

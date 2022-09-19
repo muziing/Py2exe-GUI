@@ -7,7 +7,9 @@ from .dialog_widgets import AboutMessage
 
 
 class MainWindow(QMainWindow):
-    """主界面主窗口"""
+    """
+    主界面主窗口
+    """
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -20,7 +22,7 @@ class MainWindow(QMainWindow):
 
     def _setup(self) -> None:
         """
-        设置主窗口
+        设置主窗口 \n
         """
 
         self.setWindowTitle("Py2exe-GUI")
@@ -38,7 +40,6 @@ class MainWindow(QMainWindow):
     def _setup_menu_bar(self) -> None:
         """
         配置主窗口菜单栏 \n
-        :return: None
         """
 
         file_menu = self.menu_bar.addMenu("文件(&F)")
@@ -68,6 +69,6 @@ class MainWindow(QMainWindow):
     def _setup_status_bar(self) -> None:
         """
         配置主窗口状态栏 \n
-        :return: None
         """
+
         pass

@@ -17,12 +17,18 @@ from .dialog_widgets import IconFileDlg, ScriptFileDlg
 
 
 class CenterWidget(QWidget):
-    """主界面的中央控件"""
+    """
+    主界面的中央控件
+    """
 
     # 自定义信号
     option_selected = QtCore.Signal(tuple)
 
     def __init__(self, parent: QMainWindow = None) -> None:
+        """
+        :param parent: 父控件对象，应为主窗口
+        """
+
         super(CenterWidget, self).__init__(parent)
 
         # 待打包的入口脚本
@@ -63,7 +69,6 @@ class CenterWidget(QWidget):
     def setup_ui(self) -> None:
         """
         设置各种控件的属性 \n
-        :return: None
         """
 
         self.script_path_label.setText("脚本路径：")
@@ -99,7 +104,6 @@ class CenterWidget(QWidget):
     def _connect_slots(self) -> None:
         """
         定义、连接信号与槽 \n
-        :return: None
         """
 
         @QtCore.Slot(str)
@@ -107,8 +111,8 @@ class CenterWidget(QWidget):
             """
             脚本文件完成选择的槽函数 \n
             :param file_path: 脚本文件路径
-            :return: None
             """
+
             # TODO 验证有效性、将脚本名作为默认app名
             # 将字符串类型的文件路径转成pathlib型的？
             self.script_path_le.setText(file_path)
@@ -123,8 +127,8 @@ class CenterWidget(QWidget):
         def project_name_selected() -> None:
             """
             输出程序名称完成输入的槽 \n
-            :return: None
             """
+
             pro_name: str = self.name_le.text()
             self.option_selected.emit(("out_name", pro_name))
 
@@ -135,8 +139,8 @@ class CenterWidget(QWidget):
             """
             选择输出至单文件/单目录的槽 \n
             :param btn_id: fd_group按钮组中按钮的id
-            :return: None
             """
+
             if btn_id == 0:
                 self.option_selected.emit(("FD", "One Dir"))
             elif btn_id == 1:
@@ -149,8 +153,8 @@ class CenterWidget(QWidget):
             """
             选择打包的程序是否为stdio启用终端的槽 \n
             :param console: 是否启用终端
-            :return: None
             """
+
             if console:
                 self.option_selected.emit(("console", "console"))
             else:
@@ -161,10 +165,10 @@ class CenterWidget(QWidget):
         @QtCore.Slot(str)
         def icon_file_selected(file_path: str) -> None:
             """
-            图标文件完成选择的槽函数
+            图标文件完成选择的槽函数 \n
             :param file_path: 图标路径
-            :return: None
             """
+
             self.icon_path_le.setText(file_path)
             self.parent().statusBar().showMessage(f"打开图标路径：{file_path}")
             self.option_selected.emit(("icon_path", file_path))
@@ -175,7 +179,6 @@ class CenterWidget(QWidget):
     def _set_layout(self) -> None:
         """
         设置布局管理器 \n
-        :return: None
         """
 
         script_layout = QGridLayout()

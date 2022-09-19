@@ -6,9 +6,11 @@ from PySide6 import QtCore
 
 
 class SubProcessTool(QtCore.QObject):
-    """辅助QProcess使用的工具类，将所有直接对子进程进行的操作都封装在此类中"""
+    """
+    辅助QProcess使用的工具类，将所有直接对子进程进行的操作都封装在此类中
+    """
 
-    # 自定义信号，参数为 tuple[output_type: SubProcessTool.output_type, output_text: str]
+    # 自定义信号，参数为 tuple[output_type: int, output_text: str]
     output = QtCore.Signal(tuple)
 
     # output_types
@@ -30,7 +32,6 @@ class SubProcessTool(QtCore.QObject):
         :param program: 待运行的子进程
         :param arguments: 运行参数
         :param working_directory: 子进程工作目录
-        :return: None
         """
 
         super(SubProcessTool, self).__init__(parent)
@@ -50,7 +51,6 @@ class SubProcessTool(QtCore.QObject):
         """
         创建并启动子进程 \n
         :param mode: 设备打开的模式
-        :return: None
         """
 
         if self._process is None:  # 防止在子进程运行结束前重复启动
@@ -87,7 +87,6 @@ class SubProcessTool(QtCore.QObject):
         """
         设置子进程参数 \n
         :param arguments: 参数列表
-        :return: None
         """
 
         self._arguments = arguments
@@ -108,7 +107,6 @@ class SubProcessTool(QtCore.QObject):
     def _process_started(self) -> None:
         """
         处理子进程开始的槽 \n
-        :return: None
         """
 
         pass
@@ -118,7 +116,6 @@ class SubProcessTool(QtCore.QObject):
         处理子进程结束的槽 \n
         :param code: 退出码
         :param status: 退出状态
-        :return: None
         """
 
         self.exit_code = code
@@ -129,7 +126,6 @@ class SubProcessTool(QtCore.QObject):
     def _handle_stdout(self) -> None:
         """
         处理标准输出的槽 \n
-        :return: None
         """
 
         if self._process:
@@ -140,7 +136,6 @@ class SubProcessTool(QtCore.QObject):
     def _handle_stderr(self) -> None:
         """
         处理标准错误的槽 \n
-        :return: None
         """
 
         if self._process:
@@ -152,13 +147,12 @@ class SubProcessTool(QtCore.QObject):
         """
         将子进程运行状态转换为易读形式 \n
         :param state: 进程运行状态
-        :return: None
         """
 
         states = {
-            QtCore.QProcess.NotRunning: "Not running",
-            QtCore.QProcess.Starting: "Starting",
-            QtCore.QProcess.Running: "Running",
+            QtCore.QProcess.NotRunning: "非运行",
+            QtCore.QProcess.Starting: "启动中……",
+            QtCore.QProcess.Running: "正在运行中……",
         }
         state_name = states[state]
         self.output.emit((self.STATE, state_name))
@@ -167,7 +161,6 @@ class SubProcessTool(QtCore.QObject):
         """
         处理子进程错误 \n
         :param error: 子进程错误
-        :return: None
         """
 
         pass
