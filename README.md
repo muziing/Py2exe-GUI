@@ -1,15 +1,15 @@
-# Py2exe-GUI
+![Py2exe-GUI Logo](docs/source/images/py2exe-gui_logo_big.png)
 
-> 更易用的 Python 打包工具！
+<h2 align="center">强大易用的 Python 图形界面打包工具</h2>
 
-![GitHub Repo stars](https://img.shields.io/github/stars/muziing/Py2exe-GUI)
-[![PyPI Version](https://img.shields.io/pypi/v/py2exe-gui)](https://pypi.org/project/py2exe-gui/)
-[![License](https://img.shields.io/github/license/muziing/Py2exe-GUI)](https://www.gnu.org/licenses/gpl-3.0.html)
-![Python version](https://img.shields.io/pypi/pyversions/py2exe-gui)
-[![PySide Version](https://img.shields.io/badge/PySide-6.2-blue)](https://doc.qt.io/qtforpython/index.html)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
-[![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
+<p align="center">
+<img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/muziing/Py2exe-GUI">
+<img alt="Python Version" src="https://img.shields.io/pypi/pyversions/py2exe-gui">
+<a href="https://pypi.org/project/py2exe-gui/"><img alt="PyPI Version" src="https://img.shields.io/pypi/v/py2exe-gui"></a>
+<a href="https://doc.qt.io/qtforpython/index.html"><img alt="PySide Version" src="https://img.shields.io/badge/PySide-6.2-blue"></a>
+<a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
+<a href="http://mypy-lang.org/"><img alt="Checked with mypy" src="http://www.mypy-lang.org/static/mypy_badge.svg"></a>
+</p>
 
 ## 简介
 
@@ -28,7 +28,13 @@ Py2exe-GUI 是一个基于 [PySide6](https://doc.qt.io/qtforpython/index.html) �
 
 ### 安装
 
-Py2exe-GUI 已经发布至 PyPI，直接通过 pip 工具安装即可：
+首先在待打包的 Python 解释器环境中安装 PyInstaller:
+
+```shell
+pip install pyinstaller
+```
+
+然后通过 pip 安装：
 
 ```shell
 pip install py2exe-gui
@@ -63,10 +69,19 @@ python -m py2exe_gui
   - [x] 将子进程的输出与状态显示至单独的弹出窗口
   - [ ] 优化子进程相关代码，增强异常处理
 - [ ] 增加主界面功能控件
+  - [ ] 资源文件添加框
   - [ ] Python 解释器选择器
   - [ ] 增加状态栏信息
-- [ ] 实现跨平台功能（不同平台间的差异功能）
-- [ ] 保存与读取打包项目文件（json? yaml? toml?）
+  - [ ] 「简洁模式」/「详尽模式」切换
+- [ ] 菜单栏功能
+  - [ ] `PyInstaller` 选项参数详解表格
+- [ ] 实现跨平台功能
+  - [x] 获取当前运行平台
+  - [ ] 以合理方式保存至某种全局变量中
+  - [ ] 定制各平台特有功能
+- [ ] 打包项目文件
+  - [ ] 定义并以适当格式存储（json? yaml? toml?）
+  - [ ] 导入导出功能
 - [ ] `logging` 日志记录
 - [ ] QSS 与美化
 - [ ] 翻译与国际化
