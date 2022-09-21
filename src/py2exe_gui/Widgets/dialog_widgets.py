@@ -1,4 +1,5 @@
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import (
     QDialog,
     QFileDialog,
@@ -68,7 +69,7 @@ class IconFileDlg(QFileDialog):
         self.setLabelText(QFileDialog.Reject, "取消")
 
 
-class AboutMessage(QMessageBox):
+class AboutDlg(QMessageBox):
     """
     用于显示关于信息的对话框
     """
@@ -78,7 +79,7 @@ class AboutMessage(QMessageBox):
         :param parent: 父控件对象
         """
 
-        super(AboutMessage, self).__init__(parent)
+        super(AboutDlg, self).__init__(parent)
         self._about_text: str = ""
         self._setup()
 
@@ -91,6 +92,9 @@ class AboutMessage(QMessageBox):
         self.setStandardButtons(QMessageBox.Ok)
         self.setTextFormat(Qt.MarkdownText)
         self.setText(self.about_text)
+        self.setIconPixmap(
+            QPixmap("py2exe_gui/Resources/Icons/Py2exe-GUI_icon_72px.png")
+        )
 
     @property
     def about_text(self) -> str:
@@ -99,11 +103,14 @@ class AboutMessage(QMessageBox):
         :return: 关于信息
         """
 
-        self._about_text = (
-            "Py2exe-GUI 是一个[开源程序](https://github.com/muziing/Py2exe-GUI)。\n\n"
-            "旨在为 [PyInstaller](https://pyinstaller.org/) 提供简单易用的图形界面。\n\n"
-            "作者：[muzing](https://muzing.top/about)。"
-        )
+        try:
+            with open(
+                "py2exe_gui/Resources/About.md", "r", encoding="utf-8"
+            ) as about_file:
+                self._about_text = about_file.read()
+        except FileNotFoundError:
+            self._about_text = "无法打开关于文档，请尝试重新获取本程序。"
+
         return self._about_text
 
 
@@ -157,7 +164,7 @@ if __name__ == "__main__":
     # window = ScriptFileDlg()
     # window = IconFileDlg()
     # window.fileSelected.connect(lambda f: print(f))  # type: ignore
-    # window = AboutMessage()
+    # window = AboutDlg()
     window = SubProcessDlg()
     window.open()
     sys.exit(app.exec())

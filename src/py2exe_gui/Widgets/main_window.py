@@ -3,7 +3,7 @@ from PySide6.QtGui import QDesktopServices, QIcon
 from PySide6.QtWidgets import QApplication, QMainWindow, QMenuBar, QStatusBar
 
 from .center_widget import CenterWidget
-from .dialog_widgets import AboutMessage
+from .dialog_widgets import AboutDlg
 
 
 class MainWindow(QMainWindow):
@@ -28,7 +28,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Py2exe-GUI")
         self.setMinimumSize(320, 350)
         # self.resize(800, 600)
-        self.setWindowIcon(QIcon("../Resources/Icons/Python_128px.png"))
+        self.setWindowIcon(QIcon("../Resources/Icons/Py2exe-GUI_icon_72px.ico"))
 
         self._setup_menu_bar()
         self._setup_status_bar()
@@ -43,9 +43,9 @@ class MainWindow(QMainWindow):
         """
 
         file_menu = self.menu_bar.addMenu("文件(&F)")
-        file_menu.addAction("打开……")  # 暂时只为占位
+        # file_menu.addAction("打开……")  # 暂时只为占位
         file_menu.addSeparator()
-        file_menu.addAction("退出程序(&E)", self.close)  # 直接调用close可能整个程序并未完全退出？
+        file_menu.addAction("退出(&X)", self.close)  # 直接调用close可能整个程序并未完全退出？
 
         help_menu = self.menu_bar.addMenu("帮助(&H)")
 
@@ -63,7 +63,7 @@ class MainWindow(QMainWindow):
         )
 
         about_menu = self.menu_bar.addMenu("关于(&A)")
-        about_menu.addAction("关于本程序", AboutMessage(self).exec)
+        about_menu.addAction("关于本程序", AboutDlg(self).exec)
         about_menu.addAction("关于 &Qt", QApplication.aboutQt)
 
     def _setup_status_bar(self) -> None:
