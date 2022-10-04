@@ -4,6 +4,7 @@ from PySide6 import QtGui
 from PySide6.QtWidgets import QApplication
 
 from py2exe_gui.Core.packaging import Packaging
+from py2exe_gui.Core.packaging_task import PackagingTask
 from py2exe_gui.Widgets.dialog_widgets import SubProcessDlg
 from py2exe_gui.Widgets.main_window import MainWindow
 
@@ -17,13 +18,15 @@ class MainApp(MainWindow):
         super(MainApp, self).__init__(*args, **kwargs)
 
         self.packager = Packaging(self)
+        self.packaging_task = PackagingTask(self)
+        self.center_widget.option_selected.connect(self.packaging_task.handle_option)
+        self.packaging_task.option_set.connect(self.packager.set_pyinstaller_args)
 
         self.packager.args_settled.connect(
             lambda val: self.center_widget.pyinstaller_args_browser.enrich_args_text(
                 val
             )
         )
-        self.center_widget.option_selected.connect(self.packager.set_pyinstaller_args)
 
         self.subprocess_dlg = SubProcessDlg(self)
 
