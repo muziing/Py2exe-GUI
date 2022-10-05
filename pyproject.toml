@@ -10,16 +10,16 @@ repository = "https://github.com/muziing/Py2exe-GUI"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"
-PySide6 = "~6.2.0"  # LTS version
+PySide6 = "~6.2.0"  # latest LTS version
 
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/muziing/Py2exe-GUI/issues"
 
 [tool.poetry.group.dev.dependencies]
-Sphinx = "^5.1.0"
+Sphinx = "^5.2.0"
 black = "^22.8.0"
 isort = "^5.10.0"
-mypy = "^0.971"
+mypy = "^0.982"
 pyinstaller = "^5.4"
 
 [tool.black]
