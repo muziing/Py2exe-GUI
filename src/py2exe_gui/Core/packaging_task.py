@@ -3,7 +3,7 @@ from typing import Optional
 
 from PySide6 import QtCore
 
-from .validators import FilePathValidator, InterpreterValidator
+from .validators import FilePathValidator
 
 
 class PackagingTask(QtCore.QObject):
@@ -26,6 +26,7 @@ class PackagingTask(QtCore.QObject):
         self.script_path: Optional[Path] = None
         self.icon_path: Optional[Path] = None
         self.out_name: Optional[str] = None
+        # TODO 在实例属性中保存该次打包的所有选项详情
 
     def handle_option(self, option: tuple[str, str]):
         """
@@ -70,4 +71,5 @@ class PackagingTask(QtCore.QObject):
         将打包任务保存至文件
         """
 
+        # TODO 实现将打包任务信息保存至文件的功能
         pass

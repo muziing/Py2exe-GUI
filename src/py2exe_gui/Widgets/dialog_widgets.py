@@ -24,6 +24,7 @@ class ScriptFileDlg(QFileDialog):
         """
 
         super(ScriptFileDlg, self).__init__(parent)
+
         self._setup()
 
     def _setup(self) -> None:
@@ -32,8 +33,8 @@ class ScriptFileDlg(QFileDialog):
         """
 
         self.setAcceptMode(QFileDialog.AcceptOpen)
-        self.setDefaultSuffix("py")
-        self.setNameFilters(("Python脚本文件 (*.py *.pyw)", "All (*)"))
+        self.setViewMode(QFileDialog.Detail)
+        self.setNameFilters(("Python脚本文件 (*.py *.pyw)", "所有文件 (*)"))
         self.setFileMode(QFileDialog.ExistingFiles)
         self.setLabelText(QFileDialog.FileName, "Python入口文件")
         self.setLabelText(QFileDialog.FileType, "Python文件")
@@ -52,6 +53,7 @@ class IconFileDlg(QFileDialog):
         """
 
         super(IconFileDlg, self).__init__(parent)
+
         self._setup()
 
     def _setup(self) -> None:
@@ -60,13 +62,35 @@ class IconFileDlg(QFileDialog):
         """
 
         self.setAcceptMode(QFileDialog.AcceptOpen)
-        self.setDefaultSuffix("ico")
-        self.setNameFilters(("图标文件 (*.ico *.icns)", "All (*)"))
+        self.setViewMode(QFileDialog.Detail)
+        self.setNameFilters(("图标文件 (*.ico *.icns)", "所有文件 (*)"))
         self.setFileMode(QFileDialog.ExistingFile)
         self.setLabelText(QFileDialog.FileName, "图标")
         self.setLabelText(QFileDialog.FileType, "图标文件")
         self.setLabelText(QFileDialog.Accept, "打开")
         self.setLabelText(QFileDialog.Reject, "取消")
+
+
+class AddDataDlg(QFileDialog):
+    """
+    用于添加附加数据的对话框
+    """
+
+    def __init__(self, parent: QWidget = None) -> None:
+        """
+        :param parent: 父控件对象
+        """
+
+        super(AddDataDlg, self).__init__(parent)
+
+        self._setup()
+
+    def _setup(self) -> None:
+        """
+        配置添加数据对话框 \n
+        """
+
+        pass
 
 
 class AboutDlg(QMessageBox):
@@ -80,6 +104,7 @@ class AboutDlg(QMessageBox):
         """
 
         super(AboutDlg, self).__init__(parent)
+
         self._about_text: str = ""
         self._setup()
 
@@ -88,7 +113,7 @@ class AboutDlg(QMessageBox):
         配置关于信息对话框 \n
         """
 
-        self.setWindowTitle("关于Py2exe-GUI")
+        self.setWindowTitle("关于")
         self.setStandardButtons(QMessageBox.Ok)
         self.setTextFormat(Qt.MarkdownText)
         self.setText(self.about_text)
@@ -120,7 +145,12 @@ class SubProcessDlg(QDialog):
     """
 
     def __init__(self, parent: QWidget = None) -> None:
+        """
+        :param parent: 父控件对象
+        """
+
         super(SubProcessDlg, self).__init__(parent)
+
         self.info_label = QLabel(self)
         self.browser = QTextBrowser(self)
         self._setup()

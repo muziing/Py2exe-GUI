@@ -6,6 +6,14 @@ from .center_widget import CenterWidget
 from .dialog_widgets import AboutDlg
 
 
+def open_url(url: str) -> None:
+    """
+    辅助函数，在系统默认浏览器中打开URL \n
+    :param url: 待打开的URL
+    """
+    QDesktopServices.openUrl(QUrl(url))
+
+
 class MainWindow(QMainWindow):
     """
     主界面主窗口
@@ -15,8 +23,12 @@ class MainWindow(QMainWindow):
         super().__init__(*args, **kwargs)
 
         self.center_widget = CenterWidget(self)
-        self.status_bar = QStatusBar(self)
         self.menu_bar = QMenuBar(self)
+        self.status_bar = QStatusBar(self)
+
+        self.setCentralWidget(self.center_widget)
+        self.setMenuBar(self.menu_bar)
+        self.setStatusBar(self.status_bar)
 
         self._setup()
 
@@ -26,16 +38,12 @@ class MainWindow(QMainWindow):
         """
 
         self.setWindowTitle("Py2exe-GUI")
-        self.setMinimumSize(320, 350)
+        self.setMinimumSize(350, 430)
         # self.resize(800, 600)
-        self.setWindowIcon(QIcon("../Resources/Icons/Py2exe-GUI_icon_72px.ico"))
+        self.setWindowIcon(QIcon("py2exe_gui/Resources/Icons/Py2exe-GUI_icon_72px.ico"))
 
         self._setup_menu_bar()
         self._setup_status_bar()
-
-        self.setCentralWidget(self.center_widget)
-        self.setMenuBar(self.menu_bar)
-        self.setStatusBar(self.status_bar)
 
     def _setup_menu_bar(self) -> None:
         """
@@ -43,20 +51,20 @@ class MainWindow(QMainWindow):
         """
 
         file_menu = self.menu_bar.addMenu("文件(&F)")
-        # file_menu.addAction("打开……")  # 暂时只为占位
+        file_menu.addAction("打开打包任务")  # 暂时只为占位
+        file_menu.addAction("保存当前打包任务")  # 暂时只为占位
         file_menu.addSeparator()
-        file_menu.addAction("退出(&X)", self.close)  # 直接调用close可能整个程序并未完全退出？
+        file_menu.addAction("设置")  # 暂时只为占位
+        file_menu.addSeparator()
+        file_menu.addAction("退出(&X)", self.close)
 
         help_menu = self.menu_bar.addMenu("帮助(&H)")
-
-        def open_url(url: str):
-            """辅助函数，在系统默认浏览器中打开URL"""
-            QDesktopServices.openUrl(QUrl(url))
 
         help_menu.addAction(
             "PyInstaller官方文档",
             lambda: open_url("https://pyinstaller.org/en/stable/usage.html"),
         )
+        help_menu.addAction("PyInstaller选项详情")  # 暂时只为占位
         help_menu.addSeparator()
         help_menu.addAction(
             "报告Bug", lambda: open_url("https://github.com/muziing/Py2exe-GUI/issues")

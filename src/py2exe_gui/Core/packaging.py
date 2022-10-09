@@ -4,6 +4,14 @@ from PySide6 import QtCore
 
 from .subprocess_tool import SubProcessTool
 
+pyinstaller_args: list = [
+    "script_path",
+    "icon_path",
+    "FD",
+    "console",
+    "out_name",
+]
+
 
 class Packaging(QtCore.QObject):
     """
@@ -19,17 +27,12 @@ class Packaging(QtCore.QObject):
         """
 
         super(Packaging, self).__init__(parent)
-        pyinstaller_args: list = [
-            "script_path",
-            "icon_path",
-            "FD",
-            "console",
-            "out_name",
-        ]
+
         self.args_dict: dict = dict.fromkeys(pyinstaller_args, "")
         self._args: List[str] = []
         self.subprocess: SubProcessTool = SubProcessTool(self, program="pyinstaller")
 
+    @QtCore.Slot(tuple)
     def set_pyinstaller_args(self, arg: tuple[str, str]) -> None:
         """
         解析传递来的PyInstaller运行参数，并添加至命令参数字典 \n
