@@ -98,8 +98,7 @@ class CenterWidget(QWidget):
         self.pyinstaller_args_browser.setMaximumHeight(80)
 
         self.run_packaging_btn.setText("打包！")
-        # TODO 完成输入检查前、子进程运行时打包按钮设置为不可用
-        # self.run_packaging_btn.setEnabled(False)
+        self.run_packaging_btn.setEnabled(False)
 
     def _connect_slots(self) -> None:
         """
@@ -114,7 +113,6 @@ class CenterWidget(QWidget):
             """
 
             # TODO 验证有效性、将脚本名作为默认app名
-            # 将字符串类型的文件路径转成pathlib型的？
             self.script_path_le.setText(file_path)
             self.parent().statusBar().showMessage(f"打开脚本路径：{file_path}")
             self.option_selected.emit(("script_path", file_path))
@@ -209,3 +207,31 @@ class CenterWidget(QWidget):
         main_layout.addWidget(self.pyinstaller_args_browser)
         main_layout.addWidget(self.run_packaging_btn)
         self.setLayout(main_layout)
+
+    @QtCore.Slot(tuple)
+    def handle_option_set(self, option: tuple[str, str]) -> None:
+        """
+        处理option_set信号的槽 \n
+        :param option: 选项键值对
+        """
+
+        pass
+
+    @QtCore.Slot(str)
+    def handle_option_error(self, option: str) -> None:
+        """
+        处理option_error信号的槽 \n
+        :param option: 选项
+        """
+
+        # 清空重置该项的输入控件，等待用户重新输入
+        pass
+
+    @QtCore.Slot(bool)
+    def handle_ready_to_pack(self, ready: bool) -> None:
+        """
+        处理ready_to_pack信号的槽 \n
+        :param ready: 是否可以进行打包
+        """
+
+        self.run_packaging_btn.setEnabled(ready)

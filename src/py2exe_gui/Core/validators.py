@@ -4,6 +4,26 @@ from pathlib import Path
 from typing import Union
 
 
+class FilePathValidator:
+    """
+    根据给定的路径验证文件的有效性
+    """
+
+    @classmethod
+    def validate_script(cls, script_path: Union[str, Path]) -> bool:
+        """
+        验证脚本路径是否有效 \n
+        :param script_path: 脚本路径
+        """
+
+        path = Path(script_path)
+        # TODO 完善验证方法
+        if path.exists() and path.is_file():
+            return True
+        else:
+            return False
+
+
 class InterpreterValidator:
     """
     验证给定的可执行文件是否为有效的Python解释器，并获取该解释器相关信息
