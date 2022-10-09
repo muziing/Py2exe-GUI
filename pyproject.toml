@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "py2exe-gui"
-version = "0.1.2"
+version = "0.1.3"
 description = "GUI for PyInstaller, based on PySide6"
 keywords = ["PyInstaller", "GUI", "PySide6"]
 authors = ["muzing <muzi2001@foxmail.com>"]
@@ -17,10 +17,10 @@ PySide6 = "~6.2.0"  # latest LTS version
 
 [tool.poetry.group.dev.dependencies]
 Sphinx = "^5.2.0"
-black = "^22.8.0"
+black = "^22.10.0"
 isort = "^5.10.0"
 mypy = "^0.982"
-pyinstaller = "^5.4"
+pyinstaller = "^5.5"
 
 [tool.black]
 line-length = 88
