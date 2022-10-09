@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from PySide6 import QtCore
 from PySide6.QtWidgets import (
     QButtonGroup,
@@ -6,6 +8,7 @@ from PySide6.QtWidgets import (
     QLabel,
     QLineEdit,
     QMainWindow,
+    QMessageBox,
     QPushButton,
     QRadioButton,
     QVBoxLayout,
@@ -14,6 +17,8 @@ from PySide6.QtWidgets import (
 
 from .arguments_browser import ArgumentsBrowser
 from .dialog_widgets import IconFileDlg, ScriptFileDlg
+
+# TODO 使用字适当数据结构管理选项列表
 
 
 class CenterWidget(QWidget):
@@ -38,8 +43,8 @@ class CenterWidget(QWidget):
         self.script_path_le = QLineEdit()
 
         # 打包后输出的项目名称
-        self.name_label = QLabel()
-        self.name_le = QLineEdit()
+        self.project_name_label = QLabel()
+        self.project_name_le = QLineEdit()
 
         # 输出至单目录/单文件
         self.fd_label = QLabel()
@@ -71,13 +76,13 @@ class CenterWidget(QWidget):
         设置各种控件的属性 \n
         """
 
-        self.script_path_label.setText("脚本路径：")
+        self.script_path_label.setText("待打包脚本：")
         self.script_path_le.setReadOnly(True)
         self.script_path_le.setPlaceholderText("Python入口文件路径")
         self.script_browse_btn.setText("浏览")
 
-        self.name_label.setText("输出名称：")
-        self.name_le.setPlaceholderText("打包的应用程序名称")
+        self.project_name_label.setText("项目名称：")
+        self.project_name_le.setPlaceholderText("打包的应用程序名称")
 
         self.fd_label.setText("单文件/单目录：")
         self.one_dir_btn.setText("打包至单个目录")
@@ -86,7 +91,7 @@ class CenterWidget(QWidget):
         self.fd_group.addButton(self.one_dir_btn, 0)
         self.fd_group.addButton(self.one_file_btn, 1)
 
-        self.icon_path_label.setText("图标路径：")
+        self.icon_path_label.setText("应用图标：")
         self.icon_path_le.setReadOnly(True)
         self.icon_path_le.setPlaceholderText("图标文件路径")
         self.icon_browse_btn.setText("浏览")
@@ -112,25 +117,17 @@ class CenterWidget(QWidget):
             :param file_path: 脚本文件路径
             """
 
-            # TODO 验证有效性、将脚本名作为默认app名
-            self.script_path_le.setText(file_path)
-            self.parent().statusBar().showMessage(f"打开脚本路径：{file_path}")
             self.option_selected.emit(("script_path", file_path))
 
-        self.script_browse_btn.clicked.connect(self.script_file_dlg.open)  # type: ignore
-        self.script_file_dlg.fileSelected.connect(script_file_selected)  # type: ignore
-
-        # FIXME 默认输出程序名称与入口脚本名称相同
         @QtCore.Slot(str)
         def project_name_selected() -> None:
             """
             输出程序名称完成输入的槽 \n
             """
 
-            pro_name: str = self.name_le.text()
-            self.option_selected.emit(("out_name", pro_name))
-
-        self.name_le.editingFinished.connect(project_name_selected)  # type: ignore
+            project_name: str = self.project_name_le.text()
+            self.option_selected.emit(("out_name", project_name))
+            self.parent().statusBar().showMessage(f"已将项目名设置为：{project_name}")
 
         @QtCore.Slot(int)
         def one_fd_selected(btn_id: int) -> None:
@@ -141,10 +138,10 @@ class CenterWidget(QWidget):
 
             if btn_id == 0:
                 self.option_selected.emit(("FD", "One Dir"))
+                self.parent().statusBar().showMessage("将打包至单个目录中")
             elif btn_id == 1:
                 self.option_selected.emit(("FD", "One File"))
-
-        self.fd_group.idClicked.connect(one_fd_selected)  # type: ignore
+                self.parent().statusBar().showMessage("将打包至单个文件中")
 
         @QtCore.Slot(bool)
         def console_selected(console: bool) -> None:
@@ -155,10 +152,10 @@ class CenterWidget(QWidget):
 
             if console:
                 self.option_selected.emit(("console", "console"))
+                self.parent().statusBar().showMessage("将为打包程序的 stdio 启用终端")
             else:
                 self.option_selected.emit(("console", "windowed"))
-
-        self.console_checkbox.toggled.connect(console_selected)  # type: ignore
+                self.parent().statusBar().showMessage("不会为打包程序的 stdio 启用终端")
 
         @QtCore.Slot(str)
         def icon_file_selected(file_path: str) -> None:
@@ -167,12 +164,89 @@ class CenterWidget(QWidget):
             :param file_path: 图标路径
             """
 
-            self.icon_path_le.setText(file_path)
-            self.parent().statusBar().showMessage(f"打开图标路径：{file_path}")
             self.option_selected.emit(("icon_path", file_path))
 
+        self.script_browse_btn.clicked.connect(self.script_file_dlg.open)  # type: ignore
+        self.script_file_dlg.fileSelected.connect(script_file_selected)  # type: ignore
+        self.project_name_le.editingFinished.connect(project_name_selected)  # type: ignore
+        self.fd_group.idClicked.connect(one_fd_selected)  # type: ignore
+        self.console_checkbox.toggled.connect(console_selected)  # type: ignore
         self.icon_browse_btn.clicked.connect(self.icon_file_dlg.open)  # type: ignore
         self.icon_file_dlg.fileSelected.connect(icon_file_selected)  # type: ignore
+
+    @QtCore.Slot(tuple)
+    def handle_option_set(self, option: tuple[str, str]) -> None:
+        """
+        处理option_set信号的槽，根据已经成功设置的选项调整界面 \n
+        :param option: 选项键值对
+        """
+
+        option_key, option_value = option
+
+        if option_key == "script_path":
+            script_path = Path(option_value)
+            self.script_path_le.setText(script_path.name)
+            self.parent().statusBar().showMessage(
+                f"打开脚本路径：{str(script_path.resolve())}"
+            )
+
+        elif option_key == "icon_path":
+            icon_path = Path(option_value)
+            self.icon_path_le.setText(icon_path.name)
+            self.parent().statusBar().showMessage(f"打开图标路径：{str(icon_path.resolve())}")
+
+        elif option_key == "out_name":
+            self.project_name_le.setText(option_value)
+
+    @QtCore.Slot(str)
+    def handle_option_error(self, option: str) -> None:
+        """
+        处理option_error信号的槽，重置设置失败的选项对应的界面，并向用户发出警告 \n
+        :param option: 选项
+        """
+
+        # 清空重置该项的输入控件，并弹出警告窗口，等待用户重新输入
+        if option == "script_path":
+            self.script_file_dlg.close()
+
+            # 警告对话框
+            result = QMessageBox.critical(
+                self.parent(),
+                "错误",
+                "选择的不是有效的Python脚本文件，请重新选择！",
+                QMessageBox.Cancel,
+                QMessageBox.Ok,
+            )
+            if result == QMessageBox.Cancel:
+                self.script_path_le.clear()
+                self.project_name_le.clear()
+            elif result == QMessageBox.Ok:
+                self.script_file_dlg.open()  # FIXME 修复无法再次打开对话框的问题
+
+        elif option == "icon_path":
+            self.icon_file_dlg.close()
+
+            # 警告对话框
+            result = QMessageBox.critical(
+                self.parent(),
+                "错误",
+                "选择的不是有效的图标文件，请重新选择！",
+                QMessageBox.Cancel,
+                QMessageBox.Ok,
+            )
+            if result == QMessageBox.Cancel:
+                self.icon_path_le.clear()
+            elif result == QMessageBox.Ok:
+                self.icon_file_dlg.open()  # FIXME 修复无法再次打开对话框的问题
+
+    @QtCore.Slot(bool)
+    def handle_ready_to_pack(self, ready: bool) -> None:
+        """
+        处理ready_to_pack信号的槽 \n
+        :param ready: 是否可以进行打包
+        """
+
+        self.run_packaging_btn.setEnabled(ready)
 
     def _set_layout(self) -> None:
         """
@@ -185,8 +259,8 @@ class CenterWidget(QWidget):
         script_layout.addWidget(self.script_browse_btn, 1, 1)
 
         name_layout = QVBoxLayout()
-        name_layout.addWidget(self.name_label)
-        name_layout.addWidget(self.name_le)
+        name_layout.addWidget(self.project_name_label)
+        name_layout.addWidget(self.project_name_le)
 
         fd_layout = QGridLayout()
         fd_layout.addWidget(self.fd_label, 0, 0, 1, 2)
@@ -207,31 +281,3 @@ class CenterWidget(QWidget):
         main_layout.addWidget(self.pyinstaller_args_browser)
         main_layout.addWidget(self.run_packaging_btn)
         self.setLayout(main_layout)
-
-    @QtCore.Slot(tuple)
-    def handle_option_set(self, option: tuple[str, str]) -> None:
-        """
-        处理option_set信号的槽 \n
-        :param option: 选项键值对
-        """
-
-        pass
-
-    @QtCore.Slot(str)
-    def handle_option_error(self, option: str) -> None:
-        """
-        处理option_error信号的槽 \n
-        :param option: 选项
-        """
-
-        # 清空重置该项的输入控件，等待用户重新输入
-        pass
-
-    @QtCore.Slot(bool)
-    def handle_ready_to_pack(self, ready: bool) -> None:
-        """
-        处理ready_to_pack信号的槽 \n
-        :param ready: 是否可以进行打包
-        """
-
-        self.run_packaging_btn.setEnabled(ready)

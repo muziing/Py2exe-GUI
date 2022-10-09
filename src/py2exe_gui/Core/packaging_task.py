@@ -29,7 +29,7 @@ class PackagingTask(QtCore.QObject):
 
     def handle_option(self, option: tuple[str, str]):
         """
-        处理用户在界面选择的打包选项 \n
+        处理用户在界面选择的打包选项，进行有效性验证并保存 \n
         :param option: 选项
         """
 
@@ -39,20 +39,30 @@ class PackagingTask(QtCore.QObject):
         if arg_key == "script_path":
             script_path = Path(arg_value)
             if FilePathValidator.validate_script(script_path):
-                self.out_name = script_path.stem  # 输出名默认与脚本名相同
+                self.script_path = script_path
                 self.ready_to_pack.emit(True)
                 self.option_set.emit(option)
+                self.out_name = script_path.stem  # 输出名默认与脚本名相同
+                self.option_set.emit(("out_name", self.out_name))
             else:
                 self.ready_to_pack.emit(False)
-                self.option_error.emit("script_path")
+                self.option_error.emit(arg_key)
+            # self.option_error.emit(arg_key)  # 测试用！
+
         elif arg_key == "icon_path":
-            self.option_set.emit(option)
-        elif arg_key == "FD":
-            self.option_set.emit(option)
-        elif arg_key == "console":
-            self.option_set.emit(option)
+            icon_path = Path(arg_value)
+            if FilePathValidator.validate_icon(icon_path):
+                self.icon_path = icon_path
+                self.option_set.emit(option)
+            else:
+                self.option_error.emit(arg_key)
+            # self.option_error.emit(arg_key)  # 测试用！
+
         elif arg_key == "out_name":
             self.out_name = arg_value
+            self.option_set.emit(option)
+
+        else:
             self.option_set.emit(option)
 
     def write_to_file(self):

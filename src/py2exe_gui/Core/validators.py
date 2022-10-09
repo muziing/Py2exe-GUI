@@ -23,6 +23,20 @@ class FilePathValidator:
         else:
             return False
 
+    @classmethod
+    def validate_icon(cls, icon_path: Union[str, Path]) -> bool:
+        """
+        验证图标路径是否有效 \n
+        :param icon_path: 图标路径
+        """
+
+        path = Path(icon_path)
+        # TODO 完善验证方法
+        if path.exists() and path.is_file():
+            return True
+        else:
+            return False
+
 
 class InterpreterValidator:
     """
