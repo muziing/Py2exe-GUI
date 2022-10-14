@@ -5,12 +5,13 @@ from PySide6.QtWidgets import (
     QFileDialog,
     QLabel,
     QMessageBox,
+    QPushButton,
     QTextBrowser,
     QVBoxLayout,
     QWidget,
 )
 
-from py2exe_gui.Core.subprocess_tool import SubProcessTool
+from ..Core.subprocess_tool import SubProcessTool
 
 
 class ScriptFileDlg(QFileDialog):
@@ -144,6 +145,8 @@ class SubProcessDlg(QDialog):
     用于显示子进程信息的对话框
     """
 
+    # TODO 重构SubProcessDlg
+
     def __init__(self, parent: QWidget = None) -> None:
         """
         :param parent: 父控件对象
@@ -153,6 +156,7 @@ class SubProcessDlg(QDialog):
 
         self.info_label = QLabel(self)
         self.browser = QTextBrowser(self)
+        self.multifunction_btn = QPushButton(self)  # 可用于“取消”“打开输出位置”等的多功能按钮
         self._setup()
 
     def _setup(self) -> None:
@@ -161,12 +165,17 @@ class SubProcessDlg(QDialog):
         """
 
         self.setWindowTitle("PyInstaller")
+        self.setMinimumWidth(400)
         self.setModal(True)
 
-        layout = QVBoxLayout()
-        layout.addWidget(self.info_label)
-        layout.addWidget(self.browser)
-        self.setLayout(layout)
+        self.multifunction_btn.setMaximumWidth(80)
+
+        # 布局管理器
+        main_layout = QVBoxLayout()
+        main_layout.addWidget(self.info_label)
+        main_layout.addWidget(self.browser)
+        main_layout.addWidget(self.multifunction_btn)
+        self.setLayout(main_layout)
 
     def handle_output(self, subprocess_output: tuple[int, str]) -> None:
         """
@@ -181,8 +190,11 @@ class SubProcessDlg(QDialog):
             self.browser.append(output_text)
         elif output_type == SubProcessTool.FINISHED:
             self.info_label.setText("打包完成！")
+            self.multifunction_btn.setText("打开输出位置")
         elif output_type == SubProcessTool.STATE:
             self.info_label.setText(output_text)
+            if output_text == "正在运行中……":
+                self.multifunction_btn.setText("取消")
 
 
 if __name__ == "__main__":

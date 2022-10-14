@@ -1,12 +1,13 @@
+import os
+import subprocess
 import sys
 
 from PySide6 import QtGui
 from PySide6.QtWidgets import QApplication
 
-from py2exe_gui.Core.packaging import Packaging
-from py2exe_gui.Core.packaging_task import PackagingTask
-from py2exe_gui.Widgets.dialog_widgets import SubProcessDlg
-from py2exe_gui.Widgets.main_window import MainWindow
+# from .Constants import *
+from .Core import Packaging, PackagingTask
+from .Widgets import MainWindow, SubProcessDlg
 
 
 class MainApp(MainWindow):
@@ -21,11 +22,11 @@ class MainApp(MainWindow):
         self.packager = Packaging(self)
         self.subprocess_dlg = SubProcessDlg(self)
 
-        self._connect_signals()
+        self._connect_slots()
 
         self.status_bar.showMessage("就绪")
 
-    def _connect_signals(self) -> None:
+    def _connect_slots(self) -> None:
         """
         连接各种信号与槽 \n
         """
@@ -38,7 +39,6 @@ class MainApp(MainWindow):
             self.center_widget.handle_ready_to_pack
         )
 
-        # TODO 优化pyinstaller_args_browser的接口
         self.packager.args_settled.connect(
             lambda val: self.center_widget.pyinstaller_args_browser.enrich_args_text(
                 val
@@ -50,6 +50,23 @@ class MainApp(MainWindow):
             self.subprocess_dlg.show()
 
         self.center_widget.run_packaging_btn.clicked.connect(run_packaging)
+
+        def handle_multifunction():
+            """处理子进程对话框多功能按钮点击信号的槽 \n"""
+            btn_text = self.subprocess_dlg.multifunction_btn.text()
+            if btn_text == "取消":
+                self.packager.subprocess.abort_process()
+                self.subprocess_dlg.close()
+            elif btn_text == "打开输出位置":
+                dist_path = self.packaging_task.script_path.parent / "dist"
+                if sys.platform.startswith("win32"):
+                    os.startfile(dist_path)
+                elif sys.platform.startswith("linux"):
+                    subprocess.call(["xdg-open", dist_path])
+                elif sys.platform.startswith("darwin"):
+                    subprocess.call(["open", dist_path])
+
+        self.subprocess_dlg.multifunction_btn.clicked.connect(handle_multifunction)
         self.packager.subprocess.output.connect(self.subprocess_dlg.handle_output)
 
     def closeEvent(self, event: QtGui.QCloseEvent) -> None:
