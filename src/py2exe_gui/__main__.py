@@ -2,12 +2,21 @@ import os
 import subprocess
 import sys
 
-from PySide6 import QtGui
+from PySide6 import QtCore, QtGui
 from PySide6.QtWidgets import QApplication
 
 # from .Constants import *
 from .Core import Packaging, PackagingTask
 from .Widgets import MainWindow, SubProcessDlg
+
+
+def get_platform() -> str:
+    if sys.platform.startswith("win32"):
+        return "Windows"
+    elif sys.platform.startswith("linux"):
+        return "Linux"
+    elif sys.platform.startswith("darwin"):
+        return "macOS"
 
 
 class MainApp(MainWindow):
@@ -16,6 +25,7 @@ class MainApp(MainWindow):
     """
 
     def __init__(self, *args, **kwargs) -> None:
+        self.running_platform = get_platform()  # 获取当前运行的平台信息
         super(MainApp, self).__init__(*args, **kwargs)
 
         self.packaging_task = PackagingTask(self)
@@ -45,13 +55,15 @@ class MainApp(MainWindow):
             )
         )
 
-        def run_packaging():
+        @QtCore.Slot()
+        def run_packaging() -> None:
             self.packager.run_packaging_process()
             self.subprocess_dlg.show()
 
         self.center_widget.run_packaging_btn.clicked.connect(run_packaging)
 
-        def handle_multifunction():
+        @QtCore.Slot()
+        def handle_multifunction() -> None:
             """处理子进程对话框多功能按钮点击信号的槽 \n"""
             btn_text = self.subprocess_dlg.multifunction_btn.text()
             if btn_text == "取消":
@@ -59,11 +71,11 @@ class MainApp(MainWindow):
                 self.subprocess_dlg.close()
             elif btn_text == "打开输出位置":
                 dist_path = self.packaging_task.script_path.parent / "dist"
-                if sys.platform.startswith("win32"):
-                    os.startfile(dist_path)
-                elif sys.platform.startswith("linux"):
+                if self.running_platform == "Windows":
+                    os.startfile(dist_path)  # type: ignore
+                elif self.running_platform == "Linux":
                     subprocess.call(["xdg-open", dist_path])
-                elif sys.platform.startswith("darwin"):
+                elif self.running_platform == "macOS":
                     subprocess.call(["open", dist_path])
 
         self.subprocess_dlg.multifunction_btn.clicked.connect(handle_multifunction)

@@ -15,10 +15,9 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from ..Constants.packaging_constants import *
 from .arguments_browser import ArgumentsBrowser
 from .dialog_widgets import IconFileDlg, ScriptFileDlg
-
-# TODO 使用字适当数据结构管理选项列表
 
 
 class CenterWidget(QWidget):
@@ -27,7 +26,7 @@ class CenterWidget(QWidget):
     """
 
     # 自定义信号
-    option_selected = QtCore.Signal(tuple)
+    option_selected = QtCore.Signal(tuple)  # 用户通过界面控件选择选项后发射此信号
 
     def __init__(self, parent: QMainWindow = None) -> None:
         """
@@ -52,14 +51,16 @@ class CenterWidget(QWidget):
         self.one_file_btn = QRadioButton()
         self.fd_group = QButtonGroup()
 
-        # 应用图标
-        self.icon_path_label = QLabel()
-        self.icon_file_dlg = IconFileDlg()
-        self.icon_browse_btn = QPushButton()
-        self.icon_path_le = QLineEdit()
+        # 应用图标（仅 Windows 与 macOS）
+        if self.parent().running_platform in ("Windows", "macOS"):
+            self.icon_path_label = QLabel()
+            self.icon_file_dlg = IconFileDlg()
+            self.icon_browse_btn = QPushButton()
+            self.icon_path_le = QLineEdit()
 
-        # Windows/MacOS 独占，注意后期处理成在Linux下不显示
-        self.console_checkbox = QCheckBox()
+        # 是否为stdio启用终端（仅 Windows 与 macOS）
+        if self.parent().running_platform in ("Windows", "macOS"):
+            self.console_checkbox = QCheckBox()
 
         # 预览生成的PyInstaller打包指令
         self.pyinstaller_args_browser = ArgumentsBrowser()
@@ -91,14 +92,14 @@ class CenterWidget(QWidget):
         self.fd_group.addButton(self.one_dir_btn, 0)
         self.fd_group.addButton(self.one_file_btn, 1)
 
-        self.icon_path_label.setText("应用图标：")
-        self.icon_path_le.setReadOnly(True)
-        self.icon_path_le.setPlaceholderText("图标文件路径")
-        self.icon_browse_btn.setText("浏览")
+        if self.parent().running_platform in ("Windows", "macOS"):
+            self.icon_path_label.setText("应用图标：")
+            self.icon_path_le.setReadOnly(True)
+            self.icon_path_le.setPlaceholderText("图标文件路径")
+            self.icon_browse_btn.setText("浏览")
 
-        # Windows/MacOS 独占，注意！！！
-        self.console_checkbox.setText("为标准I/O启用终端")
-        self.console_checkbox.setChecked(True)  # 默认值
+            self.console_checkbox.setText("为标准I/O启用终端")
+            self.console_checkbox.setChecked(True)  # 默认值
 
         self.pyinstaller_args_browser.setMaximumHeight(80)
 
@@ -117,17 +118,16 @@ class CenterWidget(QWidget):
             :param file_path: 脚本文件路径
             """
 
-            self.option_selected.emit(("script_path", file_path))
+            self.option_selected.emit((PyinstallerArgs.script_path, file_path))
 
-        @QtCore.Slot(str)
+        @QtCore.Slot()
         def project_name_selected() -> None:
             """
             输出程序名称完成输入的槽 \n
             """
 
             project_name: str = self.project_name_le.text()
-            self.option_selected.emit(("out_name", project_name))
-            self.parent().statusBar().showMessage(f"已将项目名设置为：{project_name}")
+            self.option_selected.emit((PyinstallerArgs.out_name, project_name))
 
         @QtCore.Slot(int)
         def one_fd_selected(btn_id: int) -> None:
@@ -137,10 +137,10 @@ class CenterWidget(QWidget):
             """
 
             if btn_id == 0:
-                self.option_selected.emit(("FD", "One Dir"))
+                self.option_selected.emit((PyinstallerArgs.FD, "One Dir"))
                 self.parent().statusBar().showMessage("将打包至单个目录中")
             elif btn_id == 1:
-                self.option_selected.emit(("FD", "One File"))
+                self.option_selected.emit((PyinstallerArgs.FD, "One File"))
                 self.parent().statusBar().showMessage("将打包至单个文件中")
 
         @QtCore.Slot(bool)
@@ -151,10 +151,10 @@ class CenterWidget(QWidget):
             """
 
             if console:
-                self.option_selected.emit(("console", "console"))
+                self.option_selected.emit((PyinstallerArgs.console, "console"))
                 self.parent().statusBar().showMessage("将为打包程序的 stdio 启用终端")
             else:
-                self.option_selected.emit(("console", "windowed"))
+                self.option_selected.emit((PyinstallerArgs.console, "windowed"))
                 self.parent().statusBar().showMessage("不会为打包程序的 stdio 启用终端")
 
         @QtCore.Slot(str)
@@ -164,15 +164,18 @@ class CenterWidget(QWidget):
             :param file_path: 图标路径
             """
 
-            self.option_selected.emit(("icon_path", file_path))
+            self.option_selected.emit((PyinstallerArgs.icon_path, file_path))
 
+        # 连接信号与槽
         self.script_browse_btn.clicked.connect(self.script_file_dlg.open)  # type: ignore
         self.script_file_dlg.fileSelected.connect(script_file_selected)  # type: ignore
         self.project_name_le.editingFinished.connect(project_name_selected)  # type: ignore
         self.fd_group.idClicked.connect(one_fd_selected)  # type: ignore
-        self.console_checkbox.toggled.connect(console_selected)  # type: ignore
-        self.icon_browse_btn.clicked.connect(self.icon_file_dlg.open)  # type: ignore
-        self.icon_file_dlg.fileSelected.connect(icon_file_selected)  # type: ignore
+
+        if self.parent().running_platform in ("Windows", "macOS"):
+            self.icon_browse_btn.clicked.connect(self.icon_file_dlg.open)  # type: ignore
+            self.icon_file_dlg.fileSelected.connect(icon_file_selected)  # type: ignore
+            self.console_checkbox.toggled.connect(console_selected)  # type: ignore
 
     @QtCore.Slot(tuple)
     def handle_option_set(self, option: tuple[str, str]) -> None:
@@ -183,20 +186,21 @@ class CenterWidget(QWidget):
 
         option_key, option_value = option
 
-        if option_key == "script_path":
+        if option_key == PyinstallerArgs.script_path:
             script_path = Path(option_value)
             self.script_path_le.setText(script_path.name)
             self.parent().statusBar().showMessage(
                 f"打开脚本路径：{str(script_path.resolve())}"
             )
 
-        elif option_key == "icon_path":
+        elif option_key == PyinstallerArgs.icon_path:
             icon_path = Path(option_value)
             self.icon_path_le.setText(icon_path.name)
             self.parent().statusBar().showMessage(f"打开图标路径：{str(icon_path.resolve())}")
 
-        elif option_key == "out_name":
+        elif option_key == PyinstallerArgs.out_name:
             self.project_name_le.setText(option_value)
+            self.parent().statusBar().showMessage(f"已将项目名设置为：{option_value}")
 
     @QtCore.Slot(str)
     def handle_option_error(self, option: str) -> None:
@@ -206,7 +210,7 @@ class CenterWidget(QWidget):
         """
 
         # 清空重置该项的输入控件，并弹出警告窗口，等待用户重新输入
-        if option == "script_path":
+        if option == PyinstallerArgs.script_path:
             self.script_file_dlg.close()
 
             # 警告对话框
@@ -221,9 +225,9 @@ class CenterWidget(QWidget):
                 self.script_path_le.clear()
                 self.project_name_le.clear()
             elif result == QMessageBox.Ok:
-                self.script_file_dlg.open()  # FIXME 修复无法再次打开对话框的问题
+                self.script_file_dlg.exec()
 
-        elif option == "icon_path":
+        elif option == PyinstallerArgs.icon_path:
             self.icon_file_dlg.close()
 
             # 警告对话框
@@ -237,7 +241,7 @@ class CenterWidget(QWidget):
             if result == QMessageBox.Cancel:
                 self.icon_path_le.clear()
             elif result == QMessageBox.Ok:
-                self.icon_file_dlg.open()  # FIXME 修复无法再次打开对话框的问题
+                self.icon_file_dlg.exec()
 
     @QtCore.Slot(bool)
     def handle_ready_to_pack(self, ready: bool) -> None:
@@ -267,17 +271,25 @@ class CenterWidget(QWidget):
         fd_layout.addWidget(self.one_dir_btn, 1, 0)
         fd_layout.addWidget(self.one_file_btn, 1, 1)
 
-        icon_layout = QGridLayout()
-        icon_layout.addWidget(self.icon_path_label, 0, 0, 1, 2)
-        icon_layout.addWidget(self.icon_path_le, 1, 0)
-        icon_layout.addWidget(self.icon_browse_btn, 1, 1)
-
         main_layout = QVBoxLayout()
         main_layout.addLayout(script_layout)
+        main_layout.addSpacing(10)
         main_layout.addLayout(name_layout)
+        main_layout.addSpacing(10)
         main_layout.addLayout(fd_layout)
-        main_layout.addWidget(self.console_checkbox)
-        main_layout.addLayout(icon_layout)
+        main_layout.addSpacing(10)
+
+        if self.parent().running_platform in ("Windows", "macOS"):
+            main_layout.addWidget(self.console_checkbox)
+            main_layout.addSpacing(10)
+
+            icon_layout = QGridLayout()
+            icon_layout.addWidget(self.icon_path_label, 0, 0, 1, 2)
+            icon_layout.addWidget(self.icon_path_le, 1, 0)
+            icon_layout.addWidget(self.icon_browse_btn, 1, 1)
+            main_layout.addLayout(icon_layout)
+
+        main_layout.addSpacing(10)
         main_layout.addWidget(self.pyinstaller_args_browser)
         main_layout.addWidget(self.run_packaging_btn)
         self.setLayout(main_layout)
