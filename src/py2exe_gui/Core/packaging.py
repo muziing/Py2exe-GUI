@@ -2,15 +2,8 @@ from typing import List, Optional
 
 from PySide6 import QtCore
 
+from ..Constants.packaging_constants import *
 from .subprocess_tool import SubProcessTool
-
-pyinstaller_args: list = [
-    "script_path",
-    "icon_path",
-    "FD",
-    "console",
-    "out_name",
-]
 
 
 class Packaging(QtCore.QObject):
@@ -28,7 +21,7 @@ class Packaging(QtCore.QObject):
 
         super(Packaging, self).__init__(parent)
 
-        self.args_dict: dict = dict.fromkeys(pyinstaller_args, "")
+        self.args_dict: dict = dict.fromkeys(pyinstaller_args_list, "")
         self._args: List[str] = []
         self.subprocess: SubProcessTool = SubProcessTool(self, program="pyinstaller")
 
@@ -40,8 +33,8 @@ class Packaging(QtCore.QObject):
         """
 
         arg_key, arg_value = arg
-        if arg_key in self.args_dict.keys():
-            self.args_dict[arg_key] = arg_value
+        # if arg_key in pyinstaller_args_list:
+        self.args_dict[arg_key] = arg_value
         self._add_pyinstaller_args()
 
     def _add_pyinstaller_args(self) -> None:
@@ -50,21 +43,21 @@ class Packaging(QtCore.QObject):
         """
 
         self._args = []  # 避免重复添加
-        self._args.extend([self.args_dict["script_path"]])
-        if self.args_dict["icon_path"]:
-            self._args.extend(["--icon", self.args_dict["icon_path"]])
-        if self.args_dict["FD"]:
-            if self.args_dict["FD"] == "One Dir":
+        self._args.extend([self.args_dict[PyinstallerArgs.script_path]])
+        if self.args_dict[PyinstallerArgs.icon_path]:
+            self._args.extend(["--icon", self.args_dict[PyinstallerArgs.icon_path]])
+        if self.args_dict[PyinstallerArgs.FD]:
+            if self.args_dict[PyinstallerArgs.FD] == "One Dir":
                 self._args.extend(["--onedir"])
-            elif self.args_dict["FD"] == "One File":
+            elif self.args_dict[PyinstallerArgs.FD] == "One File":
                 self._args.extend(["--onefile"])
-        if self.args_dict["console"]:
-            if self.args_dict["console"] == "console":
+        if self.args_dict[PyinstallerArgs.console]:
+            if self.args_dict[PyinstallerArgs.console] == "console":
                 self._args.extend(["--console"])
-            elif self.args_dict["console"] == "windowed":
+            elif self.args_dict[PyinstallerArgs.console] == "windowed":
                 self._args.extend(["--windowed"])
-        if self.args_dict["out_name"]:
-            self._args.extend(["--name", self.args_dict["out_name"]])
+        if self.args_dict[PyinstallerArgs.out_name]:
+            self._args.extend(["--name", self.args_dict[PyinstallerArgs.out_name]])
 
         self.args_settled.emit(self._args)
 
