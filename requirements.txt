@@ -1,2 +1,2 @@
-pyside6==6.2.4; python_version >= "3.6" and python_version < "3.11"
-shiboken6==6.2.4; python_version >= "3.6" and python_version < "3.11"
+pyside6==6.2.4 ; python_version >= "3.7" and python_version < "3.11"
+shiboken6==6.2.4 ; python_version >= "3.7" and python_version < "3.11"

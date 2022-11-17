@@ -1,26 +1,27 @@
 [tool.poetry]
 name = "py2exe-gui"
-version = "0.1.3"
+version = "0.1.4"
 description = "GUI for PyInstaller, based on PySide6"
 keywords = ["PyInstaller", "GUI", "PySide6"]
 authors = ["muzing <muzi2001@foxmail.com>"]
 license = "GPL-3.0-or-later"
 readme = "README.md"
 repository = "https://github.com/muziing/Py2exe-GUI"
+include = ["docs/source/images"]
 
 [tool.poetry.dependencies]
-python = ">=3.9,<3.11"
+python = ">=3.7,<3.11"
 PySide6 = "~6.2.0"  # latest LTS version
 
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/muziing/Py2exe-GUI/issues"
 
 [tool.poetry.group.dev.dependencies]
-Sphinx = "^5.2.0"
+# Sphinx = "^5.2.0"
 black = "^22.10.0"
 isort = "^5.10.0"
-mypy = "^0.982"
-pyinstaller = "^5.5"
+mypy = "^0.991"
+pyinstaller = "^5.6"
 
 [tool.black]
 line-length = 88
