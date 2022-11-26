@@ -1,22 +1,26 @@
-import os
-import subprocess
 import sys
 
 from PySide6 import QtCore, QtGui
 from PySide6.QtWidgets import QApplication
 
-# from .Constants import *
 from .Core import Packaging, PackagingTask
 from .Widgets import MainWindow, SubProcessDlg
 
 
 def get_platform() -> str:
+    """
+    辅助函数，用于获取当前运行的平台 \n
+    :return: platform
+    """
+
     if sys.platform.startswith("win32"):
         return "Windows"
     elif sys.platform.startswith("linux"):
         return "Linux"
     elif sys.platform.startswith("darwin"):
         return "macOS"
+    else:
+        return "others"
 
 
 class MainApp(MainWindow):
@@ -57,28 +61,13 @@ class MainApp(MainWindow):
 
         @QtCore.Slot()
         def run_packaging() -> None:
+            """
+            “运行打包”按钮的槽函数 \n
+            """
             self.packager.run_packaging_process()
             self.subprocess_dlg.show()
 
         self.center_widget.run_packaging_btn.clicked.connect(run_packaging)
-
-        @QtCore.Slot()
-        def handle_multifunction() -> None:
-            """处理子进程对话框多功能按钮点击信号的槽 \n"""
-            btn_text = self.subprocess_dlg.multifunction_btn.text()
-            if btn_text == "取消":
-                self.packager.subprocess.abort_process()
-                self.subprocess_dlg.close()
-            elif btn_text == "打开输出位置":
-                dist_path = self.packaging_task.script_path.parent / "dist"
-                if self.running_platform == "Windows":
-                    os.startfile(dist_path)  # type: ignore
-                elif self.running_platform == "Linux":
-                    subprocess.call(["xdg-open", dist_path])
-                elif self.running_platform == "macOS":
-                    subprocess.call(["open", dist_path])
-
-        self.subprocess_dlg.multifunction_btn.clicked.connect(handle_multifunction)
         self.packager.subprocess.output.connect(self.subprocess_dlg.handle_output)
 
     def closeEvent(self, event: QtGui.QCloseEvent) -> None:

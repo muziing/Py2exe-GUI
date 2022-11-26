@@ -1,4 +1,7 @@
-from PySide6.QtCore import Qt
+import subprocess
+from typing import Optional
+
+from PySide6 import QtCore
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import (
     QDialog,
@@ -19,7 +22,7 @@ class ScriptFileDlg(QFileDialog):
     用于获取入口脚本文件的对话框
     """
 
-    def __init__(self, parent: QWidget = None) -> None:
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
         """
         :param parent: 父控件对象
         """
@@ -48,7 +51,7 @@ class IconFileDlg(QFileDialog):
     用于获取应用图标文件的对话框
     """
 
-    def __init__(self, parent: QWidget = None) -> None:
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
         """
         :param parent: 父控件对象
         """
@@ -77,7 +80,7 @@ class AddDataDlg(QFileDialog):
     用于添加附加数据的对话框
     """
 
-    def __init__(self, parent: QWidget = None) -> None:
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
         """
         :param parent: 父控件对象
         """
@@ -99,7 +102,7 @@ class AboutDlg(QMessageBox):
     用于显示关于信息的对话框
     """
 
-    def __init__(self, parent: QWidget = None) -> None:
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
         """
         :param parent: 父控件对象
         """
@@ -116,7 +119,7 @@ class AboutDlg(QMessageBox):
 
         self.setWindowTitle("关于")
         self.setStandardButtons(QMessageBox.Ok)
-        self.setTextFormat(Qt.MarkdownText)
+        self.setTextFormat(QtCore.Qt.MarkdownText)
         self.setText(self.about_text)
         self.setIconPixmap(
             QPixmap("py2exe_gui/Resources/Icons/Py2exe-GUI_icon_72px.png")
@@ -145,11 +148,9 @@ class SubProcessDlg(QDialog):
     用于显示子进程信息的对话框
     """
 
-    # TODO 重构SubProcessDlg
-
-    def __init__(self, parent: QWidget = None) -> None:
+    def __init__(self, parent: QWidget) -> None:
         """
-        :param parent: 父控件对象
+        :param parent: 父控件对象，必须为 MainApp 类
         """
 
         super(SubProcessDlg, self).__init__(parent)
@@ -177,6 +178,10 @@ class SubProcessDlg(QDialog):
         main_layout.addWidget(self.multifunction_btn)
         self.setLayout(main_layout)
 
+        # 连接信号与槽
+        self.multifunction_btn.clicked.connect(self.handle_multifunction)  # type:ignore
+
+    @QtCore.Slot(tuple)
     def handle_output(self, subprocess_output: tuple[int, str]) -> None:
         """
         处理子进程的输出 \n
@@ -196,17 +201,21 @@ class SubProcessDlg(QDialog):
             if output_text == "正在运行中……":
                 self.multifunction_btn.setText("取消")
 
+    @QtCore.Slot()
+    def handle_multifunction(self) -> None:
+        """
+        处理多功能按钮点击信号的槽 \n
+        """
 
-if __name__ == "__main__":
-    import sys
-
-    from PySide6.QtWidgets import QApplication
-
-    app = QApplication(sys.argv)
-    # window = ScriptFileDlg()
-    # window = IconFileDlg()
-    # window.fileSelected.connect(lambda f: print(f))  # type: ignore
-    # window = AboutDlg()
-    window = SubProcessDlg()
-    window.open()
-    sys.exit(app.exec())
+        btn_text = self.multifunction_btn.text()
+        if btn_text == "取消":
+            self.parent().packager.subprocess.abort_process()
+            self.close()
+        elif btn_text == "打开输出位置":
+            dist_path = self.parent().packaging_task.script_path.parent / "dist"
+            if self.parent().running_platform == "Windows":
+                os.startfile(dist_path)  # type: ignore
+            elif self.parent().running_platform == "Linux":
+                subprocess.call(["xdg-open", dist_path])
+            elif self.parent().running_platform == "macOS":
+                subprocess.call(["open", dist_path])
