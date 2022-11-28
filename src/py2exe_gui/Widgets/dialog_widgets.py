@@ -121,9 +121,7 @@ class AboutDlg(QMessageBox):
         self.setStandardButtons(QMessageBox.Ok)
         self.setTextFormat(QtCore.Qt.MarkdownText)
         self.setText(self.about_text)
-        self.setIconPixmap(
-            QPixmap("py2exe_gui/Resources/Icons/Py2exe-GUI_icon_72px.png")
-        )
+        self.setIconPixmap(QPixmap(":/Icons/Py2exe-GUI_icon_72px"))
 
     @property
     def about_text(self) -> str:

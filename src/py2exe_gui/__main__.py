@@ -1,12 +1,14 @@
 import sys
 
-from PySide6 import QtCore, QtGui
+from PySide6 import QtGui
 from PySide6.QtWidgets import QApplication
 
 from .Core import Packaging, PackagingTask
+from .Resources.compiled_resources import *
 from .Widgets import MainWindow, SubProcessDlg
 
 
+# TODO 将此辅助函数移至他处、将返回值保存到常量中而非普通字符串
 def get_platform() -> str:
     """
     辅助函数，用于获取当前运行的平台 \n
@@ -25,7 +27,7 @@ def get_platform() -> str:
 
 class MainApp(MainWindow):
     """
-    主程序
+    应用主程序 \n
     """
 
     def __init__(self, *args, **kwargs) -> None:
@@ -64,6 +66,7 @@ class MainApp(MainWindow):
             """
             “运行打包”按钮的槽函数 \n
             """
+
             self.packager.run_packaging_process()
             self.subprocess_dlg.show()
 
