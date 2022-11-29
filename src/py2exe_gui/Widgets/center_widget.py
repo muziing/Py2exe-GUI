@@ -15,7 +15,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from ..Constants.packaging_constants import *
+from ..Constants.packaging_constants import PyinstallerArgs
 from .arguments_browser import ArgumentsBrowser
 from .dialog_widgets import IconFileDlg, ScriptFileDlg
 
@@ -28,9 +28,9 @@ class CenterWidget(QWidget):
     # 自定义信号
     option_selected = QtCore.Signal(tuple)  # 用户通过界面控件选择选项后发射此信号
 
-    def __init__(self, parent: QMainWindow = None) -> None:
+    def __init__(self, parent: QMainWindow) -> None:
         """
-        :param parent: 父控件对象，应为主窗口
+        :param parent: 父控件对象，应为主程序
         """
 
         super(CenterWidget, self).__init__(parent)
@@ -166,11 +166,21 @@ class CenterWidget(QWidget):
 
             self.option_selected.emit((PyinstallerArgs.icon_path, file_path))
 
+        @QtCore.Slot()
+        def run_packaging() -> None:
+            """
+            “运行打包”按钮的槽函数 \n
+            """
+
+            self.parent().packager.run_packaging_process()
+            self.parent().subprocess_dlg.show()
+
         # 连接信号与槽
         self.script_browse_btn.clicked.connect(self.script_file_dlg.open)  # type: ignore
         self.script_file_dlg.fileSelected.connect(script_file_selected)  # type: ignore
         self.project_name_le.editingFinished.connect(project_name_selected)  # type: ignore
         self.fd_group.idClicked.connect(one_fd_selected)  # type: ignore
+        self.run_packaging_btn.clicked.connect(run_packaging)  # type: ignore
 
         if self.parent().running_platform in ("Windows", "macOS"):
             self.icon_browse_btn.clicked.connect(self.icon_file_dlg.open)  # type: ignore

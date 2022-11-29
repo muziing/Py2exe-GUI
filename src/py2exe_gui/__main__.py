@@ -61,16 +61,6 @@ class MainApp(MainWindow):
             )
         )
 
-        @QtCore.Slot()
-        def run_packaging() -> None:
-            """
-            “运行打包”按钮的槽函数 \n
-            """
-
-            self.packager.run_packaging_process()
-            self.subprocess_dlg.show()
-
-        self.center_widget.run_packaging_btn.clicked.connect(run_packaging)
         self.packager.subprocess.output.connect(self.subprocess_dlg.handle_output)
 
     def closeEvent(self, event: QtGui.QCloseEvent) -> None:
