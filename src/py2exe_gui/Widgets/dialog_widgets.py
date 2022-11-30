@@ -1,7 +1,7 @@
 import subprocess
 from typing import Optional
 
-from PySide6 import QtCore
+from PySide6.QtCore import QFile, QIODevice, Qt, Slot
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import (
     QDialog,
@@ -119,7 +119,7 @@ class AboutDlg(QMessageBox):
 
         self.setWindowTitle("关于")
         self.setStandardButtons(QMessageBox.Ok)
-        self.setTextFormat(QtCore.Qt.MarkdownText)
+        self.setTextFormat(Qt.MarkdownText)
         self.setText(self.about_text)
         self.setIconPixmap(QPixmap(":/Icons/Py2exe-GUI_icon_72px"))
 
@@ -130,12 +130,15 @@ class AboutDlg(QMessageBox):
         :return: 关于信息
         """
 
-        try:
-            with open(
-                "py2exe_gui/Resources/About.md", "r", encoding="utf-8"
-            ) as about_file:
-                self._about_text = about_file.read()
-        except FileNotFoundError:
+        # 因使用qrc系统，所以使用Qt风格读取文本文件
+        about_file = QFile(":/Texts/About_Text")
+        about_file.open(QIODevice.ReadOnly | QIODevice.Text)  # type: ignore
+        about_text = bytes(about_file.readAll()).decode("utf-8")
+        about_file.close()
+
+        if about_text:
+            self._about_text = about_text
+        else:
             self._about_text = "无法打开关于文档，请尝试重新获取本程序。"
 
         return self._about_text
@@ -179,7 +182,7 @@ class SubProcessDlg(QDialog):
         # 连接信号与槽
         self.multifunction_btn.clicked.connect(self.handle_multifunction)  # type:ignore
 
-    @QtCore.Slot(tuple)
+    @Slot(tuple)
     def handle_output(self, subprocess_output: tuple[int, str]) -> None:
         """
         处理子进程的输出 \n
@@ -199,7 +202,7 @@ class SubProcessDlg(QDialog):
             if output_text == "正在运行中……":
                 self.multifunction_btn.setText("取消")
 
-    @QtCore.Slot()
+    @Slot()
     def handle_multifunction(self) -> None:
         """
         处理多功能按钮点击信号的槽 \n
