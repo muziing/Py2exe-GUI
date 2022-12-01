@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "py2exe-gui"
-version = "0.1.4"
+version = "0.1.5"
 description = "GUI for PyInstaller, based on PySide6"
 keywords = ["PyInstaller", "GUI", "PySide6"]
 authors = ["muzing <muzi2001@foxmail.com>"]
