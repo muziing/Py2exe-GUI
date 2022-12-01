@@ -8,7 +8,7 @@ from .validators import FilePathValidator
 
 class PackagingTask(QtCore.QObject):
     """
-    打包任务类，存储每个打包任务的详细信息
+    打包任务类，存储每个打包任务的详细信息 \n
     """
 
     # 自定义信号
@@ -26,7 +26,8 @@ class PackagingTask(QtCore.QObject):
         self.script_path: Optional[Path] = None
         self.icon_path: Optional[Path] = None
         self.out_name: Optional[str] = None
-        # TODO 在实例属性中保存该次打包的所有选项详情
+        self.FD: Optional[bool] = None
+        self.console: Optional[str] = None
 
     def handle_option(self, option: tuple[str, str]):
         """
@@ -48,7 +49,6 @@ class PackagingTask(QtCore.QObject):
             else:
                 self.ready_to_pack.emit(False)
                 self.option_error.emit(arg_key)
-            # self.option_error.emit(arg_key)  # 测试用！
 
         elif arg_key == "icon_path":
             icon_path = Path(arg_value)
@@ -57,7 +57,6 @@ class PackagingTask(QtCore.QObject):
                 self.option_set.emit(option)
             else:
                 self.option_error.emit(arg_key)
-            # self.option_error.emit(arg_key)  # 测试用！
 
         elif arg_key == "out_name":
             self.out_name = arg_value
@@ -66,10 +65,9 @@ class PackagingTask(QtCore.QObject):
         else:
             self.option_set.emit(option)
 
-    def write_to_file(self):
+    def write_to_spec(self):
         """
-        将打包任务保存至文件
+        将打包任务保存至spec文件 \n
         """
 
-        # TODO 实现将打包任务信息保存至文件的功能
         pass

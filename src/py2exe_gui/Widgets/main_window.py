@@ -1,5 +1,5 @@
 from PySide6.QtCore import QUrl
-from PySide6.QtGui import QDesktopServices, QIcon
+from PySide6.QtGui import QDesktopServices, QIcon, QPixmap
 from PySide6.QtWidgets import QApplication, QMainWindow, QMenuBar, QStatusBar
 
 from .center_widget import CenterWidget
@@ -40,7 +40,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Py2exe-GUI")
         self.setMinimumSize(350, 430)
         # self.resize(800, 600)
-        self.setWindowIcon(QIcon("py2exe_gui/Resources/Icons/Py2exe-GUI_icon_72px.ico"))
+        self.setWindowIcon(QIcon(QPixmap(":/Icons/Py2exe-GUI_icon_72px")))
 
         self._setup_menu_bar()
         self._setup_status_bar()

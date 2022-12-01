@@ -7,7 +7,8 @@ authors = ["muzing <muzi2001@foxmail.com>"]
 license = "GPL-3.0-or-later"
 readme = "README.md"
 repository = "https://github.com/muziing/Py2exe-GUI"
-include = ["docs/source/images"]
+exclude = ["src/py2exe_gui/Resources"]
+include = ["src/py2exe_gui/Resources/compiled_resources.py"]
 
 [tool.poetry.dependencies]
 python = ">=3.7,<3.11"
@@ -17,7 +18,7 @@ PySide6 = "~6.2.0"  # latest LTS version
 "Bug Tracker" = "https://github.com/muziing/Py2exe-GUI/issues"
 
 [tool.poetry.group.dev.dependencies]
-# Sphinx = "^5.2.0"
+# Sphinx = "^5.3.0"
 black = "^22.10.0"
 isort = "^5.10.0"
 mypy = "^0.991"
@@ -25,7 +26,8 @@ pyinstaller = "^5.6"
 
 [tool.black]
 line-length = 88
-target-version = ['py310']
+target-version = ["py310"]
+extend-exclude = "compiled_resources.py"
 
 [tool.isort]
 profile = "black"
