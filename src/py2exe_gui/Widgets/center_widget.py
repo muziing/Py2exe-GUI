@@ -16,6 +16,7 @@ from PySide6.QtWidgets import (
 )
 
 from ..Constants.packaging_constants import PyinstallerArgs
+from ..Constants.platform_constants import PLATFORM
 from .arguments_browser import ArgumentsBrowser
 from .dialog_widgets import IconFileDlg, ScriptFileDlg
 
@@ -52,14 +53,14 @@ class CenterWidget(QWidget):
         self.fd_group = QButtonGroup()
 
         # 应用图标（仅 Windows 与 macOS）
-        if self.parent().running_platform in ("Windows", "macOS"):
+        if self.parent().running_platform in (PLATFORM.windows, PLATFORM.macos):
             self.icon_path_label = QLabel()
             self.icon_file_dlg = IconFileDlg()
             self.icon_browse_btn = QPushButton()
             self.icon_path_le = QLineEdit()
 
         # 是否为stdio启用终端（仅 Windows 与 macOS）
-        if self.parent().running_platform in ("Windows", "macOS"):
+        if self.parent().running_platform in (PLATFORM.windows, PLATFORM.macos):
             self.console_checkbox = QCheckBox()
 
         # 预览生成的PyInstaller打包指令
@@ -92,7 +93,7 @@ class CenterWidget(QWidget):
         self.fd_group.addButton(self.one_dir_btn, 0)
         self.fd_group.addButton(self.one_file_btn, 1)
 
-        if self.parent().running_platform in ("Windows", "macOS"):
+        if self.parent().running_platform in (PLATFORM.windows, PLATFORM.macos):
             self.icon_path_label.setText("应用图标：")
             self.icon_path_le.setReadOnly(True)
             self.icon_path_le.setPlaceholderText("图标文件路径")
@@ -182,7 +183,7 @@ class CenterWidget(QWidget):
         self.fd_group.idClicked.connect(one_fd_selected)  # type: ignore
         self.run_packaging_btn.clicked.connect(run_packaging)  # type: ignore
 
-        if self.parent().running_platform in ("Windows", "macOS"):
+        if self.parent().running_platform in (PLATFORM.windows, PLATFORM.macos):
             self.icon_browse_btn.clicked.connect(self.icon_file_dlg.open)  # type: ignore
             self.icon_file_dlg.fileSelected.connect(icon_file_selected)  # type: ignore
             self.console_checkbox.toggled.connect(console_selected)  # type: ignore
@@ -289,7 +290,7 @@ class CenterWidget(QWidget):
         main_layout.addLayout(fd_layout)
         main_layout.addSpacing(10)
 
-        if self.parent().running_platform in ("Windows", "macOS"):
+        if self.parent().running_platform in (PLATFORM.windows, PLATFORM.macos):
             main_layout.addWidget(self.console_checkbox)
             main_layout.addSpacing(10)
 

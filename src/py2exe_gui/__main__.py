@@ -3,26 +3,10 @@ import sys
 from PySide6 import QtGui
 from PySide6.QtWidgets import QApplication
 
+from .Constants.platform_constants import get_platform
 from .Core import Packaging, PackagingTask
 from .Resources.compiled_resources import *
 from .Widgets import MainWindow, SubProcessDlg
-
-
-# TODO 将此辅助函数移至他处、将返回值保存到常量中而非普通字符串
-def get_platform() -> str:
-    """
-    辅助函数，用于获取当前运行的平台 \n
-    :return: platform
-    """
-
-    if sys.platform.startswith("win32"):
-        return "Windows"
-    elif sys.platform.startswith("linux"):
-        return "Linux"
-    elif sys.platform.startswith("darwin"):
-        return "macOS"
-    else:
-        return "others"
 
 
 class MainApp(MainWindow):
