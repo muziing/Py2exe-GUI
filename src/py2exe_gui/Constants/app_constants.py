@@ -3,6 +3,6 @@
 """
 
 NAME = "Py2exe-GUI"
-VERSION = "0.1.5"
+VERSION = "0.1.6"
 AUTHORS = ["muzing <muzi2001@foxmail.com>"]
 LICENSE = "GPL-3.0-or-later"

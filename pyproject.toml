@@ -1,14 +1,13 @@
 [tool.poetry]
 name = "py2exe-gui"
-version = "0.1.5"
+version = "0.1.6"
 description = "GUI for PyInstaller, based on PySide6"
 keywords = ["PyInstaller", "GUI", "PySide6"]
 authors = ["muzing <muzi2001@foxmail.com>"]
 license = "GPL-3.0-or-later"
 readme = "README.md"
 repository = "https://github.com/muziing/Py2exe-GUI"
-exclude = ["src/py2exe_gui/Resources"]
-include = ["src/py2exe_gui/Resources/compiled_resources.py"]
+exclude = ["src/py2exe_gui/Resources/Icons"]
 
 [tool.poetry.dependencies]
 python = ">=3.7,<3.11"
