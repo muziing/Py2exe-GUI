@@ -1,1 +1,1 @@
-from compiled_resources import *
+from .compiled_resources import *
