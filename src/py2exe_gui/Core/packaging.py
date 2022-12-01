@@ -2,13 +2,13 @@ from typing import List, Optional
 
 from PySide6 import QtCore
 
-from ..Constants.packaging_constants import *
+from ..Constants.packaging_constants import PyinstallerArgs, pyinstaller_args_list
 from .subprocess_tool import SubProcessTool
 
 
 class Packaging(QtCore.QObject):
     """
-    执行打包的类
+    执行打包的类 \n
     """
 
     # 自定义信号
@@ -33,9 +33,9 @@ class Packaging(QtCore.QObject):
         """
 
         arg_key, arg_value = arg
-        # if arg_key in pyinstaller_args_list:
-        self.args_dict[arg_key] = arg_value
-        self._add_pyinstaller_args()
+        if arg_key in pyinstaller_args_list:
+            self.args_dict[arg_key] = arg_value
+            self._add_pyinstaller_args()
 
     def _add_pyinstaller_args(self) -> None:
         """
@@ -66,6 +66,5 @@ class Packaging(QtCore.QObject):
         使用给定的参数启动打包子进程 \n
         """
 
-        # self.subprocess.output.connect(lambda val: print(val))  # 测试用
         self.subprocess.set_arguments(self._args)
         self.subprocess.start_process()
