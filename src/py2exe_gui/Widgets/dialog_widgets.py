@@ -215,6 +215,7 @@ class SubProcessDlg(QDialog):
         elif btn_text == "打开输出位置":
             dist_path = self.parent().packaging_task.script_path.parent / "dist"
             if self.parent().running_platform == "Windows":
+                import os  # fmt: skip
                 os.startfile(dist_path)  # type: ignore
             elif self.parent().running_platform == "Linux":
                 subprocess.call(["xdg-open", dist_path])
