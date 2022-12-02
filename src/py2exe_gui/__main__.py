@@ -1,11 +1,11 @@
 import sys
 
-from PySide6 import QtGui
+from PySide6.QtGui import QCloseEvent
 from PySide6.QtWidgets import QApplication
 
 from .Constants.platform_constants import get_platform
 from .Core import Packaging, PackagingTask
-from .Resources.compiled_resources import *
+from .Resources import compiled_resources  # type: ignore
 from .Widgets import MainWindow, SubProcessDlg
 
 
@@ -31,23 +31,21 @@ class MainApp(MainWindow):
         连接各种信号与槽 \n
         """
 
-        self.center_widget.option_selected.connect(self.packaging_task.handle_option)
-        self.packaging_task.option_set.connect(self.packager.set_pyinstaller_args)
-        self.packaging_task.option_set.connect(self.center_widget.handle_option_set)
-        self.packaging_task.option_error.connect(self.center_widget.handle_option_error)
-        self.packaging_task.ready_to_pack.connect(
-            self.center_widget.handle_ready_to_pack
+        center_widget = self.center_widget
+        packaging_task = self.packaging_task
+        packager = self.packager
+
+        center_widget.option_selected.connect(packaging_task.handle_option)
+        packaging_task.option_set.connect(packager.set_pyinstaller_args)
+        packaging_task.option_set.connect(center_widget.handle_option_set)
+        packaging_task.option_error.connect(center_widget.handle_option_error)
+        packaging_task.ready_to_pack.connect(center_widget.handle_ready_to_pack)
+        packager.args_settled.connect(
+            lambda val: center_widget.pyinstaller_args_browser.enrich_args_text(val)
         )
+        packager.subprocess.output.connect(self.subprocess_dlg.handle_output)
 
-        self.packager.args_settled.connect(
-            lambda val: self.center_widget.pyinstaller_args_browser.enrich_args_text(
-                val
-            )
-        )
-
-        self.packager.subprocess.output.connect(self.subprocess_dlg.handle_output)
-
-    def closeEvent(self, event: QtGui.QCloseEvent) -> None:
+    def closeEvent(self, event: QCloseEvent) -> None:
         """
         重写关闭事件，进行收尾清理 \n
         :param event: 关闭事件
