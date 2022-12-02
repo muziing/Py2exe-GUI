@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import List, Optional
 
 from PySide6 import QtCore
@@ -8,7 +9,8 @@ from .subprocess_tool import SubProcessTool
 
 class Packaging(QtCore.QObject):
     """
-    执行打包的类 \n
+    执行打包子进程的类
+    不负责输入参数的检查 \n
     """
 
     # 自定义信号
@@ -23,6 +25,7 @@ class Packaging(QtCore.QObject):
 
         self.args_dict: dict = dict.fromkeys(pyinstaller_args_list, "")
         self._args: List[str] = []
+        self._subprocess_working_dir: str = ""
         self.subprocess: SubProcessTool = SubProcessTool(self, program="pyinstaller")
 
     @QtCore.Slot(tuple)
@@ -36,6 +39,7 @@ class Packaging(QtCore.QObject):
         if arg_key in pyinstaller_args_list:
             self.args_dict[arg_key] = arg_value
             self._add_pyinstaller_args()
+            self._set_subprocess_working_dir()
 
     def _add_pyinstaller_args(self) -> None:
         """
@@ -43,6 +47,7 @@ class Packaging(QtCore.QObject):
         """
 
         self._args = []  # 避免重复添加
+
         self._args.extend([self.args_dict[PyinstallerArgs.script_path]])
         if self.args_dict[PyinstallerArgs.icon_path]:
             self._args.extend(["--icon", self.args_dict[PyinstallerArgs.icon_path]])
@@ -61,10 +66,19 @@ class Packaging(QtCore.QObject):
 
         self.args_settled.emit(self._args)
 
+    def _set_subprocess_working_dir(self) -> None:
+        """
+        设置子进程工作目录 \n
+        """
+
+        script_path = self.args_dict[PyinstallerArgs.script_path]
+        self._subprocess_working_dir = str(Path(script_path).parent)  # 工作目录设置为脚本所在目录
+
     def run_packaging_process(self) -> None:
         """
         使用给定的参数启动打包子进程 \n
         """
 
+        self.subprocess.set_working_dir(self._subprocess_working_dir)
         self.subprocess.set_arguments(self._args)
         self.subprocess.start_process()
