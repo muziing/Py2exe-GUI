@@ -1,6 +1,6 @@
 ![Py2exe-GUI Logo](docs/source/images/py2exe-gui_logo_big.png)
 
-<h2 align="center">Easy-to-use Python GUI packaging tool</h2>
+<h2 align="center">强大易用的 Python 图形界面打包工具</h2>
 
 <p align="center">
 <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/muziing/Py2exe-GUI">
@@ -10,84 +10,83 @@
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 <a href="http://mypy-lang.org/"><img alt="Checked with mypy" src="https://img.shields.io/badge/mypy-checked-blue"></a>
 </p>
-
 <p align="center">
-English | <a href="README_zh.md">简体中文</a>
+<a href="README.md">English</a> | 简体中文
 </p>
 
-## Introduction
+## 简介
 
-Py2exe-GUI is a assist tool based on [PySide6](https://doc.qt.io/qtforpython/index.html), designed to provide a complete yet easy-to-use GUI for [PyInstaller](https://pyinstaller.org/).
+Py2exe-GUI 是一个基于 [PySide6](https://doc.qt.io/qtforpython/index.html) 开发的辅助工具，旨在为 [PyInstaller](https://pyinstaller.org/) 提供完整易用的图形化界面，方便用户进行 Python 项目的打包。
 
-![Screenshot of the interface](docs/source/images/Py2exe-GUI_v0.1.0_screenshot.png)
+![界面截图](docs/source/images/Py2exe-GUI_v0.1.0_screenshot.png)
 
-It has the following features:
+有如下特性：
 
-- All options of PyInstaller are supported.
-- Call any local Python interpreter with the correspoding environment. No need for repeat installations.(Not realized yet)
-- Cross-platform, supports Windows, Linux and MacOS.
+- 完全图形化界面，易用
+- 支持 PyInstaller 的全部选项
+- （暂未实现）可以调用本地任一 Python 解释器与对应环境（调用该解释器的 `python3 -m PyInstaller myscript.py` 即可），无需在每个待打包的解释器环境中重复安装
+- 跨平台，支持 Windows、Linux、MacOS
 
-## How to use
+## 如何使用
 
-> Note: Py2exe-GUI is still in the early development stage, the way of using it may change frequently, so please check this instruction frequently.
+> 注意：Py2exe-GUI 尚处早期开发阶段，使用方式可能频繁变化，注意经常查阅此使用说明。
 
-### Option A: Install with `pip`
+### 方式1：通过 `pip` 安装
 
-First, install PyInstaller in the Python interpreter environment which to be packaged:
+首先在待打包的 Python 解释器环境中安装 PyInstaller:
 
 ```shell
 pip install pyinstaller==5.6.2
 ```
 
-Then install Py2exe-GUI with `pip`:
+然后通过 pip 安装 Py2exe-GUI：
 
 ```shell
 pip install py2exe-gui
 ```
 
-Run:
+运行
 
 ```shell
-python -m py2exe_gui
+python -m py2exe_gui  # 注意连字符为_
 ```
 
-### Option B: Run through source code
+### 方式2：通过仓库源码运行
 
-Clone repo:
+克隆仓库：
 
 ```shell
 git clone https://github.com/muziing/Py2exe-GUI.git
 ```
 
-Install [Poetry](https://python-poetry.org/) and create a virtual environment:
+安装 [Poetry](https://python-poetry.org/) 并创建虚拟环境
 
 ```shell
 poetry init
 ```
 
-Install the dependencies:
+安装依赖项：
 
 ```shell
 poetry install
 ```
 
-Run [Py2exe-GUI.py](src/Py2exe-GUI.py):
+运行 src 目录下的 [Py2exe-GUI.py](src/Py2exe-GUI.py):
 
 ```shell
 cd src
 python  Py2exe-GUI.py
 ```
 
-## Structure
+## 项目结构
 
-All source code is in the [py2exe_gui] directory.
+所有源代码均在 [py2exe_gui](src/py2exe_gui) 目录下
+- [Constants](src/py2exe_gui/Constants) 中为常量
+- [Core](src/py2exe_gui/Core) 包用于执行打包
+- [Resources](src/py2exe_gui/Resources) 包中为图标等静态资源
+- [Widgets](src/py2exe_gui/Widgets) 包包含所有界面控件
 
-- [Constants](src/py2exe_gui/Constants)
-- [Core](src/py2exe_gui/Core)
-- [Resources](src/py2exe_gui/Resources)
-- [Widgets](src/py2exe_gui/Widgets)
-
-## License
+## 开源许可
 
 ```text
 Py2exe-GUI
