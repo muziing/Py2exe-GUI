@@ -21,7 +21,7 @@ pyside6 = "^6.4.0"
 black = "^22.10.0"
 isort = "^5.10.0"
 mypy = "^0.991"
-pyinstaller = "^5.6"
+pyinstaller = "^5.7.0"
 
 [tool.black]
 line-length = 88
