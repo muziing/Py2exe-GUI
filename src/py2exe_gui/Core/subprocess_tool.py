@@ -1,9 +1,9 @@
 # Licensed under the GPLv3 License: https://www.gnu.org/licenses/gpl-3.0.html
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
-import os.path
+from pathlib import Path
 from sys import getdefaultencoding
-from typing import Optional, Sequence
+from typing import Optional, Sequence, Union
 
 from PySide6.QtCore import QIODeviceBase, QObject, QProcess, Signal
 
@@ -52,10 +52,13 @@ class SubProcessTool(QObject):
         self,
         *,
         mode: QIODeviceBase.OpenModeFlag = QIODeviceBase.OpenModeFlag.ReadWrite,
-    ) -> None:
+        time_out: int = 1000,
+    ) -> bool:
         """
         创建并启动子进程 \n
         :param mode: 设备打开的模式
+        :param time_out: 启动进程超时时间（单位为毫秒）
+        :return: 是否成功启动
         """
 
         if self._process is None:  # 防止在子进程运行结束前重复启动
@@ -70,9 +73,10 @@ class SubProcessTool(QObject):
 
             self._process.setWorkingDirectory(self._working_directory)
             self._process.start(self.program, self._arguments, mode)
-            self._process.waitForStarted(1000)  # 阻塞，直到启动了子进程或超时（单位为毫秒）
+            return self._process.waitForStarted(time_out)  # 阻塞，直到成功启动子进程或超时
+        return False
 
-    def abort_process(self, timeout: int = 10000) -> bool:
+    def abort_process(self, timeout: int = 5000) -> bool:
         """
         终止子进程 \n
         :param timeout: 超时时间，单位为毫秒
@@ -96,15 +100,16 @@ class SubProcessTool(QObject):
 
         self._arguments = arguments
 
-    def set_working_dir(self, work_dir: str) -> bool:
+    def set_working_dir(self, work_dir: Union[str, Path]) -> bool:
         """
         设置子进程工作目录 \n
         :param work_dir: 工作目录
         :return: 是否设置成功
         """
 
-        if os.path.isdir(work_dir):
-            self._working_directory = work_dir
+        working_dir = Path(work_dir)
+        if working_dir.is_dir():
+            self._working_directory = str(working_dir.resolve())
             return True
         else:
             return False

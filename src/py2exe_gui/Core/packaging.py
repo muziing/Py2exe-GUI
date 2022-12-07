@@ -51,19 +51,13 @@ class Packaging(QtCore.QObject):
 
         self._args = []  # 避免重复添加
 
-        self._args.extend([self.args_dict[PyinstallerArgs.script_path]])
+        self._args.append(self.args_dict[PyinstallerArgs.script_path])
         if self.args_dict[PyinstallerArgs.icon_path]:
             self._args.extend(["--icon", self.args_dict[PyinstallerArgs.icon_path]])
         if self.args_dict[PyinstallerArgs.FD]:
-            if self.args_dict[PyinstallerArgs.FD] == "One Dir":
-                self._args.extend(["--onedir"])
-            elif self.args_dict[PyinstallerArgs.FD] == "One File":
-                self._args.extend(["--onefile"])
+            self._args.append(self.args_dict[PyinstallerArgs.FD])
         if self.args_dict[PyinstallerArgs.console]:
-            if self.args_dict[PyinstallerArgs.console] == "console":
-                self._args.extend(["--console"])
-            elif self.args_dict[PyinstallerArgs.console] == "windowed":
-                self._args.extend(["--windowed"])
+            self._args.append(self.args_dict[PyinstallerArgs.console])
         if self.args_dict[PyinstallerArgs.out_name]:
             self._args.extend(["--name", self.args_dict[PyinstallerArgs.out_name]])
 
@@ -84,4 +78,4 @@ class Packaging(QtCore.QObject):
 
         self.subprocess.set_working_dir(self._subprocess_working_dir)
         self.subprocess.set_arguments(self._args)
-        self.subprocess.start_process()
+        self.subprocess.start_process(time_out=500)

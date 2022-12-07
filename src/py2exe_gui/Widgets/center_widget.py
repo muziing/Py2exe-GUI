@@ -146,10 +146,10 @@ class CenterWidget(QWidget):
             """
 
             if btn_id == 0:
-                self.option_selected.emit((PyinstallerArgs.FD, "One Dir"))
+                self.option_selected.emit((PyinstallerArgs.FD, "--onedir"))
                 self.parent_widget.statusBar().showMessage("将打包至单个目录中")
             elif btn_id == 1:
-                self.option_selected.emit((PyinstallerArgs.FD, "One File"))
+                self.option_selected.emit((PyinstallerArgs.FD, "--onefile"))
                 self.parent_widget.statusBar().showMessage("将打包至单个文件中")
 
         @QtCore.Slot(bool)
@@ -160,10 +160,10 @@ class CenterWidget(QWidget):
             """
 
             if console:
-                self.option_selected.emit((PyinstallerArgs.console, "console"))
+                self.option_selected.emit((PyinstallerArgs.console, "--console"))
                 self.parent_widget.statusBar().showMessage("将为打包程序的 stdio 启用终端")
             else:
-                self.option_selected.emit((PyinstallerArgs.console, "windowed"))
+                self.option_selected.emit((PyinstallerArgs.console, "--windowed"))
                 self.parent_widget.statusBar().showMessage("不会为打包程序的 stdio 启用终端")
 
         @QtCore.Slot(str)
@@ -223,8 +223,8 @@ class CenterWidget(QWidget):
             self.project_name_le.setText(option_value)
             self.parent_widget.statusBar().showMessage(f"已将项目名设置为：{option_value}")
 
-    @QtCore.Slot(str)
-    def handle_option_error(self, option: str) -> None:
+    @QtCore.Slot(PyinstallerArgs)
+    def handle_option_error(self, option: PyinstallerArgs) -> None:
         """
         处理option_error信号的槽，重置设置失败的选项对应的界面，并向用户发出警告 \n
         :param option: 选项
