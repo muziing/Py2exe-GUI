@@ -205,6 +205,11 @@ class SubProcessDlg(QDialog):
             self.info_label.setText(output_text)
             if output_text == "正在运行中……":
                 self.multifunction_btn.setText("取消")
+        elif output_type == SubProcessTool.ERROR:
+            self.info_label.setText("PyInstaller错误！")
+            self.browser.append(output_text)
+            self.browser.append("请检查是否已经安装正确版本的 PyInstaller")
+            self.multifunction_btn.setText("关闭")
 
     @Slot()
     def handle_multifunction(self) -> None:
@@ -225,3 +230,5 @@ class SubProcessDlg(QDialog):
                 subprocess.call(["xdg-open", dist_path])
             elif self.parent().running_platform == PLATFORM.macos:
                 subprocess.call(["open", dist_path])
+        elif btn_text == "关闭":
+            self.close()
