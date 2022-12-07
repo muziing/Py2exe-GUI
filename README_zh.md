@@ -6,7 +6,7 @@
 <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/muziing/Py2exe-GUI">
 <img alt="Python Version" src="https://img.shields.io/pypi/pyversions/py2exe-gui">
 <a href="https://pypi.org/project/py2exe-gui/"><img alt="PyPI Version" src="https://img.shields.io/pypi/v/py2exe-gui"></a>
-<a href="https://doc.qt.io/qtforpython/index.html"><img alt="PySide Version" src="https://img.shields.io/badge/PySide-6.2-blue"></a>
+<a href="https://doc.qt.io/qtforpython/index.html"><img alt="PySide Version" src="https://img.shields.io/badge/PySide-6.4-blue"></a>
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 <a href="http://mypy-lang.org/"><img alt="Checked with mypy" src="https://img.shields.io/badge/mypy-checked-blue"></a>
 </p>
@@ -36,7 +36,7 @@ Py2exe-GUI 是一个基于 [PySide6](https://doc.qt.io/qtforpython/index.html) �
 首先在待打包的 Python 解释器环境中安装 PyInstaller:
 
 ```shell
-pip install pyinstaller==5.6.2
+pip install pyinstaller==5.7.0
 ```
 
 然后通过 pip 安装 Py2exe-GUI：
@@ -87,6 +87,8 @@ python  Py2exe-GUI.py
 - [Widgets](src/py2exe_gui/Widgets) 包包含所有界面控件
 
 ## 开源许可
+
+![GPLv3](docs/source/images/gplv3-127x51.png)
 
 ```text
 Py2exe-GUI

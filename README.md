@@ -6,7 +6,7 @@
 <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/muziing/Py2exe-GUI">
 <img alt="Python Version" src="https://img.shields.io/pypi/pyversions/py2exe-gui">
 <a href="https://pypi.org/project/py2exe-gui/"><img alt="PyPI Version" src="https://img.shields.io/pypi/v/py2exe-gui"></a>
-<a href="https://doc.qt.io/qtforpython/index.html"><img alt="PySide Version" src="https://img.shields.io/badge/PySide-6.2-blue"></a>
+<a href="https://doc.qt.io/qtforpython/index.html"><img alt="PySide Version" src="https://img.shields.io/badge/PySide-6.4-blue"></a>
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 <a href="http://mypy-lang.org/"><img alt="Checked with mypy" src="https://img.shields.io/badge/mypy-checked-blue"></a>
 </p>
@@ -36,7 +36,7 @@ It has the following features:
 First, install PyInstaller in the Python interpreter environment which to be packaged:
 
 ```shell
-pip install pyinstaller==5.6.2
+pip install pyinstaller==5.7.0
 ```
 
 Then install Py2exe-GUI with `pip`:
@@ -80,7 +80,7 @@ python  Py2exe-GUI.py
 
 ## Structure
 
-All source code is in the [py2exe_gui] directory.
+All source code is in the [py2exe_gui](src/py2exe_gui/) directory.
 
 - [Constants](src/py2exe_gui/Constants)
 - [Core](src/py2exe_gui/Core)
@@ -88,6 +88,8 @@ All source code is in the [py2exe_gui] directory.
 - [Widgets](src/py2exe_gui/Widgets)
 
 ## License
+
+![GPLv3](docs/source/images/gplv3-127x51.png)
 
 ```text
 Py2exe-GUI

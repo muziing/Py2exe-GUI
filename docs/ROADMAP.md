@@ -27,7 +27,7 @@
     - [ ] ~~定义文件并以适当格式存储（`json`）~~
     - [ ] 创建 [`.spec` 文件](https://pyinstaller.org/en/stable/spec-files.html)
     - [ ] `spec` 编辑器
-- [x] 使用 `qrc` 管理[静态资源](src/py2exe_gui/Resources)
+- [x] 使用 `qrc` 管理[静态资源](../src/py2exe_gui/Resources)
 - [ ] `logging` 日志记录
 - [ ] QSS 与美化
 - [ ] 动画效果
