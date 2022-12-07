@@ -5,20 +5,13 @@
 打包相关的常量
 """
 
-# TODO 优化打包选项列表的数据结构
-
-pyinstaller_args_list: list = [
-    "script_path",
-    "icon_path",
-    "FD",
-    "console",
-    "out_name",
-]
+import enum
 
 
-class PyinstallerArgs:
-    script_path = "script_path"
-    icon_path = "icon_path"
-    FD = "FD"
-    console = "console"
-    out_name = "out_name"
+@enum.unique
+class PyinstallerArgs(enum.IntFlag):
+    script_path = enum.auto()
+    icon_path = enum.auto()
+    FD = enum.auto()
+    console = enum.auto()
+    out_name = enum.auto()

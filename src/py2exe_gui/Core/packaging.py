@@ -6,7 +6,7 @@ from typing import List, Optional
 
 from PySide6 import QtCore
 
-from ..Constants.packaging_constants import PyinstallerArgs, pyinstaller_args_list
+from ..Constants.packaging_constants import PyinstallerArgs
 from .subprocess_tool import SubProcessTool
 
 
@@ -26,20 +26,20 @@ class Packaging(QtCore.QObject):
 
         super(Packaging, self).__init__(parent)
 
-        self.args_dict: dict = dict.fromkeys(pyinstaller_args_list, "")
+        self.args_dict: dict = dict.fromkeys(PyinstallerArgs, "")
         self._args: List[str] = []
         self._subprocess_working_dir: str = ""
         self.subprocess: SubProcessTool = SubProcessTool(self, program="pyinstaller")
 
     @QtCore.Slot(tuple)
-    def set_pyinstaller_args(self, arg: tuple[str, str]) -> None:
+    def set_pyinstaller_args(self, arg: tuple[PyinstallerArgs, str]) -> None:
         """
         解析传递来的PyInstaller运行参数，并添加至命令参数字典 \n
         :param arg: 运行参数
         """
 
         arg_key, arg_value = arg
-        if arg_key in pyinstaller_args_list:
+        if type(arg_key) == PyinstallerArgs:
             self.args_dict[arg_key] = arg_value
             self._add_pyinstaller_args()
             self._set_subprocess_working_dir()
