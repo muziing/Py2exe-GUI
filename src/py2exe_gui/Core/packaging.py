@@ -17,7 +17,7 @@ class Packaging(QtCore.QObject):
     """
 
     # 自定义信号
-    args_settled = QtCore.Signal(list)
+    args_settled = QtCore.Signal(list)  # 所有选项完成设置，直接将命令行参数传出
 
     def __init__(self, parent: Optional[QtCore.QObject] = None) -> None:
         """
@@ -29,7 +29,7 @@ class Packaging(QtCore.QObject):
         self.args_dict: dict = dict.fromkeys(PyinstallerArgs, "")
         self._args: List[str] = []
         self._subprocess_working_dir: str = ""
-        self.subprocess: SubProcessTool = SubProcessTool(self, program="pyinstaller")
+        self.subprocess: SubProcessTool = SubProcessTool("pyinstaller", parent=self)
 
     @QtCore.Slot(tuple)
     def set_pyinstaller_args(self, arg: tuple[PyinstallerArgs, str]) -> None:
