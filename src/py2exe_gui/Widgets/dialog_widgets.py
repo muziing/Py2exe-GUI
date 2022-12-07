@@ -17,6 +17,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from ..Constants import PLATFORM
 from ..Core.subprocess_tool import SubProcessTool
 
 
@@ -39,14 +40,14 @@ class ScriptFileDlg(QFileDialog):
         配置脚本路径对话框 \n
         """
 
-        self.setAcceptMode(QFileDialog.AcceptOpen)
-        self.setViewMode(QFileDialog.Detail)
+        self.setAcceptMode(QFileDialog.AcceptMode.AcceptOpen)
+        self.setViewMode(QFileDialog.ViewMode.Detail)
         self.setNameFilters(("Python脚本文件 (*.py *.pyw)", "所有文件 (*)"))
-        self.setFileMode(QFileDialog.ExistingFiles)
-        self.setLabelText(QFileDialog.FileName, "Python入口文件")
-        self.setLabelText(QFileDialog.FileType, "Python文件")
-        self.setLabelText(QFileDialog.Accept, "打开")
-        self.setLabelText(QFileDialog.Reject, "取消")
+        self.setFileMode(QFileDialog.FileMode.ExistingFiles)
+        self.setLabelText(QFileDialog.DialogLabel.FileName, "Python入口文件")
+        self.setLabelText(QFileDialog.DialogLabel.FileType, "Python文件")
+        self.setLabelText(QFileDialog.DialogLabel.Accept, "打开")
+        self.setLabelText(QFileDialog.DialogLabel.Reject, "取消")
 
 
 class IconFileDlg(QFileDialog):
@@ -68,14 +69,14 @@ class IconFileDlg(QFileDialog):
         配置应用图标对话框 \n
         """
 
-        self.setAcceptMode(QFileDialog.AcceptOpen)
-        self.setViewMode(QFileDialog.Detail)
+        self.setAcceptMode(QFileDialog.AcceptMode.AcceptOpen)
+        self.setViewMode(QFileDialog.ViewMode.Detail)
         self.setNameFilters(("图标文件 (*.ico *.icns)", "所有文件 (*)"))
-        self.setFileMode(QFileDialog.ExistingFile)
-        self.setLabelText(QFileDialog.FileName, "图标")
-        self.setLabelText(QFileDialog.FileType, "图标文件")
-        self.setLabelText(QFileDialog.Accept, "打开")
-        self.setLabelText(QFileDialog.Reject, "取消")
+        self.setFileMode(QFileDialog.FileMode.ExistingFile)
+        self.setLabelText(QFileDialog.DialogLabel.FileName, "图标")
+        self.setLabelText(QFileDialog.DialogLabel.FileType, "图标文件")
+        self.setLabelText(QFileDialog.DialogLabel.Accept, "打开")
+        self.setLabelText(QFileDialog.DialogLabel.Reject, "取消")
 
 
 class AddDataDlg(QFileDialog):
@@ -121,8 +122,8 @@ class AboutDlg(QMessageBox):
         """
 
         self.setWindowTitle("关于")
-        self.setStandardButtons(QMessageBox.Ok)
-        self.setTextFormat(Qt.MarkdownText)
+        self.setStandardButtons(QMessageBox.StandardButton.Ok)
+        self.setTextFormat(Qt.TextFormat.MarkdownText)
         self.setText(self.about_text)
         self.setIconPixmap(QPixmap(":/Icons/Py2exe-GUI_icon_72px"))
 
@@ -133,10 +134,10 @@ class AboutDlg(QMessageBox):
         :return: 关于信息
         """
 
-        # 因使用qrc系统，所以使用Qt风格读取文本文件
+        # 因使用qrc/rcc系统，所以使用Qt风格读取文本文件
         about_file = QFile(":/Texts/About_Text")
         about_file.open(QIODevice.ReadOnly | QIODevice.Text)  # type: ignore
-        about_text = bytes(about_file.readAll()).decode("utf-8")
+        about_text = str(about_file.readAll(), encoding="utf-8")  # type: ignore
         about_file.close()
 
         if about_text:
@@ -217,10 +218,10 @@ class SubProcessDlg(QDialog):
             self.close()
         elif btn_text == "打开输出位置":
             dist_path = self.parent().packaging_task.script_path.parent / "dist"
-            if self.parent().running_platform == "Windows":
+            if self.parent().running_platform == PLATFORM.windows:
                 import os  # fmt: skip
                 os.startfile(dist_path)  # type: ignore
-            elif self.parent().running_platform == "Linux":
+            elif self.parent().running_platform == PLATFORM.linux:
                 subprocess.call(["xdg-open", dist_path])
-            elif self.parent().running_platform == "macOS":
+            elif self.parent().running_platform == PLATFORM.macos:
                 subprocess.call(["open", dist_path])

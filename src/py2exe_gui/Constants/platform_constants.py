@@ -2,9 +2,11 @@
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
 import sys
+from enum import Enum, unique
 
 
-class PLATFORM:
+@unique
+class PLATFORM(Enum):
     """
     运行平台相关的常量 \n
     """
@@ -15,7 +17,7 @@ class PLATFORM:
     others = "others"
 
 
-def get_platform() -> str:
+def get_platform() -> PLATFORM:
     """
     辅助函数，用于获取当前运行的平台 \n
     :return: platform
