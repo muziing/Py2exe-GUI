@@ -17,15 +17,15 @@ English | <a href="README_zh.md">简体中文</a>
 
 ## Introduction
 
-Py2exe-GUI is a assist tool based on [PySide6](https://doc.qt.io/qtforpython/index.html), designed to provide a complete yet easy-to-use GUI for [PyInstaller](https://pyinstaller.org/).
+Py2exe-GUI is an assist tool based on [PySide6](https://doc.qt.io/qtforpython/index.html), designed to provide a complete yet easy-to-use GUI for [PyInstaller](https://pyinstaller.org/).
 
 ![Screenshot of the interface](docs/source/images/Py2exe-GUI_v0.1.0_screenshot.png)
 
 It has the following features:
 
 - All options of PyInstaller are supported.
-- Call any local Python interpreter with the correspoding environment. No need for repeat installations.(Not realized yet)
-- Cross-platform, supports Windows, Linux and MacOS.
+- Call any local Python interpreter with the corresponding environment. No need for repeat installations.(Not realized yet)
+- Cross-platform, supports Windows, Linux and macOS.
 
 ## How to use
 
@@ -80,7 +80,7 @@ python  Py2exe-GUI.py
 
 ## Structure
 
-All source code is in the [py2exe_gui](src/py2exe_gui/) directory.
+All source code is in the [src/py2exe_gui](src/py2exe_gui) directory.
 
 - [Constants](src/py2exe_gui/Constants)
 - [Core](src/py2exe_gui/Core)
