@@ -3,8 +3,9 @@
 
 from PySide6.QtCore import QUrl
 from PySide6.QtGui import QDesktopServices, QIcon, QPixmap
-from PySide6.QtWidgets import QApplication, QMainWindow, QMenuBar, QStatusBar
+from PySide6.QtWidgets import QApplication, QLabel, QMainWindow, QMenuBar, QStatusBar
 
+from ..Constants.app_constants import AppConstant
 from .center_widget import CenterWidget
 from .dialog_widgets import AboutDlg
 
@@ -14,6 +15,7 @@ def open_url(url: str) -> None:
     辅助函数，在系统默认浏览器中打开URL \n
     :param url: 待打开的URL
     """
+
     QDesktopServices.openUrl(QUrl(url))
 
 
@@ -82,4 +84,6 @@ class MainWindow(QMainWindow):
         配置主窗口状态栏 \n
         """
 
-        pass
+        # 在最右侧固定显示版本信息
+        version_label = QLabel("V" + AppConstant.VERSION, self.status_bar)
+        self.status_bar.insertPermanentWidget(0, version_label)

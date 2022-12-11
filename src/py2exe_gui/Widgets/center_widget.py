@@ -67,9 +67,14 @@ class CenterWidget(QWidget):
             self.icon_browse_btn = QPushButton()
             self.icon_path_le = QLineEdit()
 
+        # TODO 重构不同平台功能判断，减少 if self.running_platform in () 语句重复次数
+
         # 是否为stdio启用终端（仅 Windows 与 macOS）
         if self.running_platform in (PLATFORM.windows, PLATFORM.macos):
             self.console_checkbox = QCheckBox()
+
+        # 清理缓存与临时文件
+        self.clean_checkbox = QCheckBox()
 
         # 预览生成的PyInstaller打包指令
         self.pyinstaller_args_browser = ArgumentsBrowser()
@@ -77,11 +82,11 @@ class CenterWidget(QWidget):
         # 打包按钮
         self.run_packaging_btn = QPushButton()
 
-        self.setup_ui()
+        self._setup_ui()
         self._connect_slots()
         self._set_layout()
 
-    def setup_ui(self) -> None:
+    def _setup_ui(self) -> None:
         """
         设置各种控件的属性 \n
         """
@@ -106,10 +111,11 @@ class CenterWidget(QWidget):
             self.icon_path_le.setReadOnly(True)
             self.icon_path_le.setPlaceholderText("图标文件路径")
             self.icon_browse_btn.setText("浏览")
-
             self.console_checkbox.setText("为标准I/O启用终端")
             self.console_checkbox.setChecked(True)  # 默认值
 
+        self.clean_checkbox.setText("清理")
+        self.clean_checkbox.setChecked(False)
         self.pyinstaller_args_browser.setMaximumHeight(80)
 
         self.run_packaging_btn.setText("打包！")
@@ -175,6 +181,19 @@ class CenterWidget(QWidget):
 
             self.option_selected.emit((PyinstallerArgs.icon_path, file_path))
 
+        @QtCore.Slot(bool)
+        def clean_selected(selected: bool) -> None:
+            """
+            选择了清理缓存复选框的槽 \n
+            """
+
+            if selected:
+                self.option_selected.emit((PyinstallerArgs.clean, "--clean"))
+                self.parent_widget.statusBar().showMessage("构建前将清理缓存与临时文件")
+            else:
+                self.option_selected.emit((PyinstallerArgs.clean, ""))
+                self.parent_widget.statusBar().showMessage("不会删除缓存与临时文件")
+
         @QtCore.Slot()
         def run_packaging() -> None:
             """
@@ -196,8 +215,55 @@ class CenterWidget(QWidget):
             self.icon_file_dlg.fileSelected.connect(icon_file_selected)  # type: ignore
             self.console_checkbox.toggled.connect(console_selected)  # type: ignore
 
+        self.clean_checkbox.toggled.connect(clean_selected)  # type: ignore
+
+    def _set_layout(self) -> None:
+        """
+        设置布局管理器 \n
+        """
+
+        script_layout = QGridLayout()
+        script_layout.addWidget(self.script_path_label, 0, 0, 1, 2)
+        script_layout.addWidget(self.script_path_le, 1, 0)
+        script_layout.addWidget(self.script_browse_btn, 1, 1)
+
+        name_layout = QVBoxLayout()
+        name_layout.addWidget(self.project_name_label)
+        name_layout.addWidget(self.project_name_le)
+
+        fd_layout = QGridLayout()
+        fd_layout.addWidget(self.fd_label, 0, 0, 1, 2)
+        fd_layout.addWidget(self.one_dir_btn, 1, 0)
+        fd_layout.addWidget(self.one_file_btn, 1, 1)
+
+        main_layout = QVBoxLayout()
+        main_layout.addSpacing(10)
+        main_layout.addLayout(script_layout)
+        main_layout.addStretch(10)
+        main_layout.addLayout(name_layout)
+        main_layout.addStretch(10)
+        main_layout.addLayout(fd_layout)
+        main_layout.addStretch(10)
+
+        if self.running_platform in (PLATFORM.windows, PLATFORM.macos):
+            main_layout.addWidget(self.console_checkbox)
+            main_layout.addStretch(10)
+            icon_layout = QGridLayout()
+            icon_layout.addWidget(self.icon_path_label, 0, 0, 1, 2)
+            icon_layout.addWidget(self.icon_path_le, 1, 0)
+            icon_layout.addWidget(self.icon_browse_btn, 1, 1)
+            main_layout.addLayout(icon_layout)
+
+        main_layout.addStretch(10)
+        main_layout.addWidget(self.clean_checkbox)
+        main_layout.addStretch(10)
+        main_layout.addWidget(self.pyinstaller_args_browser)
+        main_layout.addWidget(self.run_packaging_btn)
+
+        self.setLayout(main_layout)
+
     @QtCore.Slot(tuple)
-    def handle_option_set(self, option: tuple[str, str]) -> None:
+    def handle_option_set(self, option: tuple[PyinstallerArgs, str]) -> None:
         """
         处理option_set信号的槽，根据已经成功设置的选项调整界面 \n
         :param option: 选项键值对
@@ -233,7 +299,6 @@ class CenterWidget(QWidget):
         # 清空重置该项的输入控件，并弹出警告窗口，等待用户重新输入
         if option == PyinstallerArgs.script_path:
             self.script_file_dlg.close()
-
             # 警告对话框
             result = QMessageBox.critical(
                 self.parent_widget,
@@ -250,7 +315,6 @@ class CenterWidget(QWidget):
 
         elif option == PyinstallerArgs.icon_path:
             self.icon_file_dlg.close()
-
             # 警告对话框
             result = QMessageBox.critical(
                 self.parent_widget,
@@ -272,45 +336,3 @@ class CenterWidget(QWidget):
         """
 
         self.run_packaging_btn.setEnabled(ready)
-
-    def _set_layout(self) -> None:
-        """
-        设置布局管理器 \n
-        """
-
-        script_layout = QGridLayout()
-        script_layout.addWidget(self.script_path_label, 0, 0, 1, 2)
-        script_layout.addWidget(self.script_path_le, 1, 0)
-        script_layout.addWidget(self.script_browse_btn, 1, 1)
-
-        name_layout = QVBoxLayout()
-        name_layout.addWidget(self.project_name_label)
-        name_layout.addWidget(self.project_name_le)
-
-        fd_layout = QGridLayout()
-        fd_layout.addWidget(self.fd_label, 0, 0, 1, 2)
-        fd_layout.addWidget(self.one_dir_btn, 1, 0)
-        fd_layout.addWidget(self.one_file_btn, 1, 1)
-
-        main_layout = QVBoxLayout()
-        main_layout.addLayout(script_layout)
-        main_layout.addSpacing(10)
-        main_layout.addLayout(name_layout)
-        main_layout.addSpacing(10)
-        main_layout.addLayout(fd_layout)
-        main_layout.addSpacing(10)
-
-        if self.running_platform in (PLATFORM.windows, PLATFORM.macos):
-            main_layout.addWidget(self.console_checkbox)
-            main_layout.addSpacing(10)
-
-            icon_layout = QGridLayout()
-            icon_layout.addWidget(self.icon_path_label, 0, 0, 1, 2)
-            icon_layout.addWidget(self.icon_path_le, 1, 0)
-            icon_layout.addWidget(self.icon_browse_btn, 1, 1)
-            main_layout.addLayout(icon_layout)
-
-        main_layout.addSpacing(10)
-        main_layout.addWidget(self.pyinstaller_args_browser)
-        main_layout.addWidget(self.run_packaging_btn)
-        self.setLayout(main_layout)

@@ -60,6 +60,8 @@ class Packaging(QtCore.QObject):
             self._args.append(self.args_dict[PyinstallerArgs.console])
         if self.args_dict[PyinstallerArgs.out_name]:
             self._args.extend(["--name", self.args_dict[PyinstallerArgs.out_name]])
+        if self.args_dict[PyinstallerArgs.clean]:
+            self._args.append(self.args_dict[PyinstallerArgs.clean])
 
         self.args_settled.emit(self._args)
 
