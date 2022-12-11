@@ -32,6 +32,7 @@ class PackagingTask(QtCore.QObject):
         self.out_name: Optional[str] = None
         self.FD: Optional[bool] = None
         self.console: Optional[str] = None
+        self.clean: Optional[bool] = None
 
     def handle_option(self, option: tuple[PyinstallerArgs, str]):
         """
@@ -74,4 +75,5 @@ class PackagingTask(QtCore.QObject):
         将打包任务保存至spec文件 \n
         """
 
+        # TODO 实现写入spec功能
         pass

@@ -15,3 +15,4 @@ class PyinstallerArgs(enum.IntFlag):
     FD = enum.auto()
     console = enum.auto()
     out_name = enum.auto()
+    clean = enum.auto()
