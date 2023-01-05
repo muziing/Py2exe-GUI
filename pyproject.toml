@@ -11,7 +11,7 @@ exclude = ["src/py2exe_gui/Resources/Icons", "src/py2exe_gui/Resources/Texts"]
 
 [tool.poetry.dependencies]
 python = ">=3.7,<3.12"
-pyside6 = "^6.4.0"
+PySide6 = "^6.4.0"
 
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/muziing/Py2exe-GUI/issues"
@@ -25,7 +25,7 @@ pyinstaller = "^5.7.0"
 
 [tool.black]
 line-length = 88
-target-version = ["py310"]
+target-version = ["py311"]
 extend-exclude = "compiled_resources.py"
 
 [tool.isort]
@@ -33,7 +33,7 @@ profile = "black"
 line_length = 88
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.11"
 warn_return_any = true
 ignore_missing_imports = true
 
