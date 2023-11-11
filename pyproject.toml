@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "py2exe-gui"
-version = "0.1.8"
+version = "0.1.9"
 description = "GUI for PyInstaller, based on PySide6"
 keywords = ["PyInstaller", "GUI", "PySide6"]
 authors = ["muzing <muzi2001@foxmail.com>"]
@@ -9,19 +9,23 @@ readme = ["README.md", "README_zh.md"]
 repository = "https://github.com/muziing/Py2exe-GUI"
 exclude = ["src/py2exe_gui/Resources/Icons", "src/py2exe_gui/Resources/Texts"]
 
-[tool.poetry.dependencies]
-python = ">=3.7,<3.12"
-PySide6 = "^6.4.0"
-
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/muziing/Py2exe-GUI/issues"
 
+[tool.poetry.dependencies]
+python = ">=3.8,<3.13"
+PySide6 = "^6.5.0"
+
+[tool.poetry.group.dev]
+
 [tool.poetry.group.dev.dependencies]
 # Sphinx = "^5.3.0"
+pre-commit = "^3.5.0"
 black = "^22.12.0"
-isort = "^5.11.0"
-mypy = "^0.991"
-pyinstaller = "^5.7.0"
+isort = "^5.12.0"
+ruff = "^0.1.5"
+mypy = "^1.7.0"
+pyinstaller = "^5.13.0"
 
 [tool.black]
 line-length = 88
@@ -36,6 +40,21 @@ line_length = 88
 python_version = "3.11"
 warn_return_any = true
 ignore_missing_imports = true
+check_untyped_defs = true
+
+[tool.ruff.lint]
+select = [
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+]
+ignore = ["F401", "F403"]
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

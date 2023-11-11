@@ -1,6 +1,6 @@
 # Resource object code (Python 3)
 # Created by: object code
-# Created by: The Resource Compiler for Qt version 6.4.1
+# Created by: The Resource Compiler for Qt version 6.6.0
 # WARNING! All changes made in this file will be lost!
 
 from PySide6 import QtCore
@@ -216,7 +216,7 @@ g\xa0\xf00\x9e\x12\xc9G\xb7\xf8\xc0A(D8\x95\
 \xd8?\x97\xc2\x0d\xc8\x87d\x08\x80\x15\xe0\x09\x83\xa0\x97\
 &\xeb\xfe?\x7f\x7f\xa1\x02\x94\x14\x94b\x00\x00\x00\x00\
 IEND\xaeB`\x82\
-\x00\x00\x02\xc3\
+\x00\x00\x02\xc8\
 #\
  About Py2exe-GU\
 I\x0a\x0aPy2exe-GUI is\
@@ -258,12 +258,12 @@ her version 3 of\
  the License, or\
  any later versi\
 on.\x0a\x0aCopyright \xc2\
-\xa9 2022  [Muzing \
-(muzi2001@foxmai\
-l.com)](https://\
-muzing.top/about\
-)\x0a\
-\x00\x00\x02n\
+\xa9 2022-2023  [Mu\
+zing (muzi2001@f\
+oxmail.com)](htt\
+ps://muzing.top/\
+about)\x0a\
+\x00\x00\x02s\
 #\
 # \xe5\x85\xb3\xe4\xba\x8e Py2exe-\
 GUI\x0a\x0aPy2exe-GUI \
@@ -300,10 +300,11 @@ ect/py2exe-gui/)\
 \xa1\x8c\xe5\x86\x8d\xe5\x8f\x91\xe5\xb8\x83\xe5\x92\x8c/\xe6\
 \x88\x96\xe4\xbf\xae\xe6\x94\xb9\xe3\x80\x82\x0a\x0a\xe7\x89\x88\
 \xe6\x9d\x83\xe6\x89\x80\xe6\x9c\x89 \xc2\xa9 202\
-2  [Muzing (muzi\
-2001@foxmail.com\
-)](https://muzin\
-g.top/about)\x0a\
+2-2023  [Muzing \
+(muzi2001@foxmai\
+l.com)](https://\
+muzing.top/about\
+)\x0a\
 "
 
 qt_resource_name = b"\
@@ -334,17 +335,24 @@ qt_resource_struct = b"\
 \x00\x00\x00\x00\x00\x02\x00\x00\x00\x02\x00\x00\x00\x03\
 \x00\x00\x00\x00\x00\x00\x00\x00\
 \x00\x00\x00N\x00\x00\x00\x00\x00K\x00\x00\x0c\xfd\
-\x00\x00\x01\x84\xe5\xa3\xfaG\
-\x00\x00\x00N\x00\x00\x00\x00\x00:\x00\x00\x0f\xc4\
-\x00\x00\x01\x83\xbc\xcf\xde\xf8\
+\x00\x00\x01\x8b\xbeN,u\
+\x00\x00\x00N\x00\x00\x00\x00\x00:\x00\x00\x0f\xc9\
+\x00\x00\x01\x8b\xbeN,u\
 \x00\x00\x00 \x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\
-\x00\x00\x01\x83Y\xef\xb3\x13\
+\x00\x00\x01\x8b\xbd\x8a$\x9a\
 "
 
+
 def qInitResources():
-    QtCore.qRegisterResourceData(0x03, qt_resource_struct, qt_resource_name, qt_resource_data)
+    QtCore.qRegisterResourceData(
+        0x03, qt_resource_struct, qt_resource_name, qt_resource_data
+    )
+
 
 def qCleanupResources():
-    QtCore.qUnregisterResourceData(0x03, qt_resource_struct, qt_resource_name, qt_resource_data)
+    QtCore.qUnregisterResourceData(
+        0x03, qt_resource_struct, qt_resource_name, qt_resource_data
+    )
+
 
 qInitResources()
