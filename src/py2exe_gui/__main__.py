@@ -6,10 +6,10 @@ import sys
 from PySide6.QtGui import QCloseEvent
 from PySide6.QtWidgets import QApplication
 
-from .Constants.platform_constants import get_platform
-from .Core import Packaging, PackagingTask
-from .Resources import compiled_resources  # type: ignore
-from .Widgets import MainWindow, SubProcessDlg
+from .Constants.platform_constants import get_platform  # noqa
+from .Core import Packaging, PackagingTask  # noqa
+from .Resources import compiled_resources  # noqa
+from .Widgets import MainWindow, SubProcessDlg  # noqa
 
 
 class MainApp(MainWindow):
@@ -19,7 +19,7 @@ class MainApp(MainWindow):
 
     def __init__(self, *args, **kwargs) -> None:
         self.running_platform = get_platform()  # 获取当前运行的平台信息
-        super(MainApp, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.packaging_task = PackagingTask(self)
         self.packager = Packaging(self)
@@ -55,7 +55,7 @@ class MainApp(MainWindow):
         """
 
         self.packager.subprocess.abort_process()
-        super(MainApp, self).closeEvent(event)
+        super().closeEvent(event)
 
 
 if __name__ == "__main__":

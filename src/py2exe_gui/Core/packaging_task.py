@@ -25,7 +25,7 @@ class PackagingTask(QtCore.QObject):
         :param parent: 父控件对象
         """
 
-        super(PackagingTask, self).__init__(parent)
+        super().__init__(parent)
 
         self.script_path: Optional[Path] = None
         self.icon_path: Optional[Path] = None

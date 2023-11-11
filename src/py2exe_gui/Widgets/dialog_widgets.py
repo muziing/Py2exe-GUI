@@ -18,7 +18,7 @@ class ScriptFileDlg(QFileDialog):
         :param parent: 父控件对象
         """
 
-        super(ScriptFileDlg, self).__init__(parent)
+        super().__init__(parent)
 
         self._setup()
 
@@ -47,7 +47,7 @@ class IconFileDlg(QFileDialog):
         :param parent: 父控件对象
         """
 
-        super(IconFileDlg, self).__init__(parent)
+        super().__init__(parent)
 
         self._setup()
 
@@ -76,7 +76,7 @@ class AddDataDlg(QFileDialog):
         :param parent: 父控件对象
         """
 
-        super(AddDataDlg, self).__init__(parent)
+        super().__init__(parent)
 
         self._setup()
 
@@ -98,7 +98,7 @@ class AboutDlg(QMessageBox):
         :param parent: 父控件对象
         """
 
-        super(AboutDlg, self).__init__(parent)
+        super().__init__(parent)
 
         self._about_text: str = ""
         self._setup()
