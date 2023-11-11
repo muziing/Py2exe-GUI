@@ -32,7 +32,7 @@ class ArgumentsBrowser(QTextBrowser):
         :param parent: 父控件对象
         """
 
-        super(ArgumentsBrowser, self).__init__(parent)
+        super().__init__(parent)
 
     def enrich_args_text(self, args_list: list[str]) -> None:
         """

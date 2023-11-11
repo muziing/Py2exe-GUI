@@ -24,7 +24,7 @@ class Packaging(QtCore.QObject):
         :param parent: 父控件对象
         """
 
-        super(Packaging, self).__init__(parent)
+        super().__init__(parent)
 
         self.args_dict: dict = dict.fromkeys(PyinstallerArgs, "")
         self._args: List[str] = []
@@ -39,7 +39,7 @@ class Packaging(QtCore.QObject):
         """
 
         arg_key, arg_value = arg
-        if type(arg_key) == PyinstallerArgs:
+        if isinstance(arg_key, PyinstallerArgs):
             self.args_dict[arg_key] = arg_value
             self._add_pyinstaller_args()
             self._set_subprocess_working_dir()

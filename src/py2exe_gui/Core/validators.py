@@ -21,10 +21,7 @@ class FilePathValidator:
 
         path = Path(script_path)
         # TODO 完善验证方法
-        if path.exists() and path.is_file():
-            return True
-        else:
-            return False
+        return path.exists() and path.is_file()
 
     @classmethod
     def validate_icon(cls, icon_path: Union[str, Path]) -> bool:
@@ -35,10 +32,7 @@ class FilePathValidator:
 
         path = Path(icon_path)
         # TODO 完善验证方法
-        if path.exists() and path.is_file():
-            return True
-        else:
-            return False
+        return path.exists() and path.is_file()
 
 
 class InterpreterValidator:
@@ -113,14 +107,10 @@ class InterpreterValidator:
             ]
             result = subprocess.run(
                 args=subprocess_arg_list,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                capture_output=True,
                 timeout=300,
             )
-            if result.returncode != 0 and b"ModuleNotFoundError" in result.stderr:
-                return False
-            else:
-                return True
+            return result.returncode != 0 and b"ModuleNotFoundError" in result.stderr
         else:
             return False
 

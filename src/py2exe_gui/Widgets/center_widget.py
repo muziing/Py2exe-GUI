@@ -37,7 +37,7 @@ class CenterWidget(QWidget):
         :param parent: 父控件对象，应为主程序
         """
 
-        super(CenterWidget, self).__init__(parent)
+        super().__init__(parent)
 
         self.parent_widget = parent
 

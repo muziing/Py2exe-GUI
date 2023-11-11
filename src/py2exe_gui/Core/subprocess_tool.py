@@ -39,7 +39,7 @@ class SubProcessTool(QObject):
         :param working_directory: 子进程工作目录
         """
 
-        super(SubProcessTool, self).__init__(parent)
+        super().__init__(parent)
 
         self.program: str = program
         self._arguments: Sequence[str] = arguments

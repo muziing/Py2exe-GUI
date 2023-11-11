@@ -28,7 +28,7 @@ class SubProcessDlg(QDialog):
         :param parent: 父控件对象，必须为 MainApp 类
         """
 
-        super(SubProcessDlg, self).__init__(parent)
+        super().__init__(parent)
 
         self.info_label = QLabel(self)
         self.browser = QTextBrowser(self)
@@ -67,9 +67,9 @@ class SubProcessDlg(QDialog):
             self.info_label.setText(output_text)
             if output_text == "正在运行中……":
                 self.multifunction_btn.setText("取消")
-        elif output_type == SubProcessTool.STDOUT:
-            self.browser.append(output_text)
-        elif output_type == SubProcessTool.STDERR:
+        elif (
+            output_type == SubProcessTool.STDOUT or output_type == SubProcessTool.STDERR
+        ):
             self.browser.append(output_text)
         elif output_type == SubProcessTool.FINISHED:
             if output_text == "0":
@@ -98,7 +98,7 @@ class SubProcessDlg(QDialog):
             dist_path = self.parent().packaging_task.script_path.parent / "dist"
             if self.parent().running_platform == PLATFORM.windows:
                 import os  # fmt: skip
-                os.startfile(dist_path)  # type: ignore
+                os.startfile(dist_path)  # noqa
             elif self.parent().running_platform == PLATFORM.linux:
                 subprocess.call(["xdg-open", dist_path])
             elif self.parent().running_platform == PLATFORM.macos:
@@ -114,4 +114,4 @@ class SubProcessDlg(QDialog):
 
         self.parent().packager.subprocess.abort_process()
         self.browser.clear()
-        super(SubProcessDlg, self).closeEvent(event)
+        super().closeEvent(event)
