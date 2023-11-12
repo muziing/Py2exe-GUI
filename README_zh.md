@@ -9,7 +9,7 @@
 <a href="https://pypi.org/project/py2exe-gui/"><img alt="PyPI Downloads" src="https://img.shields.io/pypi/dm/py2exe-gui.svg?label=PyPI%20downloads"></a>
 <a href="https://doc.qt.io/qtforpython/index.html"><img alt="PySide Version" src="https://img.shields.io/badge/PySide-6.6-blue"></a>
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
-<a href="http://mypy-lang.org/"><img alt="Checked with mypy" src="https://img.shields.io/badge/mypy-checked-blue"></a>
+<a href="https://mypy-lang.org/"><img alt="Checked with mypy" src="https://img.shields.io/badge/mypy-checked-blue"></a>
 </p>
 <p align="center">
 <a href="README.md">English</a> | 简体中文
@@ -37,7 +37,7 @@ Py2exe-GUI 是一个基于 [PySide6](https://doc.qt.io/qtforpython/index.html) �
 首先在待打包的 Python 解释器环境中安装 PyInstaller:
 
 ```shell
-pip install pyinstaller==5.7.0
+pip install pyinstaller
 ```
 
 然后通过 pip 安装 Py2exe-GUI：

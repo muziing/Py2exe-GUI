@@ -9,7 +9,7 @@
 <a href="https://pypi.org/project/py2exe-gui/"><img alt="PyPI Downloads" src="https://img.shields.io/pypi/dm/py2exe-gui.svg?label=PyPI%20downloads"></a>
 <a href="https://doc.qt.io/qtforpython/index.html"><img alt="PySide Version" src="https://img.shields.io/badge/PySide-6.6-blue"></a>
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
-<a href="http://mypy-lang.org/"><img alt="Checked with mypy" src="https://img.shields.io/badge/mypy-checked-blue"></a>
+<a href="https://mypy-lang.org/"><img alt="Checked with mypy" src="https://img.shields.io/badge/mypy-checked-blue"></a>
 </p>
 
 <p align="center">
@@ -37,7 +37,7 @@ It has the following features:
 First, install PyInstaller in the Python interpreter environment which to be packaged:
 
 ```shell
-pip install pyinstaller==5.7.0
+pip install pyinstaller
 ```
 
 Then install Py2exe-GUI with `pip`:
@@ -49,7 +49,7 @@ pip install py2exe-gui
 Run:
 
 ```shell
-python -m py2exe_gui
+python -m py2exe_gui  # `_`, not `-`
 ```
 
 ### Option B: Run through source code
