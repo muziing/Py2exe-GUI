@@ -28,7 +28,7 @@ def process_md_images(md_file_list: list[Path]) -> None:
 
     md_uri = "docs/source/images/"
     github_uri = (
-        "https://raw.githubusercontent.com/muziing/Py2exe-GUI/main"
+        "https://github.com/muziing/Py2exe-GUI/raw/main"
         + "/docs/source/images/"
     )
 
@@ -119,7 +119,7 @@ def build_py2exe_gui() -> None:
         clear_pyinstaller_dist(src_path)
         clear_pycache(src_path)
         process_md_images(readme_file_list)
-        compile_resources()
+        # compile_resources()
         print(f"pre-commit检查完毕，返回码：{pre_commit_check()}。")
 
         # 正式构建
