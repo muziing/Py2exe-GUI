@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from shutil import rmtree
 
-src_dir_path = Path("../src")
+from dev_scripts.path_constants import SRC_PATH
 
 
 def clear_pyinstaller_dist(src_path: Path) -> None:
@@ -37,5 +37,5 @@ def clear_pycache(src_path: Path) -> None:
 
 
 if __name__ == "__main__":
-    clear_pyinstaller_dist(src_dir_path)
-    clear_pycache(src_dir_path)
+    clear_pyinstaller_dist(SRC_PATH)
+    clear_pycache(SRC_PATH)
