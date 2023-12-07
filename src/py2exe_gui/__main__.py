@@ -6,7 +6,7 @@ import sys
 from PySide6.QtGui import QCloseEvent
 from PySide6.QtWidgets import QApplication
 
-from .Constants.platform_constants import get_platform  # noqa
+from .Constants.platform_constants import RUNTIME_PLATFORM  # noqa
 from .Core import Packaging, PackagingTask  # noqa
 from .Resources import compiled_resources  # noqa
 from .Widgets import MainWindow, SubProcessDlg  # noqa
@@ -18,7 +18,6 @@ class MainApp(MainWindow):
     """
 
     def __init__(self, *args, **kwargs) -> None:
-        self.running_platform = get_platform()  # 获取当前运行的平台信息
         super().__init__(*args, **kwargs)
 
         self.packaging_task = PackagingTask(self)
