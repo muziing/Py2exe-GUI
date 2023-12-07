@@ -5,11 +5,13 @@ from typing import Optional
 
 from PySide6.QtWidgets import QTextBrowser, QWidget
 
+from ..Constants import get_line_continuation
+
 # 一组适合浅色背景的颜色
 colors = ["#FD6D5A", "#FEB40B", "#6DC354", "#994487", "#518CD8", "#443295"]
 
 
-def wrap_font_tag(raw_text: str, color: str, **kwargs):
+def wrap_font_tag(raw_text: str, *, color: str, **kwargs):
     """
     辅助函数，用于为字符添加<font>标签包裹，属性可通过可变关键字参数传入 \n
     :param raw_text: 原始字符文本
@@ -40,11 +42,16 @@ class ArgumentsBrowser(QTextBrowser):
         :param args_list: 参数列表
         """
 
-        text: list[str] = [wrap_font_tag(args_list[0], colors[4])]
+        enriched_arg_texts: list[str] = [
+            wrap_font_tag(args_list[0], color=colors[4])
+        ]  # 首个参数一定为待打包的 Python 脚本名
         for arg in args_list[1:]:
             if arg.startswith("--") or arg.startswith("-"):
-                text.append(wrap_font_tag(arg, colors[1]))
+                enriched_arg_texts.append(
+                    get_line_continuation() + "<br>"
+                )  # 添加换行，便于阅读与复制导出脚本
+                enriched_arg_texts.append(wrap_font_tag(arg, color=colors[1]))
             else:
-                text.append(arg)
+                enriched_arg_texts.append(arg)
 
-        self.setText(str(text))
+        self.setText("pyinstaller " + " ".join(enriched_arg_texts))

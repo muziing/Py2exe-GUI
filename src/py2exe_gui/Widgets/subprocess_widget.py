@@ -45,7 +45,7 @@ class SubProcessDlg(QDialog):
         self.setModal(True)  # 设置为模态对话框
 
         # 连接信号与槽
-        self.multifunction_btn.clicked.connect(self.handle_multifunction)  # type:ignore
+        self.multifunction_btn.clicked.connect(self.handle_multifunction)  # type: ignore
 
         # 布局管理器
         main_layout = QVBoxLayout()

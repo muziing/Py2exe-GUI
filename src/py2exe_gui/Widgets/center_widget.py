@@ -19,7 +19,7 @@ from PySide6.QtWidgets import (
 )
 
 from ..Constants.packaging_constants import PyinstallerArgs
-from ..Constants.platform_constants import PLATFORM
+from ..Constants.platform_constants import PLATFORM, RUNTIME_PLATFORM
 from .arguments_browser import ArgumentsBrowser
 from .dialog_widgets import IconFileDlg, ScriptFileDlg
 
@@ -41,9 +41,6 @@ class CenterWidget(QWidget):
 
         self.parent_widget = parent
 
-        # 根据运行平台不同，提供的控件也有所区别
-        self.running_platform: PLATFORM = parent.running_platform  # type: ignore
-
         # 待打包的入口脚本
         self.script_path_label = QLabel()
         self.script_file_dlg = ScriptFileDlg()
@@ -61,16 +58,16 @@ class CenterWidget(QWidget):
         self.fd_group = QButtonGroup()
 
         # 应用图标（仅 Windows 与 macOS）
-        if self.running_platform in (PLATFORM.windows, PLATFORM.macos):
+        if RUNTIME_PLATFORM in (PLATFORM.windows, PLATFORM.macos):
             self.icon_path_label = QLabel()
             self.icon_file_dlg = IconFileDlg()
             self.icon_browse_btn = QPushButton()
             self.icon_path_le = QLineEdit()
 
-        # TODO 重构不同平台功能判断，减少 if self.running_platform in () 语句重复次数
+        # TODO 重构不同平台功能判断，减少 if RUNTIME_PLATFORM in () 语句重复次数
 
         # 是否为stdio启用终端（仅 Windows 与 macOS）
-        if self.running_platform in (PLATFORM.windows, PLATFORM.macos):
+        if RUNTIME_PLATFORM in (PLATFORM.windows, PLATFORM.macos):
             self.console_checkbox = QCheckBox()
 
         # 清理缓存与临时文件
@@ -106,7 +103,7 @@ class CenterWidget(QWidget):
         self.fd_group.addButton(self.one_dir_btn, 0)
         self.fd_group.addButton(self.one_file_btn, 1)
 
-        if self.running_platform in (PLATFORM.windows, PLATFORM.macos):
+        if RUNTIME_PLATFORM in (PLATFORM.windows, PLATFORM.macos):
             self.icon_path_label.setText("应用图标：")
             self.icon_path_le.setReadOnly(True)
             self.icon_path_le.setPlaceholderText("图标文件路径")
@@ -210,7 +207,7 @@ class CenterWidget(QWidget):
         self.fd_group.idClicked.connect(one_fd_selected)  # type: ignore
         self.run_packaging_btn.clicked.connect(run_packaging)  # type: ignore
 
-        if self.running_platform in (PLATFORM.windows, PLATFORM.macos):
+        if RUNTIME_PLATFORM in (PLATFORM.windows, PLATFORM.macos):
             self.icon_browse_btn.clicked.connect(self.icon_file_dlg.open)  # type: ignore
             self.icon_file_dlg.fileSelected.connect(icon_file_selected)  # type: ignore
             self.console_checkbox.toggled.connect(console_selected)  # type: ignore
@@ -245,7 +242,7 @@ class CenterWidget(QWidget):
         main_layout.addLayout(fd_layout)
         main_layout.addStretch(10)
 
-        if self.running_platform in (PLATFORM.windows, PLATFORM.macos):
+        if RUNTIME_PLATFORM in (PLATFORM.windows, PLATFORM.macos):
             main_layout.addWidget(self.console_checkbox)
             main_layout.addStretch(10)
             icon_layout = QGridLayout()

@@ -8,6 +8,6 @@ class AppConstant:
     """
 
     NAME = "Py2exe-GUI"
-    VERSION = "0.1.10"
+    VERSION = "0.1.11"
     AUTHORS = ["muzing <muzi2001@foxmail.com>"]
     LICENSE = "GPL-3.0-or-later"
