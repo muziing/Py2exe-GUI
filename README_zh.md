@@ -49,6 +49,12 @@ pip install py2exe-gui
 运行
 
 ```shell
+py2exe-gui
+```
+
+如果以脚本形式运行失败，还可以尝试作为 Python 包运行：
+
+```shell
 python -m py2exe_gui  # 注意连字符为_
 ```
 
