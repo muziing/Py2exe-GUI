@@ -14,7 +14,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from ..Constants import PLATFORM
+from ..Constants import PLATFORM, RUNTIME_PLATFORM
 from ..Core.subprocess_tool import SubProcessTool
 
 
@@ -96,12 +96,12 @@ class SubProcessDlg(QDialog):
             self.close()
         elif btn_text == "打开输出位置":
             dist_path = self.parent().packaging_task.script_path.parent / "dist"
-            if self.parent().running_platform == PLATFORM.windows:
+            if PLATFORM.windows == RUNTIME_PLATFORM:
                 import os  # fmt: skip
                 os.startfile(dist_path)  # noqa
-            elif self.parent().running_platform == PLATFORM.linux:
+            elif PLATFORM.linux == RUNTIME_PLATFORM:
                 subprocess.call(["xdg-open", dist_path])
-            elif self.parent().running_platform == PLATFORM.macos:
+            elif PLATFORM.macos == RUNTIME_PLATFORM:
                 subprocess.call(["open", dist_path])
         elif btn_text == "关闭":
             self.close()
