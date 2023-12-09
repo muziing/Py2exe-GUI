@@ -65,7 +65,7 @@ class SubProcessDlg(QDialog):
 
         if output_type == SubProcessTool.STATE:
             self.info_label.setText(output_text)
-            if output_text == "正在运行中……":
+            if output_text == "The process is running...":
                 self.multifunction_btn.setText("取消")
         elif (
             output_type == SubProcessTool.STDOUT or output_type == SubProcessTool.STDERR
@@ -80,7 +80,7 @@ class SubProcessDlg(QDialog):
                 self.multifunction_btn.setText("取消")
         elif output_type == SubProcessTool.ERROR:
             self.info_label.setText("PyInstaller错误！")
-            self.browser.append(output_text)
+            self.browser.append(f"PyInstaller 子进程输出信息：{output_text}")
             self.browser.append("请检查是否已经安装正确版本的 PyInstaller")
             self.multifunction_btn.setText("关闭")
 
@@ -97,8 +97,8 @@ class SubProcessDlg(QDialog):
         elif btn_text == "打开输出位置":
             dist_path = self.parent().packaging_task.script_path.parent / "dist"
             if PLATFORM.windows == RUNTIME_PLATFORM:
-                import os  # fmt: skip
-                os.startfile(dist_path)  # noqa
+                from os import startfile as os_startfile  # fmt: skip
+                os_startfile(dist_path)  # noqa
             elif PLATFORM.linux == RUNTIME_PLATFORM:
                 subprocess.call(["xdg-open", dist_path])
             elif PLATFORM.macos == RUNTIME_PLATFORM:

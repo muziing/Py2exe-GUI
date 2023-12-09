@@ -197,8 +197,9 @@ class CenterWidget(QWidget):
             “运行打包”按钮的槽函数 \n
             """
 
-            self.parent().packager.run_packaging_process()
+            # 先显示对话框窗口，后运行子进程，确保调试信息/错误信息能被直观显示
             self.parent().subprocess_dlg.show()
+            self.parent().packager.run_packaging_process()
 
         # 连接信号与槽
         self.script_browse_btn.clicked.connect(self.script_file_dlg.open)  # type: ignore
@@ -270,6 +271,7 @@ class CenterWidget(QWidget):
 
         if option_key == PyinstallerArgs.script_path:
             script_path = Path(option_value)
+            self.icon_file_dlg.setDirectory(str(script_path.parent.resolve()))
             self.script_path_le.setText(script_path.name)
             self.parent_widget.statusBar().showMessage(
                 f"打开脚本路径：{str(script_path.resolve())}"
