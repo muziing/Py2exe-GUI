@@ -31,22 +31,3 @@ def get_platform() -> PLATFORM:
         return PLATFORM.macos
     else:
         return PLATFORM.others
-
-
-# 以全局变量形式，保存当前运行时的平台信息
-RUNTIME_PLATFORM = get_platform()
-
-# 各平台的命令行续行符
-line_continuation_text = {"shell": "\\", "cmd": "^", "powershell": "`"}
-
-
-def get_line_continuation() -> str:
-    """
-    获取当前运行平台对应的命令行续行符 \n
-    :return: line continuation character
-    """
-
-    if PLATFORM.windows == RUNTIME_PLATFORM:
-        return line_continuation_text["powershell"]
-    else:
-        return line_continuation_text["shell"]

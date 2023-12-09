@@ -14,7 +14,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from ..Constants import PLATFORM, RUNTIME_PLATFORM
+from ..Constants import PLATFORM
+from ..Core import RUNTIME_INFO
 from ..Core.subprocess_tool import SubProcessTool
 
 
@@ -45,7 +46,7 @@ class SubProcessDlg(QDialog):
         self.setModal(True)  # 设置为模态对话框
 
         # 连接信号与槽
-        self.multifunction_btn.clicked.connect(self.handle_multifunction)  # type: ignore
+        self.multifunction_btn.clicked.connect(self.handle_multifunction)
 
         # 布局管理器
         main_layout = QVBoxLayout()
@@ -96,12 +97,12 @@ class SubProcessDlg(QDialog):
             self.close()
         elif btn_text == "打开输出位置":
             dist_path = self.parent().packaging_task.script_path.parent / "dist"
-            if PLATFORM.windows == RUNTIME_PLATFORM:
+            if PLATFORM.windows == RUNTIME_INFO.platform:
                 from os import startfile as os_startfile  # fmt: skip
                 os_startfile(dist_path)  # noqa
-            elif PLATFORM.linux == RUNTIME_PLATFORM:
+            elif PLATFORM.linux == RUNTIME_INFO.platform:
                 subprocess.call(["xdg-open", dist_path])
-            elif PLATFORM.macos == RUNTIME_PLATFORM:
+            elif PLATFORM.macos == RUNTIME_INFO.platform:
                 subprocess.call(["open", dist_path])
         elif btn_text == "关闭":
             self.close()
