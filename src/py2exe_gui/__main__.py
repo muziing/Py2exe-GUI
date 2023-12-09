@@ -2,11 +2,14 @@
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
 import sys
+from subprocess import call as subprocess_call
 
+from PySide6.QtCore import Slot
 from PySide6.QtGui import QCloseEvent
 from PySide6.QtWidgets import QApplication
 
-from .Core import Packaging, PackagingTask  # noqa
+from .Constants import PLATFORM  # noqa
+from .Core import RUNTIME_INFO, Packaging, PackagingTask  # noqa
 from .Resources import compiled_resources  # noqa
 from .Widgets import MainWindow, SubProcessDlg  # noqa
 
@@ -32,19 +35,66 @@ class MainApp(MainWindow):
         连接各种信号与槽 \n
         """
 
-        center_widget = self.center_widget
-        packaging_task = self.packaging_task
-        packager = self.packager
+        self._connect_run_pkg_btn_slot()
+        self._connect_mul_btn_slot(self.subprocess_dlg)
 
-        center_widget.option_selected.connect(packaging_task.handle_option)
-        packaging_task.option_set.connect(packager.set_pyinstaller_args)
-        packaging_task.option_set.connect(center_widget.handle_option_set)
-        packaging_task.option_error.connect(center_widget.handle_option_error)
-        packaging_task.ready_to_pack.connect(center_widget.handle_ready_to_pack)
-        packager.args_settled.connect(
-            lambda val: center_widget.pyinstaller_args_browser.enrich_args_text(val)
+        self.center_widget.option_selected.connect(self.packaging_task.handle_option)
+        self.packaging_task.option_set.connect(self.packager.set_pyinstaller_args)
+        self.packaging_task.option_set.connect(self.center_widget.handle_option_set)
+        self.packaging_task.option_error.connect(self.center_widget.handle_option_error)
+        self.packaging_task.ready_to_pack.connect(
+            self.center_widget.handle_ready_to_pack
         )
-        packager.subprocess.output.connect(self.subprocess_dlg.handle_output)
+        self.packager.args_settled.connect(
+            lambda val: self.center_widget.pyinstaller_args_browser.enrich_args_text(
+                val
+            )
+        )
+        self.packager.subprocess.output.connect(self.subprocess_dlg.handle_output)
+
+        # 用户关闭子进程对话框时中止打包进程
+        self.subprocess_dlg.finished.connect(
+            lambda: self.packager.subprocess.abort_process(2000)
+        )
+
+    def _connect_mul_btn_slot(self, subprocess_dlg):
+        @Slot()
+        def handle_multifunction() -> None:
+            """
+            处理子进程窗口多功能按钮点击信号的槽 \n
+            """
+
+            btn_text = self.subprocess_dlg.multifunction_btn.text()
+            if btn_text == "取消":
+                self.packager.subprocess.abort_process()
+                self.subprocess_dlg.close()
+            elif btn_text == "打开输出位置":
+                dist_path = self.packaging_task.script_path.parent / "dist"
+                if PLATFORM.windows == RUNTIME_INFO.platform:
+                    from os import startfile as os_startfile  # fmt: skip
+                    os_startfile(dist_path)  # noqa
+                elif PLATFORM.linux == RUNTIME_INFO.platform:
+                    subprocess_call(["xdg-open", dist_path])
+                elif PLATFORM.macos == RUNTIME_INFO.platform:
+                    subprocess_call(["open", dist_path])
+            elif btn_text == "关闭":
+                self.subprocess_dlg.close()
+
+        # 连接信号与槽
+        subprocess_dlg.multifunction_btn.clicked.connect(handle_multifunction)
+
+    def _connect_run_pkg_btn_slot(self):
+        @Slot()
+        def run_packaging() -> None:
+            """
+            “运行打包”按钮的槽函数 \n
+            """
+
+            # 先显示对话框窗口，后运行子进程，确保调试信息/错误信息能被直观显示
+            self.subprocess_dlg.show()
+            self.packager.run_packaging_process()
+
+        self.center_widget.run_packaging_btn.clicked.connect(run_packaging)
 
     def closeEvent(self, event: QCloseEvent) -> None:
         """
@@ -52,7 +102,7 @@ class MainApp(MainWindow):
         :param event: 关闭事件
         """
 
-        self.packager.subprocess.abort_process()
+        # self.packager.subprocess.abort_process(3000)  # 不会访问到此行
         super().closeEvent(event)
 
 

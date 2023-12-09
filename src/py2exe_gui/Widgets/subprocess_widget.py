@@ -1,8 +1,6 @@
 # Licensed under the GPLv3 License: https://www.gnu.org/licenses/gpl-3.0.html
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
-import subprocess
-
 from PySide6.QtCore import Slot
 from PySide6.QtGui import QCloseEvent
 from PySide6.QtWidgets import (
@@ -14,8 +12,6 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from ..Constants import PLATFORM
-from ..Core import RUNTIME_INFO
 from ..Core.subprocess_tool import SubProcessTool
 
 
@@ -44,9 +40,6 @@ class SubProcessDlg(QDialog):
         self.setWindowTitle("PyInstaller")
         self.setMinimumWidth(400)
         self.setModal(True)  # 设置为模态对话框
-
-        # 连接信号与槽
-        self.multifunction_btn.clicked.connect(self.handle_multifunction)
 
         # 布局管理器
         main_layout = QVBoxLayout()
@@ -85,34 +78,12 @@ class SubProcessDlg(QDialog):
             self.browser.append("请检查是否已经安装正确版本的 PyInstaller")
             self.multifunction_btn.setText("关闭")
 
-    @Slot()
-    def handle_multifunction(self) -> None:
-        """
-        处理多功能按钮点击信号的槽 \n
-        """
-
-        btn_text = self.multifunction_btn.text()
-        if btn_text == "取消":
-            self.parent().packager.subprocess.abort_process()
-            self.close()
-        elif btn_text == "打开输出位置":
-            dist_path = self.parent().packaging_task.script_path.parent / "dist"
-            if PLATFORM.windows == RUNTIME_INFO.platform:
-                from os import startfile as os_startfile  # fmt: skip
-                os_startfile(dist_path)  # noqa
-            elif PLATFORM.linux == RUNTIME_INFO.platform:
-                subprocess.call(["xdg-open", dist_path])
-            elif PLATFORM.macos == RUNTIME_INFO.platform:
-                subprocess.call(["open", dist_path])
-        elif btn_text == "关闭":
-            self.close()
-
     def closeEvent(self, event: QCloseEvent) -> None:
         """
         重写关闭事件，进行收尾清理 \n
         :param event: 关闭事件
         """
 
-        self.parent().packager.subprocess.abort_process()
+        self.finished.emit(-1)
         self.browser.clear()
         super().closeEvent(event)

@@ -192,22 +192,11 @@ class CenterWidget(QWidget):
                 self.option_selected.emit((PyinstallerArgs.clean, ""))
                 self.parent_widget.statusBar().showMessage("不会删除缓存与临时文件")
 
-        @QtCore.Slot()
-        def run_packaging() -> None:
-            """
-            “运行打包”按钮的槽函数 \n
-            """
-
-            # 先显示对话框窗口，后运行子进程，确保调试信息/错误信息能被直观显示
-            self.parent().subprocess_dlg.show()
-            self.parent().packager.run_packaging_process()
-
         # 连接信号与槽
         self.script_browse_btn.clicked.connect(self.script_file_dlg.open)
         self.script_file_dlg.fileSelected.connect(script_file_selected)
         self.project_name_le.editingFinished.connect(project_name_selected)
         self.fd_group.idClicked.connect(one_fd_selected)
-        self.run_packaging_btn.clicked.connect(run_packaging)
 
         if RUNTIME_INFO.platform in (PLATFORM.windows, PLATFORM.macos):
             self.icon_browse_btn.clicked.connect(self.icon_file_dlg.open)
