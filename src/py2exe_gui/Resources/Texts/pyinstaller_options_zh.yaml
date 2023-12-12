@@ -1,0 +1,212 @@
+options:
+
+  # 选项
+  - option: "-h, --help"
+    description: "显示此帮助信息并退出。"
+    platform: [all]
+
+  - option: "-v, --version"
+    description: "显示程序版本信息并退出。"
+    platform: [all]
+
+  - option: "--distpath DIR"
+    description: "捆绑应用程序的放置位置（默认值：`./dist`）。"
+    platform: [all]
+
+  - option: "--workpath WORKPATH"
+    description: "放置所有临时工作文件、`.log`、`.pyz` 等的位置（默认值：`./build`）。"
+    platform: [all]
+
+  - option: "-y, --noconfirm"
+    description: "覆盖输出目录中的原有内容（默认值：`SPECPATH/dist/SPECNAME`），不请求确认。"
+    platform: [all]
+
+  - option: "--upx-dir UPX_DIR"
+    description: "UPX 组件的位置（默认值：搜索可执行文件路径，即环境变量中的 `PATH`）。"
+    platform: [all]
+
+  - option: "--clean"
+    description: "在构建之前，清理 PyInstaller 缓存并删除临时文件。"
+    platform: [all]
+
+  - option: "--log-level LEVEL"
+    description: "编译时控制台信息的详细程度。LEVEL 可以是 `TRACE`、`DEBUG`、`INFO`、`WARN`、`DEPRECATION`、`ERROR`、`FATAL` 之一（默认值：`INFO`）。也可以通过 `PYI_LOG_LEVEL` 环境变量进行覆盖设置。"
+    platform: [all]
+
+
+  # 生成什么
+  - option: "-D, --onedir"
+    description: "创建包含一个可执行文件的单文件夹捆绑包（默认值）。"
+    platform: [all]
+
+  - option: "-F, --onefile"
+    description: "创建单文件捆绑的可执行文件。"
+    platform: [all]
+
+  - option: "--specpath DIR"
+    description: "存储生成的 spec 文件的文件夹（默认值：当前目录）。"
+    platform: [all]
+
+  - option: "-n NAME, --name NAME"
+    description: "为捆绑的应用程序和 spec 文件指定的名称（默认值：第一个脚本的名称）。"
+    platform: [all]
+
+  - option: "--contents-directory CONTENTS_DIRECTORY"
+    description: "仅适用于单文件夹构建。指定存放所有支持文件（即除可执行文件本身外的所有文件）的目录名称。使用 `.` 来重新启用旧的 onedir 布局，但不包含内容目录。"
+    platform: [all]
+
+
+  # 捆绑什么，在何处搜索
+  - option: "--add-data SOURCE:DEST"
+    description: "要添加到应用程序中的附加数据文件或包含数据文件的目录。参数值的形式应为 \"source:dest_dir\"，其中 source 是要收集的文件（或目录）的路径，dest_dir 是相对于应用程序顶层目录的目标目录，两个路径之间用冒号（`:`）分隔。要将文件放入应用程序顶层目录，使用 `.` 作为 dest_dir。该选项可多次使用。"
+    platform: [all]
+
+  - option: "--add-binary SOURCE:DEST"
+    description: "要添加到可执行文件中的其他二进制文件。格式参考 `--add-data` 选项。该选项可多次使用。"
+    platform: [all]
+
+  - option: "-p DIR, --paths DIR"
+    description: "搜索导入的路径（如使用 PYTHONPATH）。允许使用多个路径，以 `:` 分隔，或多次使用该选项。相当于在 spec 文件中提供 pathex 参数。"
+    platform: [all]
+
+  - option: "--hidden-import MODULENAME, --hiddenimport MODULENAME"
+    description: "指明脚本中不可见的导入关系。该选项可多次使用。"
+    platform: [all]
+
+  - option: "--collect-submodules MODULENAME"
+    description: "收集指定软件包或模块的所有子模块。该选项可多次使用。"
+    platform: [all]
+
+  - option: "--collect-data MODULENAME, --collect-datas MODULENAME"
+    description: "收集指定软件包或模块的所有数据。该选项可多次使用。"
+    platform: [all]
+
+  - option: "--collect-binaries MODULENAME"
+    description: "收集指定软件包或模块的所有二进制文件。该选项可多次使用。"
+    platform: [all]
+
+  - option: "--collect-all MODULENAME"
+    description: "收集指定软件包或模块的所有子模块、数据文件和二进制文件。该选项可多次使用。"
+    platform: [all]
+
+  - option: "--copy-metadata PACKAGENAME"
+    description: "复制指定包的元数据。该选项可多次使用。"
+    platform: [all]
+
+  - option: "--recursive-copy-metadata PACKAGENAME"
+    description: "复制指定包及其所有依赖项的元数据。该选项可多次使用。"
+    platform: [all]
+
+  - option: "--additional-hooks-dir HOOKSPATH"
+    description: "用于搜索钩子的附加路径。该选项可多次使用。"
+    platform: [all]
+
+  - option: "--runtime-hook RUNTIME_HOOKS"
+    description: "自定义运行时钩子文件的路径。运行时钩子是与可执行文件捆绑在一起的代码，在其他代码或模块之前执行，以设置运行时环境的特殊功能。该选项可多次使用。"
+    platform: [all]
+
+  - option: "--exclude-module EXCLUDES"
+    description: "将被忽略（就像没有被找到一样）的可选模块或软件包（Python 名称，不是路径名）。该选项可多次使用。"
+    platform: [all]
+
+  - option: "--splash IMAGE_FILE"
+    description: "（实验性功能）为应用程序添加一个带有 IMAGE_FILE 图像的闪屏。闪屏可以在解压缩时显示进度更新。"
+    platform: [all]
+
+
+  # 如何生成
+  - option: "-d {all,imports,bootloader,noarchive}, --debug {all,imports,bootloader,noarchive}"
+    description: "辅助调试冻结应用程序。该参数可以提供多次以选择下面多个选项。- all：以下所有三个选项。- imports：向底层 Python 解释器指定 -v 选项，使其在每次初始化模块时打印一条信息，显示模块的加载位置（文件名或内置模块）。参考命令行选项 -v。- bootloader：告知 bootloader 在初始化和启动捆绑应用程序时发布进度消息，用于诊断导入丢失的问题。- noarchive：不将所有冻结的 Python 源文件作为压缩归档存储在生成的可执行文件中，而是将它们作为文件存储在生成的输出目录中。"
+    platform: [all]
+
+  - option: "--python-option PYTHON_OPTION"
+    description: "指定运行时传递给 Python 解释器的命令行选项。目前支持 “v”（相当于 “–debug imports”）、“u”、“W <warning control>”、“X <xoption>” 与 “hash_seed=<value>”。详情参阅指定 Python 解释器选项。"
+    platform: [all]
+
+  - option: "-s, --strip"
+    description: "对可执行文件和共享库应用符号条带表（symbol-table strip）。不建议在 Windows 环境下使用。"
+    platform: [all]
+
+  - option: "--noupx"
+    description: "即使有可用的 UPX 也不要使用。在 Windows 和 *nix 下效果有所不同。"
+    platform: [all]
+
+  - option: "--upx-exclude FILE"
+    description: "防止二进制文件在使用 upx 时被压缩。如果 upx 在压缩过程中破坏了某些二进制文件，通常可以使用此功能。FILE 是二进制文件不含路径的文件名。该选项可多次使用。"
+    platform: [all]
+
+
+  # Windows 与 macOS 专用选项
+  - option: "-c, --console, --nowindowed"
+    description: "为标准 i/o 打开一个控制台窗口（默认选项）。在 Windows 中，如果第一个脚本是 ‘.pyw’ 文件，则此选项无效。"
+    platform: [Windows, macOS]
+
+  - option: "-w, --windowed, --noconsole"
+    description: "不提供用于标准 i/o 的控制台窗口。在 macOS 上，这也会触发构建一个 .app 捆绑程序。在 Windows 系统中，如果第一个脚本是 ‘.pyw’ 文件，则会自动设置该选项。在 *NIX 系统上，该选项将被忽略。"
+    platform: [Windows, macOS]
+
+  - option: "-i <FILE.ico or FILE.exe,ID or FILE.icns or Image or \"NONE\">, --icon <FILE.ico or FILE.exe,ID or FILE.icns or Image or \"NONE\">"
+    description: "FILE.ico：将图标应用于 Windows 可执行文件。FILE.exe,ID：从一个 exe 文件中提取带有 ID 的图标。FILE.icns：将图标应用到 macOS 的 .app 捆绑程序中。如果输入的图像文件不是对应平台的格式（Windows 为 ico，Mac 为 icns），PyInstaller 会尝试使用 Pillow 将图标翻译成正确的格式（如果安装了 Pillow）。使用 “NONE” 不应用任何图标，从而使操作系统显示默认图标（默认值：使用 PyInstaller 的图标）。该选项可多次使用。"
+    platform: [Windows, macOS]
+
+  - option: "--disable-windowed-traceback"
+    description: "禁用窗口（noconsole）模式下未处理异常的回溯转储，并显示禁用此功能的信息。"
+    platform: [Windows, macOS]
+
+
+  # Windows 专用选项
+  - option: "--version-file FILE"
+    description: "将 FILE 中的版本资源添加到 exe 中。"
+    platform: [Windows]
+
+  - option: "-m <FILE or XML>, --manifest <FILE or XML>"
+    description: "将 manifest FILE 或 XML 添加到 exe 中。"
+    platform: [Windows]
+
+  - option: "-r RESOURCE, --resource RESOURCE"
+    description: "为 Windows 可执行文件添加或更新资源。RESOURCE 包含一到四个条目：FILE[,TYPE[,NAME[,LANGUAGE]]]。FILE 可以是数据文件或 exe/dll。对于数据文件，则必须指定 TYPE 和 NAME。LANGUAGE 默认为 0，也可以指定为通配符 `*`，以更新给定 TYPE 和 NAME 的所有资源。对于 exe/dll 文件，如果省略 TYPE、NAME 和 LANGUAGE 或将其指定为通配符 `*`，则 FILE 中的所有资源都将添加/更新到最终可执行文件中。该选项可多次使用。"
+    platform: [Windows]
+
+  - option: "--uac-admin"
+    description: "使用该选项可创建一个 Manifest，在应用程序启动时请求提升权限。"
+    platform: [Windows]
+
+  - option: "--uac-uiaccess"
+    description: "使用此选项，可让提升后的应用程序与远程桌面协同工作。"
+    platform: [Windows]
+
+  - option: "--hide-console {hide-late,minimize-late,hide-early,minimize-early}"
+    description: "在启用控制台的可执行文件中，如果程序有控制台窗口（即，不是从一个现有的控制台窗口启动的），bootloader 会自动隐藏或最小化控制台窗口。"
+    platform: [Windows]
+
+
+  # macOS 专用选项
+  - option: "--argv-emulation"
+    description: "启用 macOS 应用程序捆绑包的 argv 仿真。如果启用，初始打开文档/URL 事件将由 bootloader 处理，并将传递的文件路径或 URL 附加到 sys.argv。"
+    platform: [macOS]
+
+  - option: "--osx-bundle-identifier BUNDLE_IDENTIFIER"
+    description: "macOS `.app` 捆绑标识符用于代码签名的唯一程序名称。通常的形式是以反向 DNS 记法表示的分层名称。例如：com.mycompany.department.appname。（默认值：第一个脚本的名称）"
+    platform: [macOS]
+
+  - option: "--target-architecture ARCH, --target-arch ARCH"
+    description: "目标架构。有效值：`x86_64`、`arm64`、`universal2`。启用冻结应用程序在 universal2 和 single-arch version 之间的切换（前提是 Python 安装支持目标架构）。如果为指定目标架构，则以当前运行的架构为目标。"
+    platform: [macOS]
+
+  - option: "--codesign-identity IDENTITY"
+    description: "代码签名身份。使用提供的身份对收集的二进制文件和生成的可执行文件进行签名。如果未提供签名标识，则会执行临时签名。"
+    platform: [macOS]
+
+  - option: "--osx-entitlements-file FILENAME"
+    description: "在对收集的二进制文件进行代码签名时使用的权限文件。"
+    platform: [macOS]
+
+
+  # 罕用的特殊选项
+  - option: "--runtime-tmpdir PATH"
+    description: "在单文件模式下提取库和支持文件的位置。如果给定此选项，bootloader 将忽略运行时操作系统定义的任何临时文件夹位置。将在此处创建 `_MEIxxxxxx` 文件夹。请仅在你知道自己在做什么的情况下使用该选项。"
+    platform: [all]
+
+  - option: "--bootloader-ignore-signals"
+    description: "告知 bootloader 忽略信号，而不是将其转发给子进程。例如，在监督进程同时向 bootloader 和子进程发出信号（如，通过进程组）以避免向子进程发出两次信号的情况下就很有用。"
+    platform: [all]

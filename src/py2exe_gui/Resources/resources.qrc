@@ -2,11 +2,15 @@
 <RCC version="1.0">
     <qresource prefix="Icons">
         <file alias="Py2exe-GUI_icon_72px">Icons/Py2exe-GUI_icon_72px.png</file>
+        <file alias="Python_128px">Icons/Python_128px.png</file>
+        <file alias="PyInstaller">Icons/pyinstaller-icon-console.png</file>
     </qresource>
     <qresource prefix="Texts" lang="zh">
         <file alias="About_Text">Texts/About_zh.md</file>
+        <file alias="PyInstaller_Options">Texts/pyinstaller_options_zh.yaml</file>
     </qresource>
     <qresource prefix="Texts" lang="en">
         <file alias="About_Text">Texts/About_en.md</file>
+        <file alias="PyInstaller_Options">Texts/pyinstaller_options_en.yaml</file>
     </qresource>
 </RCC>
