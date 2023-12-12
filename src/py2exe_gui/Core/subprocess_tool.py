@@ -79,7 +79,7 @@ class SubProcessTool(QObject):
 
     def abort_process(self, timeout: int = 5000) -> bool:
         """
-        终止子进程 \n
+        尝试中止子进程，超时后杀死子进程。若子进程没有运行，则什么都不做。 \n
         :param timeout: 超时时间，单位为毫秒
         :return: 子进程是否完成
         """

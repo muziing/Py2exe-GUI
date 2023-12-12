@@ -20,13 +20,6 @@ class ScriptFileDlg(QFileDialog):
 
         super().__init__(parent)
 
-        self._setup()
-
-    def _setup(self) -> None:
-        """
-        配置脚本路径对话框 \n
-        """
-
         self.setAcceptMode(QFileDialog.AcceptMode.AcceptOpen)
         self.setViewMode(QFileDialog.ViewMode.Detail)
         self.setNameFilters(("Python脚本文件 (*.py *.pyw)", "所有文件 (*)"))
@@ -49,13 +42,6 @@ class IconFileDlg(QFileDialog):
 
         super().__init__(parent)
 
-        self._setup()
-
-    def _setup(self) -> None:
-        """
-        配置应用图标对话框 \n
-        """
-
         self.setAcceptMode(QFileDialog.AcceptMode.AcceptOpen)
         self.setViewMode(QFileDialog.ViewMode.Detail)
         self.setNameFilters(("图标文件 (*.ico *.icns)", "所有文件 (*)"))
@@ -64,28 +50,6 @@ class IconFileDlg(QFileDialog):
         self.setLabelText(QFileDialog.DialogLabel.FileType, "图标文件")
         self.setLabelText(QFileDialog.DialogLabel.Accept, "打开")
         self.setLabelText(QFileDialog.DialogLabel.Reject, "取消")
-
-
-class AddDataDlg(QFileDialog):
-    """
-    用于添加附加数据的对话框
-    """
-
-    def __init__(self, parent: Optional[QWidget] = None) -> None:
-        """
-        :param parent: 父控件对象
-        """
-
-        super().__init__(parent)
-
-        self._setup()
-
-    def _setup(self) -> None:
-        """
-        配置添加数据对话框 \n
-        """
-
-        pass
 
 
 class AboutDlg(QMessageBox):
@@ -101,13 +65,6 @@ class AboutDlg(QMessageBox):
         super().__init__(parent)
 
         self._about_text: str = ""
-        self._setup()
-
-    def _setup(self) -> None:
-        """
-        配置关于信息对话框 \n
-        """
-
         self.setWindowTitle("关于")
         self.setStandardButtons(QMessageBox.StandardButton.Ok)
         self.setTextFormat(Qt.TextFormat.MarkdownText)
