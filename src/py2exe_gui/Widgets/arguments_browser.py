@@ -5,10 +5,26 @@ from typing import Optional
 
 from PySide6.QtWidgets import QTextBrowser, QWidget
 
-from ..Constants import get_line_continuation
+from ..Constants import PLATFORM
+from ..Core import RUNTIME_INFO
 
 # 一组适合浅色背景的颜色
 colors = ["#FD6D5A", "#FEB40B", "#6DC354", "#994487", "#518CD8", "#443295"]
+
+
+def get_line_continuation() -> str:
+    """
+    获取当前运行平台对应的命令行续行符 \n
+    :return: line continuation character
+    """
+
+    # 各平台的命令行续行符
+    line_continuation_text = {"shell": "\\", "cmd": "^", "powershell": "`"}
+
+    if PLATFORM.windows == RUNTIME_INFO.platform:
+        return line_continuation_text["powershell"]
+    else:
+        return line_continuation_text["shell"]
 
 
 def wrap_font_tag(raw_text: str, *, color: str, **kwargs):

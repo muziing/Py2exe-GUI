@@ -4,6 +4,7 @@
 from pathlib import Path
 from sys import getdefaultencoding
 from typing import Optional, Sequence, Union
+from warnings import warn
 
 from PySide6.QtCore import QIODeviceBase, QObject, QProcess, Signal
 
@@ -78,7 +79,7 @@ class SubProcessTool(QObject):
 
     def abort_process(self, timeout: int = 5000) -> bool:
         """
-        终止子进程 \n
+        尝试中止子进程，超时后杀死子进程。若子进程没有运行，则什么都不做。 \n
         :param timeout: 超时时间，单位为毫秒
         :return: 子进程是否完成
         """
@@ -160,9 +161,9 @@ class SubProcessTool(QObject):
         """
 
         states = {
-            QProcess.ProcessState.NotRunning: "非运行",
-            QProcess.ProcessState.Starting: "启动中……",
-            QProcess.ProcessState.Running: "正在运行中……",
+            QProcess.ProcessState.NotRunning: "The process is not running.",
+            QProcess.ProcessState.Starting: "The process is starting...",
+            QProcess.ProcessState.Running: "The process is running...",
         }
         state_name = states[state]
         self.output.emit((self.STATE, state_name))
@@ -174,16 +175,17 @@ class SubProcessTool(QObject):
         """
 
         process_error = {
-            QProcess.ProcessError.FailedToStart: "进程启动失败",
-            QProcess.ProcessError.Crashed: "进程崩溃",
-            QProcess.ProcessError.Timedout: "超时",
-            QProcess.ProcessError.WriteError: "写入错误",
-            QProcess.ProcessError.ReadError: "读取错误",
-            QProcess.ProcessError.UnknownError: "未知错误",
+            QProcess.ProcessError.FailedToStart: "The process failed to start.",
+            QProcess.ProcessError.Crashed: "The process has crashed.",
+            QProcess.ProcessError.Timedout: "The process has timed out.",
+            QProcess.ProcessError.WriteError: "A write error occurred in the process.",
+            QProcess.ProcessError.ReadError: "A read error occurred in the process",
+            QProcess.ProcessError.UnknownError: "An unknown error has occurred in the process.",
         }
         error_type = process_error[error]
 
         if self._process:
             self.abort_process(0)
         self.output.emit((self.ERROR, error_type))
+        warn(error_type, category=Warning, stacklevel=3)
         self._process = None

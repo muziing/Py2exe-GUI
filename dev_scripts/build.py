@@ -7,6 +7,7 @@ from pathlib import Path
 
 from dev_scripts.check_funcs import (
     check_license_statement,
+    check_mypy,
     check_pre_commit,
     check_version_num,
 )
@@ -72,7 +73,8 @@ def build_py2exe_gui() -> None:
         clear_pycache(SRC_PATH)
         process_md_images(README_FILE_LIST)
         # compile_resources()
-        print(f"pre-commit检查完毕，返回码：{check_pre_commit()}。")
+        print(f"pre-commit 检查完毕，返回码：{check_pre_commit()}。")
+        print(f"mypy 检查完毕，返回码：{check_mypy()}。")
 
         # 正式构建
         subprocess.run(["poetry", "build"])  # TODO 处理异常与返回值

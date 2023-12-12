@@ -49,6 +49,12 @@ pip install py2exe-gui
 Run:
 
 ```shell
+py2exe-gui
+```
+
+You can run py2exe-gui as a package if running it as a script doesn't work:
+
+```shell
 python -m py2exe_gui  # `_`, not `-`
 ```
 

@@ -6,7 +6,12 @@ import subprocess
 import tomllib
 import warnings
 
-from dev_scripts.path_constants import COMPILED_RESOURCES, PROJECT_ROOT, SRC_PATH
+from dev_scripts.path_constants import (
+    COMPILED_RESOURCES,
+    PROJECT_ROOT,
+    SRC_PATH,
+    SRC_PKG_PATH,
+)
 from py2exe_gui import Constants as py2exe_gui_Constants
 
 
@@ -85,6 +90,19 @@ def check_pre_commit() -> int:
         return 0
 
 
+def check_mypy() -> int:
+    """
+    调用mypy进行静态代码分析
+    """
+
+    mypy_cmd = ["mypy", SRC_PKG_PATH, "--config-file", PROJECT_ROOT / "pyproject.toml"]
+    print("开始运行 mypy 检查...")
+    result = subprocess.run(mypy_cmd)
+    print("mypy 检查运行完毕。")
+
+    return result.returncode
+
+
 def check_requirements() -> int:
     """
     检查 requirements.txt 中的依赖是否最新
@@ -97,4 +115,5 @@ if __name__ == "__main__":
     check_license_statement()
     check_version_num()
     check_pre_commit()
+    check_mypy()
     check_requirements()

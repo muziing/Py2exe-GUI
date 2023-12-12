@@ -19,7 +19,8 @@ from PySide6.QtWidgets import (
 )
 
 from ..Constants.packaging_constants import PyinstallerArgs
-from ..Constants.platform_constants import PLATFORM, RUNTIME_PLATFORM
+from ..Constants.platform_constants import PLATFORM
+from ..Core import RUNTIME_INFO
 from .arguments_browser import ArgumentsBrowser
 from .dialog_widgets import IconFileDlg, ScriptFileDlg
 
@@ -58,7 +59,7 @@ class CenterWidget(QWidget):
         self.fd_group = QButtonGroup()
 
         # 应用图标（仅 Windows 与 macOS）
-        if RUNTIME_PLATFORM in (PLATFORM.windows, PLATFORM.macos):
+        if RUNTIME_INFO.platform in (PLATFORM.windows, PLATFORM.macos):
             self.icon_path_label = QLabel()
             self.icon_file_dlg = IconFileDlg()
             self.icon_browse_btn = QPushButton()
@@ -67,7 +68,7 @@ class CenterWidget(QWidget):
         # TODO 重构不同平台功能判断，减少 if RUNTIME_PLATFORM in () 语句重复次数
 
         # 是否为stdio启用终端（仅 Windows 与 macOS）
-        if RUNTIME_PLATFORM in (PLATFORM.windows, PLATFORM.macos):
+        if RUNTIME_INFO.platform in (PLATFORM.windows, PLATFORM.macos):
             self.console_checkbox = QCheckBox()
 
         # 清理缓存与临时文件
@@ -103,7 +104,7 @@ class CenterWidget(QWidget):
         self.fd_group.addButton(self.one_dir_btn, 0)
         self.fd_group.addButton(self.one_file_btn, 1)
 
-        if RUNTIME_PLATFORM in (PLATFORM.windows, PLATFORM.macos):
+        if RUNTIME_INFO.platform in (PLATFORM.windows, PLATFORM.macos):
             self.icon_path_label.setText("应用图标：")
             self.icon_path_le.setReadOnly(True)
             self.icon_path_le.setPlaceholderText("图标文件路径")
@@ -191,28 +192,18 @@ class CenterWidget(QWidget):
                 self.option_selected.emit((PyinstallerArgs.clean, ""))
                 self.parent_widget.statusBar().showMessage("不会删除缓存与临时文件")
 
-        @QtCore.Slot()
-        def run_packaging() -> None:
-            """
-            “运行打包”按钮的槽函数 \n
-            """
-
-            self.parent().packager.run_packaging_process()
-            self.parent().subprocess_dlg.show()
-
         # 连接信号与槽
-        self.script_browse_btn.clicked.connect(self.script_file_dlg.open)  # type: ignore
-        self.script_file_dlg.fileSelected.connect(script_file_selected)  # type: ignore
-        self.project_name_le.editingFinished.connect(project_name_selected)  # type: ignore
-        self.fd_group.idClicked.connect(one_fd_selected)  # type: ignore
-        self.run_packaging_btn.clicked.connect(run_packaging)  # type: ignore
+        self.script_browse_btn.clicked.connect(self.script_file_dlg.open)
+        self.script_file_dlg.fileSelected.connect(script_file_selected)
+        self.project_name_le.editingFinished.connect(project_name_selected)
+        self.fd_group.idClicked.connect(one_fd_selected)
 
-        if RUNTIME_PLATFORM in (PLATFORM.windows, PLATFORM.macos):
-            self.icon_browse_btn.clicked.connect(self.icon_file_dlg.open)  # type: ignore
-            self.icon_file_dlg.fileSelected.connect(icon_file_selected)  # type: ignore
-            self.console_checkbox.toggled.connect(console_selected)  # type: ignore
+        if RUNTIME_INFO.platform in (PLATFORM.windows, PLATFORM.macos):
+            self.icon_browse_btn.clicked.connect(self.icon_file_dlg.open)
+            self.icon_file_dlg.fileSelected.connect(icon_file_selected)
+            self.console_checkbox.toggled.connect(console_selected)
 
-        self.clean_checkbox.toggled.connect(clean_selected)  # type: ignore
+        self.clean_checkbox.toggled.connect(clean_selected)
 
     def _set_layout(self) -> None:
         """
@@ -242,7 +233,7 @@ class CenterWidget(QWidget):
         main_layout.addLayout(fd_layout)
         main_layout.addStretch(10)
 
-        if RUNTIME_PLATFORM in (PLATFORM.windows, PLATFORM.macos):
+        if RUNTIME_INFO.platform in (PLATFORM.windows, PLATFORM.macos):
             main_layout.addWidget(self.console_checkbox)
             main_layout.addStretch(10)
             icon_layout = QGridLayout()
@@ -270,6 +261,7 @@ class CenterWidget(QWidget):
 
         if option_key == PyinstallerArgs.script_path:
             script_path = Path(option_value)
+            self.icon_file_dlg.setDirectory(str(script_path.parent.resolve()))
             self.script_path_le.setText(script_path.name)
             self.parent_widget.statusBar().showMessage(
                 f"打开脚本路径：{str(script_path.resolve())}"

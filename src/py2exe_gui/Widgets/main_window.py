@@ -8,6 +8,7 @@ from PySide6.QtWidgets import QApplication, QLabel, QMainWindow, QMenuBar, QStat
 from ..Constants.app_constants import AppConstant
 from .center_widget import CenterWidget
 from .dialog_widgets import AboutDlg
+from .pyinstaller_option_widget import PyinstallerOptionTable
 
 
 def open_url(url: str) -> None:
@@ -30,6 +31,7 @@ class MainWindow(QMainWindow):
         self.center_widget = CenterWidget(self)
         self.menu_bar = QMenuBar(self)
         self.status_bar = QStatusBar(self)
+        self.pyinstaller_option_table = PyinstallerOptionTable()
 
         self.setCentralWidget(self.center_widget)
         self.setMenuBar(self.menu_bar)
@@ -67,9 +69,12 @@ class MainWindow(QMainWindow):
 
         help_menu.addAction(
             "PyInstaller官方文档",
-            lambda: open_url("https://pyinstaller.org/en/stable/usage.html"),
+            lambda: open_url(
+                "https://pyinstaller.org/en/stable/usage.html"
+            ),  # TODO 运行时语言为中文时，指向中文翻译版文档
         )
-        help_menu.addAction("PyInstaller选项详情")  # 暂时只为占位
+        # TODO 把 URLs 从硬编码中解救出来，放到资源目录下文本文件中去
+        help_menu.addAction("PyInstaller选项详情", self.pyinstaller_option_table.show)
         help_menu.addSeparator()
         help_menu.addAction(
             "报告Bug", lambda: open_url("https://github.com/muziing/Py2exe-GUI/issues")

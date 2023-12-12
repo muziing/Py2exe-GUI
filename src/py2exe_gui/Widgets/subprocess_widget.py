@@ -1,8 +1,6 @@
 # Licensed under the GPLv3 License: https://www.gnu.org/licenses/gpl-3.0.html
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
-import subprocess
-
 from PySide6.QtCore import Slot
 from PySide6.QtGui import QCloseEvent
 from PySide6.QtWidgets import (
@@ -14,7 +12,6 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from ..Constants import PLATFORM
 from ..Core.subprocess_tool import SubProcessTool
 
 
@@ -44,9 +41,6 @@ class SubProcessDlg(QDialog):
         self.setMinimumWidth(400)
         self.setModal(True)  # 设置为模态对话框
 
-        # 连接信号与槽
-        self.multifunction_btn.clicked.connect(self.handle_multifunction)  # type: ignore
-
         # 布局管理器
         main_layout = QVBoxLayout()
         main_layout.addWidget(self.info_label)
@@ -65,7 +59,7 @@ class SubProcessDlg(QDialog):
 
         if output_type == SubProcessTool.STATE:
             self.info_label.setText(output_text)
-            if output_text == "正在运行中……":
+            if output_text == "The process is running...":
                 self.multifunction_btn.setText("取消")
         elif (
             output_type == SubProcessTool.STDOUT or output_type == SubProcessTool.STDERR
@@ -80,31 +74,9 @@ class SubProcessDlg(QDialog):
                 self.multifunction_btn.setText("取消")
         elif output_type == SubProcessTool.ERROR:
             self.info_label.setText("PyInstaller错误！")
-            self.browser.append(output_text)
+            self.browser.append(f"PyInstaller 子进程输出信息：{output_text}")
             self.browser.append("请检查是否已经安装正确版本的 PyInstaller")
             self.multifunction_btn.setText("关闭")
-
-    @Slot()
-    def handle_multifunction(self) -> None:
-        """
-        处理多功能按钮点击信号的槽 \n
-        """
-
-        btn_text = self.multifunction_btn.text()
-        if btn_text == "取消":
-            self.parent().packager.subprocess.abort_process()
-            self.close()
-        elif btn_text == "打开输出位置":
-            dist_path = self.parent().packaging_task.script_path.parent / "dist"
-            if self.parent().running_platform == PLATFORM.windows:
-                import os  # fmt: skip
-                os.startfile(dist_path)  # noqa
-            elif self.parent().running_platform == PLATFORM.linux:
-                subprocess.call(["xdg-open", dist_path])
-            elif self.parent().running_platform == PLATFORM.macos:
-                subprocess.call(["open", dist_path])
-        elif btn_text == "关闭":
-            self.close()
 
     def closeEvent(self, event: QCloseEvent) -> None:
         """
@@ -112,6 +84,6 @@ class SubProcessDlg(QDialog):
         :param event: 关闭事件
         """
 
-        self.parent().packager.subprocess.abort_process()
+        self.finished.emit(-1)
         self.browser.clear()
         super().closeEvent(event)
