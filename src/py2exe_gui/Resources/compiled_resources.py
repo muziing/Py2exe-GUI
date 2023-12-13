@@ -1104,7 +1104,7 @@ S\x88\xcc\xb2~m\xcd\xfc\x03\x9ax\x05\x01- \xd0\
 \xc8\xeb3\x05F^\x98\x03\xbf\xf7\xd7h\x81\xb6BV\
 \xac \xdf\xac\xf2\xff\x01\xdd\xf04s\x03\xd0\xf8\xb0\x00\
 \x00\x00\x00IEND\xaeB`\x82\
-\x00\x002=\
+\x00\x002g\
 o\
 ptions:\x0d\x0a\x0d\x0a  # O\
 ptions\x0d\x0a  - opti\
@@ -1318,25 +1318,38 @@ t visible in the\
 ipt(s). This opt\
 ion can be used \
 multiple times.\x22\
-\x0d\x0a\x0d\x0a  - option: \
-\x22--collect-submo\
-dules MODULENAME\
-\x22\x0d\x0a    descripti\
-on: \x22Collect all\
- submodules from\
- the specified p\
-ackage or module\
-. This option ca\
-n be used multip\
-le times.\x22\x0d\x0a    \
-platform: [all]\x0d\
-\x0a\x0d\x0a  - option: \x22\
---collect-data M\
-ODULENAME, --col\
-lect-datas MODUL\
+\x0d\x0a    platform: \
+[all]\x0d\x0a\x0d\x0a  - opt\
+ion: \x22--collect-\
+submodules MODUL\
 ENAME\x22\x0d\x0a    desc\
 ription: \x22Collec\
-t all data from \
+t all submodules\
+ from the specif\
+ied package or m\
+odule. This opti\
+on can be used m\
+ultiple times.\x22\x0d\
+\x0a    platform: [\
+all]\x0d\x0a\x0d\x0a  - opti\
+on: \x22--collect-d\
+ata MODULENAME, \
+--collect-datas \
+MODULENAME\x22\x0d\x0a   \
+ description: \x22C\
+ollect all data \
+from the specifi\
+ed package or mo\
+dule. This optio\
+n can be used mu\
+ltiple times.\x22\x0d\x0a\
+    platform: [a\
+ll]\x0d\x0a\x0d\x0a  - optio\
+n: \x22--collect-bi\
+naries MODULENAM\
+E\x22\x0d\x0a    descript\
+ion: \x22Collect al\
+l binaries from \
 the specified pa\
 ckage or module.\
  This option can\
@@ -1344,572 +1357,562 @@ ckage or module.\
 e times.\x22\x0d\x0a    p\
 latform: [all]\x0d\x0a\
 \x0d\x0a  - option: \x22-\
--collect-binarie\
-s MODULENAME\x22\x0d\x0a \
+-collect-all MOD\
+ULENAME\x22\x0d\x0a    de\
+scription: \x22Coll\
+ect all submodul\
+es, data files, \
+and binaries fro\
+m the specified \
+package or modul\
+e. This option c\
+an be used multi\
+ple times.\x22\x0d\x0a   \
+ platform: [all]\
+\x0d\x0a\x0d\x0a  - option: \
+\x22--copy-metadata\
+ PACKAGENAME\x22\x0d\x0a \
    description: \
-\x22Collect all bin\
-aries from the s\
-pecified package\
- or module. This\
- option can be u\
-sed multiple tim\
-es.\x22\x0d\x0a    platfo\
-rm: [all]\x0d\x0a\x0d\x0a  -\
- option: \x22--coll\
-ect-all MODULENA\
-ME\x22\x0d\x0a    descrip\
-tion: \x22Collect a\
-ll submodules, d\
-ata files, and b\
-inaries from the\
- specified packa\
-ge or module. Th\
-is option can be\
- used multiple t\
-imes.\x22\x0d\x0a\x0d\x0a  - op\
-tion: \x22--copy-me\
-tadata PACKAGENA\
-ME\x22\x0d\x0a    descrip\
-tion: \x22Copy meta\
-data for the spe\
-cified package. \
-This option can \
-be used multiple\
- times.\x22\x0d\x0a    pl\
-atform: [all]\x0d\x0a\x0d\
-\x0a  - option: \x22--\
-recursive-copy-m\
-etadata PACKAGEN\
-AME\x22\x0d\x0a    descri\
-ption: \x22Copy met\
-adata for the sp\
-ecified package \
-and all its depe\
-ndencies. This o\
+\x22Copy metadata f\
+or the specified\
+ package. This o\
 ption can be use\
 d multiple times\
 .\x22\x0d\x0a    platform\
 : [all]\x0d\x0a\x0d\x0a  - o\
-ption: \x22--additi\
-onal-hooks-dir H\
-OOKSPATH\x22\x0d\x0a    d\
-escription: \x22An \
-additional path \
-to search for ho\
-oks. This option\
- can be used mul\
-tiple times.\x22\x0d\x0a \
-   platform: [al\
-l]\x0d\x0a\x0d\x0a  - option\
-: \x22--runtime-hoo\
-k RUNTIME_HOOKS\x22\
-\x0d\x0a    descriptio\
-n: \x22Path to a cu\
-stom runtime hoo\
-k file. A runtim\
-e hook is code t\
-hat is bundled w\
-ith the executab\
-le and is execut\
-ed before any ot\
-her code or modu\
-le to set up spe\
-cial features of\
- the runtime env\
-ironment. This o\
-ption can be use\
-d multiple times\
-.\x22\x0d\x0a    platform\
-: [all]\x0d\x0a\x0d\x0a  - o\
-ption: \x22--exclud\
-e-module EXCLUDE\
-S\x22\x0d\x0a    descript\
-ion: \x22Optional m\
-odule or package\
- (the Python nam\
-e, not the path \
-name) that will \
-be ignored (as t\
-hough it was not\
- found). This op\
-tion can be used\
- multiple times.\
-\x22\x0d\x0a    platform:\
- [all]\x0d\x0a\x0d\x0a  - op\
-tion: \x22--splash \
-IMAGE_FILE\x22\x0d\x0a   \
- description: \x22(\
-EXPERIMENTAL) Ad\
-d an splash scre\
-en with the imag\
-e IMAGE_FILE to \
-the application.\
- The splash scre\
-en can display p\
-rogress updates \
-while unpacking.\
-\x22\x0d\x0a    platform:\
- [all]\x0d\x0a\x0d\x0a\x0d\x0a  # \
-How To Generate\x0d\
-\x0a  - option: \x22-d\
- {all,imports,bo\
-otloader,noarchi\
-ve}, --debug {al\
-l,imports,bootlo\
-ader,noarchive}\x22\
-\x0d\x0a    descriptio\
-n: \x22Provide assi\
-stance with debu\
-gging a frozen a\
-pplication. This\
- argument may be\
- provided multip\
-le times to sele\
-ct several of th\
-e following opti\
-ons. - all: All \
-three of the fol\
-lowing options. \
-- imports: speci\
-fy the -v option\
- to the underlyi\
-ng Python interp\
-reter, causing i\
-t to print a mes\
-sage each time a\
- module is initi\
-alized, showing \
-the place (filen\
-ame or built-in \
-module) from whi\
-ch it is loaded.\
- See https://doc\
-s.python.org/3/u\
-sing/cmdline.htm\
-l#id4. - bootloa\
-der: tell the bo\
-otloader to issu\
-e progress messa\
-ges while initia\
-lizing and start\
-ing the bundled \
-app. Used to dia\
-gnose problems w\
-ith missing impo\
-rts. - noarchive\
-: instead of sto\
-ring all frozen \
-Python source fi\
-les as an archiv\
-e inside the res\
-ulting executabl\
-e, store them as\
- files in the re\
-sulting output d\
-irectory.\x22\x0d\x0a    \
-platform: [all]\x0d\
-\x0a\x0d\x0a  - option: \x22\
---python-option \
-PYTHON_OPTION\x22\x0d\x0a\
+ption: \x22--recurs\
+ive-copy-metadat\
+a PACKAGENAME\x22\x0d\x0a\
     description:\
- \x22Specify a comm\
-and-line option \
-to pass to the P\
-ython interprete\
-r at runtime. Cu\
-rrently supports\
- \xe2\x80\x9cv\xe2\x80\x9d (equiva\
-lent to \xe2\x80\x9c\xe2\x80\x93de\
-bug imports\xe2\x80\x9d),\
- \xe2\x80\x9cu\xe2\x80\x9d, \xe2\x80\x9cW <\
-warning control>\
-\xe2\x80\x9d, \xe2\x80\x9cX <xopti\
-on>\xe2\x80\x9d, and \xe2\x80\x9ch\
-ash_seed=<value>\
-\xe2\x80\x9d. For details\
-, see the sectio\
-n \xe2\x80\x9cSpecifying \
-Python Interpret\
-er Options\xe2\x80\x9d in\
- PyInstaller man\
-ual.\x22\x0d\x0a    platf\
-orm: [all]\x0d\x0a\x0d\x0a  \
-- option: \x22-s, -\
--strip\x22\x0d\x0a    des\
-cription: \x22Apply\
- a symbol-table \
-strip to the exe\
-cutable and shar\
-ed libs (not rec\
-ommended for Win\
-dows)\x22\x0d\x0a    plat\
-form: [all]\x0d\x0a\x0d\x0a \
- - option: \x22--no\
-upx\x22\x0d\x0a    descri\
-ption: \x22Do not u\
-se UPX even if i\
-t is available (\
-works differentl\
-y between Window\
-s and *nix)\x22\x0d\x0a  \
+ \x22Copy metadata \
+for the specifie\
+d package and al\
+l its dependenci\
+es. This option \
+can be used mult\
+iple times.\x22\x0d\x0a  \
   platform: [all\
 ]\x0d\x0a\x0d\x0a  - option:\
- \x22--upx-exclude \
+ \x22--additional-h\
+ooks-dir HOOKSPA\
+TH\x22\x0d\x0a    descrip\
+tion: \x22An additi\
+onal path to sea\
+rch for hooks. T\
+his option can b\
+e used multiple \
+times.\x22\x0d\x0a    pla\
+tform: [all]\x0d\x0a\x0d\x0a\
+  - option: \x22--r\
+untime-hook RUNT\
+IME_HOOKS\x22\x0d\x0a    \
+description: \x22Pa\
+th to a custom r\
+untime hook file\
+. A runtime hook\
+ is code that is\
+ bundled with th\
+e executable and\
+ is executed bef\
+ore any other co\
+de or module to \
+set up special f\
+eatures of the r\
+untime environme\
+nt. This option \
+can be used mult\
+iple times.\x22\x0d\x0a  \
+  platform: [all\
+]\x0d\x0a\x0d\x0a  - option:\
+ \x22--exclude-modu\
+le EXCLUDES\x22\x0d\x0a  \
+  description: \x22\
+Optional module \
+or package (the \
+Python name, not\
+ the path name) \
+that will be ign\
+ored (as though \
+it was not found\
+). This option c\
+an be used multi\
+ple times.\x22\x0d\x0a   \
+ platform: [all]\
+\x0d\x0a\x0d\x0a  - option: \
+\x22--splash IMAGE_\
 FILE\x22\x0d\x0a    descr\
-iption: \x22Prevent\
- a binary from b\
-eing compressed \
-when using upx. \
-This is typicall\
-y used if upx co\
-rrupts certain b\
-inaries during c\
-ompression. FILE\
- is the filename\
- of the binary w\
-ithout path. Thi\
-s option can be \
-used multiple ti\
-mes.\x22\x0d\x0a    platf\
-orm: [all]\x0d\x0a\x0d\x0a\x0d\x0a\
-  # Windows And \
-Mac Os X Specifi\
-c Options\x0d\x0a  - o\
-ption: \x22-c, --co\
-nsole, --nowindo\
-wed\x22\x0d\x0a    descri\
-ption: \x22Open a c\
-onsole window fo\
-r standard i/o (\
-default). On Win\
-dows this option\
- has no effect i\
-f the first scri\
-pt is a \xe2\x80\x98.pyw\xe2\
-\x80\x99 file.\x22\x0d\x0a    p\
-latform: [Window\
-s, macOS]\x0d\x0a\x0d\x0a  -\
- option: \x22-w, --\
-windowed, --noco\
-nsole\x22\x0d\x0a    desc\
-ription: \x22Window\
-s and Mac OS X: \
-do not provide a\
- console window \
-for standard i/o\
-. On Mac OS this\
- also triggers b\
-uilding a Mac OS\
- .app bundle. On\
- Windows this op\
-tion is automati\
-cally set if the\
- first script is\
- a \xe2\x80\x98.pyw\xe2\x80\x99 fi\
-le. This option \
-is ignored on *N\
-IX systems.\x22\x0d\x0a  \
-  platform: [Win\
-dows, macOS]\x0d\x0a\x0d\x0a\
-  - option: \x22-i \
-<FILE.ico or FIL\
-E.exe,ID or FILE\
-.icns or Image o\
-r \x5c\x22NONE\x5c\x22>, --i\
-con <FILE.ico or\
- FILE.exe,ID or \
-FILE.icns or Ima\
-ge or \x5c\x22NONE\x5c\x22>\x22\
-\x0d\x0a    descriptio\
-n: \x22FILE.ico: ap\
-ply the icon to \
-a Windows execut\
-able. FILE.exe,I\
-D: extract the i\
-con with ID from\
- an exe. FILE.ic\
-ns: apply the ic\
-on to the .app b\
-undle on Mac OS.\
- If an image fil\
-e is entered tha\
-t isn\xe2\x80\x99t in the\
- platform format\
- (ico on Windows\
-, icns on Mac), \
-PyInstaller trie\
-s to use Pillow \
-to translate the\
- icon into the c\
-orrect format (i\
-f Pillow is inst\
-alled). Use \xe2\x80\x9cN\
-ONE\xe2\x80\x9d to not ap\
-ply any icon, th\
-ereby making the\
- OS show some de\
-fault (default: \
-apply PyInstalle\
-r\xe2\x80\x99s icon). Thi\
-s option can be \
-used multiple ti\
-mes.\x22\x0d\x0a    platf\
-orm: [Windows, m\
-acOS]\x0d\x0a\x0d\x0a  - opt\
-ion: \x22--disable-\
-windowed-traceba\
-ck\x22\x0d\x0a    descrip\
-tion: \x22Disable t\
-raceback dump of\
- unhandled excep\
-tion in windowed\
- (noconsole) mod\
-e (Windows and m\
-acOS only), and \
-instead display \
-a message that t\
-his feature is d\
-isabled.\x22\x0d\x0a    p\
-latform: [Window\
-s, macOS]\x0d\x0a\x0d\x0a\x0d\x0a \
- # Windows Speci\
-fic Options\x0d\x0a  -\
- option: \x22--vers\
-ion-file FILE\x22\x0d\x0a\
-    description:\
- \x22Add a version \
-resource from FI\
-LE to the exe.\x22\x0d\
+iption: \x22(EXPERI\
+MENTAL) Add an s\
+plash screen wit\
+h the image IMAG\
+E_FILE to the ap\
+plication. The s\
+plash screen can\
+ display progres\
+s updates while \
+unpacking.\x22\x0d\x0a   \
+ platform: [all]\
+\x0d\x0a\x0d\x0a\x0d\x0a  # How To\
+ Generate\x0d\x0a  - o\
+ption: \x22-d {all,\
+imports,bootload\
+er,noarchive}, -\
+-debug {all,impo\
+rts,bootloader,n\
+oarchive}\x22\x0d\x0a    \
+description: \x22Pr\
+ovide assistance\
+ with debugging \
+a frozen applica\
+tion. This argum\
+ent may be provi\
+ded multiple tim\
+es to select sev\
+eral of the foll\
+owing options. -\
+ all: All three \
+of the following\
+ options. - impo\
+rts: specify the\
+ -v option to th\
+e underlying Pyt\
+hon interpreter,\
+ causing it to p\
+rint a message e\
+ach time a modul\
+e is initialized\
+, showing the pl\
+ace (filename or\
+ built-in module\
+) from which it \
+is loaded. See h\
+ttps://docs.pyth\
+on.org/3/using/c\
+mdline.html#id4.\
+ - bootloader: t\
+ell the bootload\
+er to issue prog\
+ress messages wh\
+ile initializing\
+ and starting th\
+e bundled app. U\
+sed to diagnose \
+problems with mi\
+ssing imports. -\
+ noarchive: inst\
+ead of storing a\
+ll frozen Python\
+ source files as\
+ an archive insi\
+de the resulting\
+ executable, sto\
+re them as files\
+ in the resultin\
+g output directo\
+ry.\x22\x0d\x0a    platfo\
+rm: [all]\x0d\x0a\x0d\x0a  -\
+ option: \x22--pyth\
+on-option PYTHON\
+_OPTION\x22\x0d\x0a    de\
+scription: \x22Spec\
+ify a command-li\
+ne option to pas\
+s to the Python \
+interpreter at r\
+untime. Currentl\
+y supports \xe2\x80\x9cv\xe2\
+\x80\x9d (equivalent t\
+o \xe2\x80\x9c\xe2\x80\x93debug im\
+ports\xe2\x80\x9d), \xe2\x80\x9cu\xe2\
+\x80\x9d, \xe2\x80\x9cW <warnin\
+g control>\xe2\x80\x9d, \xe2\
+\x80\x9cX <xoption>\xe2\x80\x9d\
+, and \xe2\x80\x9chash_se\
+ed=<value>\xe2\x80\x9d. F\
+or details, see \
+the section \xe2\x80\x9cS\
+pecifying Python\
+ Interpreter Opt\
+ions\xe2\x80\x9d in PyIns\
+taller manual.\x22\x0d\
 \x0a    platform: [\
-Windows]\x0d\x0a\x0d\x0a  - \
-option: \x22-m <FIL\
-E or XML>, --man\
-ifest <FILE or X\
-ML>\x22\x0d\x0a    descri\
-ption: \x22Add mani\
-fest FILE or XML\
- to the exe.\x22\x0d\x0a \
-   platform: [Wi\
-ndows]\x0d\x0a\x0d\x0a  - op\
-tion: \x22-r RESOUR\
-CE, --resource R\
-ESOURCE\x22\x0d\x0a    de\
-scription: \x22Add \
-or update a reso\
-urce to a Window\
-s executable. Th\
-e RESOURCE is on\
-e to four items,\
- FILE[,TYPE[,NAM\
-E[,LANGUAGE]]]. \
-FILE can be a da\
-ta file or an ex\
-e/dll. For data \
-files, at least \
-TYPE and NAME mu\
-st be specified.\
- LANGUAGE defaul\
-ts to 0 or may b\
-e specified as w\
-ildcard * to upd\
-ate all resource\
-s of the given T\
-YPE and NAME. Fo\
-r exe/dll files,\
- all resources f\
-rom FILE will be\
- added/updated t\
-o the final exec\
-utable if TYPE, \
-NAME and LANGUAG\
-E are omitted or\
- specified as wi\
-ldcard *. This o\
-ption can be use\
-d multiple times\
-.\x22\x0d\x0a    platform\
-: [Windows]\x0d\x0a\x0d\x0a \
- - option: \x22--ua\
-c-admin\x22\x0d\x0a    de\
-scription: \x22Usin\
-g this option cr\
-eates a Manifest\
- that will reque\
-st elevation upo\
-n application st\
-art.\x22\x0d\x0a    platf\
-orm: [Windows]\x0d\x0a\
-\x0d\x0a  - option: \x22-\
--uac-uiaccess\x22\x0d\x0a\
-    description:\
- \x22Using this opt\
-ion allows an el\
-evated applicati\
-on to work with \
-Remote Desktop.\x22\
-\x0d\x0a    platform: \
-[Windows]\x0d\x0a\x0d\x0a  -\
- option: \x22--hide\
--console {hide-l\
-ate,minimize-lat\
-e,hide-early,min\
-imize-early}\x22\x0d\x0a \
-   description: \
-\x22Windows only: i\
-n console-enable\
-d executable, ha\
-ve bootloader au\
-tomatically hide\
- or minimize the\
- console window \
-if the program o\
-wns the console \
-window (i.e., wa\
-s not launched f\
-rom an existing \
-console window).\
-\x22\x0d\x0a    platform:\
- [Windows]\x0d\x0a\x0d\x0a\x0d\x0a\
-  # Mac Os Speci\
-fic Options\x0d\x0a  -\
- option: \x22--argv\
--emulation\x22\x0d\x0a   \
- description: \x22E\
-nable argv emula\
-tion for macOS a\
-pp bundles. If e\
-nabled, the init\
-ial open documen\
-t/URL event is p\
-rocessed by the \
-bootloader and t\
-he passed file p\
-aths or URLs are\
- appended to sys\
-.argv.\x22\x0d\x0a    pla\
-tform: [macOS]\x0d\x0a\
-\x0d\x0a  - option: \x22-\
--osx-bundle-iden\
-tifier BUNDLE_ID\
-ENTIFIER\x22\x0d\x0a    d\
-escription: \x22Mac\
- OS .app bundle \
-identifier is us\
-ed as the defaul\
-t unique program\
- name for code s\
-igning purposes.\
- The usual form \
-is a hierarchica\
-l name in revers\
-e DNS notation. \
-For example: com\
-.mycompany.depar\
-tment.appname (d\
-efault: first sc\
-ript\xe2\x80\x99s basenam\
-e)\x22\x0d\x0a    platfor\
-m: [macOS]\x0d\x0a\x0d\x0a  \
-- option: \x22--tar\
-get-architecture\
- ARCH, --target-\
-arch ARCH\x22\x0d\x0a    \
-description: \x22Ta\
-rget architectur\
-e (macOS only; v\
-alid values: x86\
-_64, arm64, univ\
-ersal2). Enables\
- switching betwe\
-en universal2 an\
-d single-arch ve\
-rsion of frozen \
-application (pro\
-vided python ins\
-tallation suppor\
-ts the target ar\
-chitecture). If \
-not target archi\
-tecture is not s\
-pecified, the cu\
-rrent running ar\
-chitecture is ta\
-rgeted.\x22\x0d\x0a    pl\
-atform: [macOS]\x0d\
-\x0a\x0d\x0a  - option: \x22\
---codesign-ident\
-ity IDENTITY\x22\x0d\x0a \
-   description: \
-\x22Code signing id\
-entity (macOS on\
-ly). Use the pro\
-vided identity t\
-o sign collected\
- binaries and ge\
-nerated executab\
-le. If signing i\
-dentity is not p\
-rovided, ad- hoc\
- signing is perf\
-ormed instead.\x22\x0d\
-\x0a    platform: [\
-macOS]\x0d\x0a\x0d\x0a  - op\
-tion: \x22--osx-ent\
-itlements-file F\
-ILENAME\x22\x0d\x0a    de\
-scription: \x22Enti\
-tlements file to\
- use when code-s\
-igning the colle\
-cted binaries (m\
-acOS only).\x22\x0d\x0a  \
-  platform: [mac\
-OS]\x0d\x0a\x0d\x0a\x0d\x0a  # Rar\
-ely Used Special\
- Options\x0d\x0a  - op\
-tion: \x22--runtime\
--tmpdir PATH\x22\x0d\x0a \
-   description: \
-\x22Where to extrac\
-t libraries and \
-support files in\
- onefile-mode. I\
-f this option is\
- given, the boot\
-loader will igno\
-re any temp-fold\
-er location defi\
-ned by the run-t\
-ime OS. The _MEI\
-xxxxxx-folder wi\
-ll be created he\
-re. Please use t\
-his option only \
-if you know what\
- you are doing.\x22\
+all]\x0d\x0a\x0d\x0a  - opti\
+on: \x22-s, --strip\
+\x22\x0d\x0a    descripti\
+on: \x22Apply a sym\
+bol-table strip \
+to the executabl\
+e and shared lib\
+s (not recommend\
+ed for Windows)\x22\
 \x0d\x0a    platform: \
 [all]\x0d\x0a\x0d\x0a  - opt\
-ion: \x22--bootload\
-er-ignore-signal\
-s\x22\x0d\x0a    descript\
-ion: \x22Tell the b\
-ootloader to ign\
-ore signals rath\
-er than forwardi\
-ng them to the c\
-hild process. Us\
-eful in situatio\
-ns where for exa\
-mple a superviso\
-r process signal\
-s both the bootl\
-oader and the ch\
-ild (e.g., via a\
- process group) \
-to avoid signall\
-ing the child tw\
-ice.\x22\x0d\x0a    platf\
-orm: [all]\x0d\x0a\
+ion: \x22--noupx\x22\x0d\x0a\
+    description:\
+ \x22Do not use UPX\
+ even if it is a\
+vailable (works \
+differently betw\
+een Windows and \
+*nix)\x22\x0d\x0a    plat\
+form: [all]\x0d\x0a\x0d\x0a \
+ - option: \x22--up\
+x-exclude FILE\x22\x0d\
+\x0a    description\
+: \x22Prevent a bin\
+ary from being c\
+ompressed when u\
+sing upx. This i\
+s typically used\
+ if upx corrupts\
+ certain binarie\
+s during compres\
+sion. FILE is th\
+e filename of th\
+e binary without\
+ path. This opti\
+on can be used m\
+ultiple times.\x22\x0d\
+\x0a    platform: [\
+all]\x0d\x0a\x0d\x0a\x0d\x0a  # Wi\
+ndows And Mac Os\
+ X Specific Opti\
+ons\x0d\x0a  - option:\
+ \x22-c, --console,\
+ --nowindowed\x22\x0d\x0a\
+    description:\
+ \x22Open a console\
+ window for stan\
+dard i/o (defaul\
+t). On Windows t\
+his option has n\
+o effect if the \
+first script is \
+a \xe2\x80\x98.pyw\xe2\x80\x99 fil\
+e.\x22\x0d\x0a    platfor\
+m: [Windows, mac\
+OS]\x0d\x0a\x0d\x0a  - optio\
+n: \x22-w, --window\
+ed, --noconsole\x22\
+\x0d\x0a    descriptio\
+n: \x22Windows and \
+Mac OS X: do not\
+ provide a conso\
+le window for st\
+andard i/o. On M\
+ac OS this also \
+triggers buildin\
+g a Mac OS .app \
+bundle. On Windo\
+ws this option i\
+s automatically \
+set if the first\
+ script is a \xe2\x80\x98\
+.pyw\xe2\x80\x99 file. Th\
+is option is ign\
+ored on *NIX sys\
+tems.\x22\x0d\x0a    plat\
+form: [Windows, \
+macOS]\x0d\x0a\x0d\x0a  - op\
+tion: \x22-i <FILE.\
+ico or FILE.exe,\
+ID or FILE.icns \
+or Image or \x5c\x22NO\
+NE\x5c\x22>, --icon <F\
+ILE.ico or FILE.\
+exe,ID or FILE.i\
+cns or Image or \
+\x5c\x22NONE\x5c\x22>\x22\x0d\x0a    \
+description: \x22FI\
+LE.ico: apply th\
+e icon to a Wind\
+ows executable. \
+FILE.exe,ID: ext\
+ract the icon wi\
+th ID from an ex\
+e. FILE.icns: ap\
+ply the icon to \
+the .app bundle \
+on Mac OS. If an\
+ image file is e\
+ntered that isn\xe2\
+\x80\x99t in the platf\
+orm format (ico \
+on Windows, icns\
+ on Mac), PyInst\
+aller tries to u\
+se Pillow to tra\
+nslate the icon \
+into the correct\
+ format (if Pill\
+ow is installed)\
+. Use \xe2\x80\x9cNONE\xe2\x80\x9d\
+ to not apply an\
+y icon, thereby \
+making the OS sh\
+ow some default \
+(default: apply \
+PyInstaller\xe2\x80\x99s \
+icon). This opti\
+on can be used m\
+ultiple times.\x22\x0d\
+\x0a    platform: [\
+Windows, macOS]\x0d\
+\x0a\x0d\x0a  - option: \x22\
+--disable-window\
+ed-traceback\x22\x0d\x0a \
+   description: \
+\x22Disable traceba\
+ck dump of unhan\
+dled exception i\
+n windowed (noco\
+nsole) mode (Win\
+dows and macOS o\
+nly), and instea\
+d display a mess\
+age that this fe\
+ature is disable\
+d.\x22\x0d\x0a    platfor\
+m: [Windows, mac\
+OS]\x0d\x0a\x0d\x0a\x0d\x0a  # Win\
+dows Specific Op\
+tions\x0d\x0a  - optio\
+n: \x22--version-fi\
+le FILE\x22\x0d\x0a    de\
+scription: \x22Add \
+a version resour\
+ce from FILE to \
+the exe.\x22\x0d\x0a    p\
+latform: [Window\
+s]\x0d\x0a\x0d\x0a  - option\
+: \x22-m <FILE or X\
+ML>, --manifest \
+<FILE or XML>\x22\x0d\x0a\
+    description:\
+ \x22Add manifest F\
+ILE or XML to th\
+e exe.\x22\x0d\x0a    pla\
+tform: [Windows]\
+\x0d\x0a\x0d\x0a  - option: \
+\x22-r RESOURCE, --\
+resource RESOURC\
+E\x22\x0d\x0a    descript\
+ion: \x22Add or upd\
+ate a resource t\
+o a Windows exec\
+utable. The RESO\
+URCE is one to f\
+our items, FILE[\
+,TYPE[,NAME[,LAN\
+GUAGE]]]. FILE c\
+an be a data fil\
+e or an exe/dll.\
+ For data files,\
+ at least TYPE a\
+nd NAME must be \
+specified. LANGU\
+AGE defaults to \
+0 or may be spec\
+ified as wildcar\
+d * to update al\
+l resources of t\
+he given TYPE an\
+d NAME. For exe/\
+dll files, all r\
+esources from FI\
+LE will be added\
+/updated to the \
+final executable\
+ if TYPE, NAME a\
+nd LANGUAGE are \
+omitted or speci\
+fied as wildcard\
+ *. This option \
+can be used mult\
+iple times.\x22\x0d\x0a  \
+  platform: [Win\
+dows]\x0d\x0a\x0d\x0a  - opt\
+ion: \x22--uac-admi\
+n\x22\x0d\x0a    descript\
+ion: \x22Using this\
+ option creates \
+a Manifest that \
+will request ele\
+vation upon appl\
+ication start.\x22\x0d\
+\x0a    platform: [\
+Windows]\x0d\x0a\x0d\x0a  - \
+option: \x22--uac-u\
+iaccess\x22\x0d\x0a    de\
+scription: \x22Usin\
+g this option al\
+lows an elevated\
+ application to \
+work with Remote\
+ Desktop.\x22\x0d\x0a    \
+platform: [Windo\
+ws]\x0d\x0a\x0d\x0a  - optio\
+n: \x22--hide-conso\
+le {hide-late,mi\
+nimize-late,hide\
+-early,minimize-\
+early}\x22\x0d\x0a    des\
+cription: \x22Windo\
+ws only: in cons\
+ole-enabled exec\
+utable, have boo\
+tloader automati\
+cally hide or mi\
+nimize the conso\
+le window if the\
+ program owns th\
+e console window\
+ (i.e., was not \
+launched from an\
+ existing consol\
+e window).\x22\x0d\x0a   \
+ platform: [Wind\
+ows]\x0d\x0a\x0d\x0a\x0d\x0a  # Ma\
+c Os Specific Op\
+tions\x0d\x0a  - optio\
+n: \x22--argv-emula\
+tion\x22\x0d\x0a    descr\
+iption: \x22Enable \
+argv emulation f\
+or macOS app bun\
+dles. If enabled\
+, the initial op\
+en document/URL \
+event is process\
+ed by the bootlo\
+ader and the pas\
+sed file paths o\
+r URLs are appen\
+ded to sys.argv.\
+\x22\x0d\x0a    platform:\
+ [macOS]\x0d\x0a\x0d\x0a  - \
+option: \x22--osx-b\
+undle-identifier\
+ BUNDLE_IDENTIFI\
+ER\x22\x0d\x0a    descrip\
+tion: \x22Mac OS .a\
+pp bundle identi\
+fier is used as \
+the default uniq\
+ue program name \
+for code signing\
+ purposes. The u\
+sual form is a h\
+ierarchical name\
+ in reverse DNS \
+notation. For ex\
+ample: com.mycom\
+pany.department.\
+appname (default\
+: first script\xe2\x80\
+\x99s basename)\x22\x0d\x0a \
+   platform: [ma\
+cOS]\x0d\x0a\x0d\x0a  - opti\
+on: \x22--target-ar\
+chitecture ARCH,\
+ --target-arch A\
+RCH\x22\x0d\x0a    descri\
+ption: \x22Target a\
+rchitecture (mac\
+OS only; valid v\
+alues: x86_64, a\
+rm64, universal2\
+). Enables switc\
+hing between uni\
+versal2 and sing\
+le-arch version \
+of frozen applic\
+ation (provided \
+python installat\
+ion supports the\
+ target architec\
+ture). If not ta\
+rget architectur\
+e is not specifi\
+ed, the current \
+running architec\
+ture is targeted\
+.\x22\x0d\x0a    platform\
+: [macOS]\x0d\x0a\x0d\x0a  -\
+ option: \x22--code\
+sign-identity ID\
+ENTITY\x22\x0d\x0a    des\
+cription: \x22Code \
+signing identity\
+ (macOS only). U\
+se the provided \
+identity to sign\
+ collected binar\
+ies and generate\
+d executable. If\
+ signing identit\
+y is not provide\
+d, ad- hoc signi\
+ng is performed \
+instead.\x22\x0d\x0a    p\
+latform: [macOS]\
+\x0d\x0a\x0d\x0a  - option: \
+\x22--osx-entitleme\
+nts-file FILENAM\
+E\x22\x0d\x0a    descript\
+ion: \x22Entitlemen\
+ts file to use w\
+hen code-signing\
+ the collected b\
+inaries (macOS o\
+nly).\x22\x0d\x0a    plat\
+form: [macOS]\x0d\x0a\x0d\
+\x0a\x0d\x0a  # Rarely Us\
+ed Special Optio\
+ns\x0d\x0a  - option: \
+\x22--runtime-tmpdi\
+r PATH\x22\x0d\x0a    des\
+cription: \x22Where\
+ to extract libr\
+aries and suppor\
+t files in onefi\
+le-mode. If this\
+ option is given\
+, the bootloader\
+ will ignore any\
+ temp-folder loc\
+ation defined by\
+ the run-time OS\
+. The _MEIxxxxxx\
+-folder will be \
+created here. Pl\
+ease use this op\
+tion only if you\
+ know what you a\
+re doing.\x22\x0d\x0a    \
+platform: [all]\x0d\
+\x0a\x0d\x0a  - option: \x22\
+--bootloader-ign\
+ore-signals\x22\x0d\x0a  \
+  description: \x22\
+Tell the bootloa\
+der to ignore si\
+gnals rather tha\
+n forwarding the\
+m to the child p\
+rocess. Useful i\
+n situations whe\
+re for example a\
+ supervisor proc\
+ess signals both\
+ the bootloader \
+and the child (e\
+.g., via a proce\
+ss group) to avo\
+id signalling th\
+e child twice.\x22\x0d\
+\x0a    platform: [\
+all]\x0d\x0a\
 \x00\x000,\
 o\
 ptions:\x0d\x0a\x0d\x0a  # \xe9\
@@ -2816,12 +2819,12 @@ qt_resource_struct = b"\
 \x00\x00\x00\x00\x00\x02\x00\x00\x00\x04\x00\x00\x00\x03\
 \x00\x00\x00\x00\x00\x00\x00\x00\
 \x00\x00\x00\x88\x00\x00\x00\x00\x00K\x00\x00D6\
-\x00\x00\x01\x8c]l#\xae\
-\x00\x00\x00\x88\x00\x00\x00\x00\x00:\x00\x00vw\
-\x00\x00\x01\x8c\x5c\xf1\xf5*\
-\x00\x00\x00\xb4\x00\x00\x00\x00\x00K\x00\x00\xa6\xa7\
+\x00\x00\x01\x8cbWBG\
+\x00\x00\x00\x88\x00\x00\x00\x00\x00:\x00\x00v\xa1\
+\x00\x00\x01\x8ca$\xe3\x9e\
+\x00\x00\x00\xb4\x00\x00\x00\x00\x00K\x00\x00\xa6\xd1\
 \x00\x00\x01\x8b\xc1C~]\
-\x00\x00\x00\xb4\x00\x00\x00\x00\x00:\x00\x00\xa9|\
+\x00\x00\x00\xb4\x00\x00\x00\x00\x00:\x00\x00\xa9\xa6\
 \x00\x00\x01\x8b\xc1C~^\
 \x00\x00\x00 \x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\
 \x00\x00\x01\x8b\xc1C~]\
