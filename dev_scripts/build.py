@@ -12,9 +12,12 @@ from dev_scripts.check_funcs import (
     check_version_num,
 )
 from dev_scripts.clear_cache import clear_pycache, clear_pyinstaller_dist
-from dev_scripts.path_constants import README_FILE_LIST, RESOURCES_PATH, SRC_PATH
-
-# TODO 加入日志模块，保存构建日志
+from dev_scripts.path_constants import (
+    PROJECT_ROOT,
+    README_FILE_LIST,
+    RESOURCES_PATH,
+    SRC_PATH,
+)
 
 
 def process_md_images(md_file_list: list[Path]) -> None:
@@ -62,6 +65,25 @@ def compile_resources() -> int:
     return result.returncode
 
 
+def export_requirements() -> int:
+    """
+    将项目依赖项导出至 requirements.txt 中
+    :return: poetry export 命令返回值
+    """
+
+    poetry_export_cmd = [
+        "poetry",
+        "export",
+        "--without-hashes",
+        "-o",
+        PROJECT_ROOT / "requirements.txt",
+        "--format=requirements.txt",
+    ]
+    result = subprocess.run(poetry_export_cmd)
+    print(f"已将当前项目依赖导出至 requirements.txt，poetry export 返回码：{result.returncode}")
+    return result.returncode
+
+
 def build_py2exe_gui() -> None:
     """
     构建项目的总函数 \n
@@ -73,6 +95,7 @@ def build_py2exe_gui() -> None:
         clear_pycache(SRC_PATH)
         process_md_images(README_FILE_LIST)
         # compile_resources()
+        export_requirements()
         print(f"pre-commit 检查完毕，返回码：{check_pre_commit()}。")
         print(f"mypy 检查完毕，返回码：{check_mypy()}。")
 
@@ -86,6 +109,7 @@ def build_py2exe_gui() -> None:
 
 
 if __name__ == "__main__":
-    # compile_resources()
     # process_md_images()
+    # compile_resources()
+    # export_requirements()
     build_py2exe_gui()
