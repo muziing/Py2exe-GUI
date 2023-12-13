@@ -18,9 +18,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from ..Constants.packaging_constants import PyinstallerArgs
-from ..Constants.platform_constants import PLATFORM
-from ..Core import RUNTIME_INFO
+from ..Constants import PLATFORM, RUNTIME_INFO, PyinstallerArgs
 from .arguments_browser import ArgumentsBrowser
 from .dialog_widgets import IconFileDlg, ScriptFileDlg
 

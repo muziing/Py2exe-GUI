@@ -8,7 +8,7 @@
 from locale import getdefaultlocale
 from typing import NamedTuple, Optional
 
-from ..Constants import PLATFORM, get_platform
+from .platform_constants import PLATFORM, get_platform
 
 
 class RuntimeInfo(NamedTuple):

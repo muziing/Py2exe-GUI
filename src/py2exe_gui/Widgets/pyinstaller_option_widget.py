@@ -1,12 +1,14 @@
 # Licensed under the GPLv3 License: https://www.gnu.org/licenses/gpl-3.0.html
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
+import warnings
+
 import yaml
 from PySide6.QtCore import QFile, QIODevice
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QHeaderView, QTableWidget, QTableWidgetItem
 
-from ..Core import RUNTIME_INFO
+from ..Constants import RUNTIME_INFO
 
 
 def get_options() -> list[dict]:
@@ -19,6 +21,10 @@ def get_options() -> list[dict]:
     option_file.open(QIODevice.ReadOnly | QIODevice.Text)  # type: ignore
     option_file_text = str(option_file.readAll(), encoding="utf-8")  # type: ignore
     option_file.close()
+
+    if option_file_text == "":
+        warnings.warn("PyInstaller_Options 加载失败，检查资源文件", Warning, stacklevel=1)
+        return []
 
     data = yaml.load(option_file_text, Loader=yaml.Loader)
 

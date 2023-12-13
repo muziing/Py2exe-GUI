@@ -8,8 +8,8 @@ from PySide6.QtCore import Slot
 from PySide6.QtGui import QCloseEvent
 from PySide6.QtWidgets import QApplication
 
-from .Constants import PLATFORM  # noqa
-from .Core import RUNTIME_INFO, Packaging, PackagingTask  # noqa
+from .Constants import PLATFORM, RUNTIME_INFO  # noqa
+from .Core import Packaging, PackagingTask  # noqa
 from .Resources import compiled_resources  # noqa
 from .Widgets import MainWindow, SubProcessDlg  # noqa
 
