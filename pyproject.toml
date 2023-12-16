@@ -21,7 +21,7 @@ py2exe-gui = 'py2exe_gui.__main__:main'
 #priority = "default"
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.12"
+python = ">=3.8,<3.13"
 PySide6 = "^6.6.0"
 pyyaml = "^6.0.1"
 
@@ -39,11 +39,12 @@ types-pyyaml = "^6.0.12.12"
 [tool.black]
 line-length = 88
 target-version = ["py311"]
-extend-exclude = "compiled_resources.py"
+extend-exclude = "COMPILED_RESOURCES.py"
 
 [tool.isort]
 profile = "black"
 line_length = 88
+py_version=311
 
 [tool.mypy]
 python_version = "3.11"
