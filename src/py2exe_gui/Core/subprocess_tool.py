@@ -93,6 +93,14 @@ class SubProcessTool(QObject):
         else:
             return True
 
+    def set_program(self, program: str) -> None:
+        """
+        设置子进程程序 \n
+        :param program: 程序名称
+        """
+
+        self.program = program
+
     def set_arguments(self, arguments: Sequence[str]) -> None:
         """
         设置子进程参数 \n
