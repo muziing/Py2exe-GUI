@@ -52,7 +52,7 @@ def compile_resources() -> int:
     :return: rcc 进程返回码
     """
 
-    compiled_file_path = RESOURCES_PATH / "compiled_resources.py"
+    compiled_file_path = RESOURCES_PATH / "COMPILED_RESOURCES.py"
     qrc_file_path = RESOURCES_PATH / "resources.qrc"
     cmd = [
         "pyside6-rcc",

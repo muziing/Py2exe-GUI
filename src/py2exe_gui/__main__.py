@@ -10,7 +10,7 @@ from PySide6.QtWidgets import QApplication
 
 from .Constants import PLATFORM, RUNTIME_INFO  # noqa
 from .Core import Packaging, PackagingTask  # noqa
-from .Resources import compiled_resources  # noqa
+from .Resources import COMPILED_RESOURCES  # noqa
 from .Widgets import MainWindow, SubProcessDlg  # noqa
 
 
