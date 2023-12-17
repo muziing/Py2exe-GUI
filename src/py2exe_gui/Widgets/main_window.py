@@ -5,8 +5,8 @@ from PySide6.QtCore import QUrl
 from PySide6.QtGui import QDesktopServices, QIcon, QPixmap
 from PySide6.QtWidgets import QApplication, QLabel, QMainWindow, QMenuBar, QStatusBar
 
-from ..Constants import APP_URLs, AppConstant
-from .center_widget import CenterWidget
+from ..Constants import PLATFORM, RUNTIME_INFO, APP_URLs, AppConstant
+from .center_widget import CenterWidget, WinMacCenterWidget
 from .dialog_widgets import AboutDlg
 from .pyinstaller_option_widget import PyinstallerOptionTable
 
@@ -28,7 +28,12 @@ class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
-        self.center_widget = CenterWidget(self)
+        self.center_widget: CenterWidget
+        if RUNTIME_INFO.platform in (PLATFORM.windows, PLATFORM.macos):
+            self.center_widget = WinMacCenterWidget(self)
+        else:
+            self.center_widget = CenterWidget(self)
+
         self.menu_bar = QMenuBar(self)
         self.status_bar = QStatusBar(self)
         self.pyinstaller_option_table = PyinstallerOptionTable()
