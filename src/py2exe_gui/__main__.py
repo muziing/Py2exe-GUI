@@ -2,7 +2,6 @@
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
 import sys
-from subprocess import call as subprocess_call
 
 from PySide6.QtCore import Slot
 from PySide6.QtGui import QCloseEvent
@@ -11,6 +10,7 @@ from PySide6.QtWidgets import QApplication
 from .Constants import PLATFORM, RUNTIME_INFO  # noqa
 from .Core import Packaging, PackagingTask  # noqa
 from .Resources import COMPILED_RESOURCES  # noqa
+from .Utilities import open_dir_in_explorer  # noqa
 from .Widgets import MainWindow, SubProcessDlg  # noqa
 
 
@@ -83,13 +83,7 @@ class MainApp(MainWindow):
                 self.subprocess_dlg.close()
             elif btn_text == "打开输出位置":
                 dist_path = self.packaging_task.script_path.parent / "dist"
-                if PLATFORM.windows == RUNTIME_INFO.platform:
-                    from os import startfile as os_startfile  # fmt: skip
-                    os_startfile(dist_path)  # noqa
-                elif PLATFORM.linux == RUNTIME_INFO.platform:
-                    subprocess_call(["xdg-open", dist_path])
-                elif PLATFORM.macos == RUNTIME_INFO.platform:
-                    subprocess_call(["open", dist_path])
+                open_dir_in_explorer(dist_path)
             elif btn_text == "关闭":
                 self.subprocess_dlg.close()
 

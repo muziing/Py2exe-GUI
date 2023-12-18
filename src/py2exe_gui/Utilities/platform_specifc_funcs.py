@@ -7,11 +7,13 @@
 """
 
 import subprocess
+from pathlib import Path
+from typing import Union
 
 from ..Constants import PLATFORM, RUNTIME_INFO
 
 
-def open_dir_in_explorer(dir_path: str) -> None:
+def open_dir_in_explorer(dir_path: Union[str, Path]) -> None:
     """
     在操作系统文件资源管理器中打开指定目录 \n
     :param dir_path: 待打开的目录路径
