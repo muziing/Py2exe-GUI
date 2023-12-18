@@ -21,6 +21,7 @@ from PySide6.QtWidgets import (
 from ..Constants import PyinstallerArgs
 from .arguments_browser import ArgumentsBrowser
 from .dialog_widgets import IconFileDlg, ScriptFileDlg
+from .pyenv_combobox import PyEnvComboBox
 
 
 class CenterWidget(QWidget):
@@ -45,6 +46,9 @@ class CenterWidget(QWidget):
         self.script_file_dlg = ScriptFileDlg()
         self.script_browse_btn = QPushButton()
         self.script_path_le = QLineEdit()
+
+        # Python 解释器选择下拉框
+        self.pyenv_combobox = PyEnvComboBox()
 
         # 打包后输出的项目名称
         self.project_name_label = QLabel()
@@ -178,6 +182,7 @@ class CenterWidget(QWidget):
         self.main_layout = main_layout
         main_layout.addSpacing(10)
         main_layout.addLayout(script_layout)
+        main_layout.addWidget(self.pyenv_combobox)
         main_layout.addStretch(10)
         main_layout.addLayout(name_layout)
         main_layout.addStretch(10)
@@ -316,14 +321,19 @@ class WinMacCenterWidget(CenterWidget):
         self.console_checkbox.toggled.connect(console_selected)
 
     def _set_layout(self) -> None:
+        """
+        设置布局管理器 \n
+        """
+
         super()._set_layout()
-        self.main_layout.insertWidget(6, self.console_checkbox)
+
+        self.main_layout.insertWidget(7, self.console_checkbox)
         self.main_layout.addStretch(10)
         icon_layout = QGridLayout()
         icon_layout.addWidget(self.icon_path_label, 0, 0, 1, 2)
         icon_layout.addWidget(self.icon_path_le, 1, 0)
         icon_layout.addWidget(self.icon_browse_btn, 1, 1)
-        self.main_layout.insertLayout(7, icon_layout)
+        self.main_layout.insertLayout(8, icon_layout)
 
     @QtCore.Slot(tuple)
     def handle_option_set(self, option: tuple[PyinstallerArgs, str]) -> None:

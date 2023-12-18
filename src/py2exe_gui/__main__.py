@@ -37,6 +37,7 @@ class MainApp(MainWindow):
 
         self._connect_run_pkg_btn_slot()
         self._connect_mul_btn_slot(self.subprocess_dlg)
+        self._connect_pyenv_change()
 
         self.center_widget.option_selected.connect(self.packaging_task.handle_option)
         self.packaging_task.option_set.connect(self.packager.set_pyinstaller_args)
@@ -55,6 +56,18 @@ class MainApp(MainWindow):
         # 用户关闭子进程对话框时中止打包进程
         self.subprocess_dlg.finished.connect(
             lambda: self.packager.subprocess.abort_process(2000)
+        )
+
+    def _connect_pyenv_change(self):
+        """
+        处理用户通过选择不同的 Python 解释器时的响应
+        """
+
+        self.packager.set_pyinstaller(self.center_widget.pyenv_combobox.currentData())
+        self.center_widget.pyenv_combobox.currentIndexChanged.connect(
+            lambda: self.packager.set_pyinstaller(
+                self.center_widget.pyenv_combobox.currentData()
+            )
         )
 
     def _connect_mul_btn_slot(self, subprocess_dlg):
@@ -109,6 +122,7 @@ class MainApp(MainWindow):
 def main() -> None:
     """
     应用程序主入口函数
+    便于 Poetry 由此函数级入口构建启动脚本 \n
     """
 
     app = QApplication(sys.argv)
