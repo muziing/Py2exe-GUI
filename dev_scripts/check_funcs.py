@@ -103,17 +103,8 @@ def check_mypy() -> int:
     return result.returncode
 
 
-def check_requirements() -> int:
-    """
-    检查 requirements.txt 中的依赖是否最新
-    """
-
-    pass
-
-
 if __name__ == "__main__":
     check_license_statement()
     check_version_num()
     check_pre_commit()
     check_mypy()
-    check_requirements()

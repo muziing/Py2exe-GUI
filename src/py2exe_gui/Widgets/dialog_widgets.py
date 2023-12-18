@@ -3,9 +3,11 @@
 
 from typing import Optional
 
-from PySide6.QtCore import QFile, QIODevice, Qt
+from PySide6.QtCore import Qt
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QFileDialog, QMessageBox, QWidget
+
+from ..Utilities import QtFileOpen
 
 
 class ScriptFileDlg(QFileDialog):
@@ -79,10 +81,8 @@ class AboutDlg(QMessageBox):
         """
 
         # 因使用qrc/rcc系统，所以使用Qt风格读取文本文件
-        about_file = QFile(":/Texts/About_Text")
-        about_file.open(QIODevice.ReadOnly | QIODevice.Text)  # type: ignore
-        about_text = str(about_file.readAll(), encoding="utf-8")  # type: ignore
-        about_file.close()
+        with QtFileOpen(":/Texts/About_Text", encoding="utf-8") as about_file:
+            about_text = about_file.read()
 
         if about_text:
             self._about_text = about_text

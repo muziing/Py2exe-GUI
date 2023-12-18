@@ -5,8 +5,8 @@ from PySide6.QtCore import QUrl
 from PySide6.QtGui import QDesktopServices, QIcon, QPixmap
 from PySide6.QtWidgets import QApplication, QLabel, QMainWindow, QMenuBar, QStatusBar
 
-from ..Constants.app_constants import AppConstant
-from .center_widget import CenterWidget
+from ..Constants import PLATFORM, RUNTIME_INFO, APP_URLs, AppConstant
+from .center_widget import CenterWidget, WinMacCenterWidget
 from .dialog_widgets import AboutDlg
 from .pyinstaller_option_widget import PyinstallerOptionTable
 
@@ -28,7 +28,12 @@ class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
-        self.center_widget = CenterWidget(self)
+        self.center_widget: CenterWidget
+        if RUNTIME_INFO.platform in (PLATFORM.windows, PLATFORM.macos):
+            self.center_widget = WinMacCenterWidget(self)
+        else:
+            self.center_widget = CenterWidget(self)
+
         self.menu_bar = QMenuBar(self)
         self.status_bar = QStatusBar(self)
         self.pyinstaller_option_table = PyinstallerOptionTable()
@@ -69,16 +74,11 @@ class MainWindow(QMainWindow):
 
         help_menu.addAction(
             "PyInstaller官方文档",
-            lambda: open_url(
-                "https://pyinstaller.org/en/stable/usage.html"
-            ),  # TODO 运行时语言为中文时，指向中文翻译版文档
+            lambda: open_url(APP_URLs["Pyinstaller_doc"]),
         )
-        # TODO 把 URLs 从硬编码中解救出来，放到资源目录下文本文件中去
         help_menu.addAction("PyInstaller选项详情", self.pyinstaller_option_table.show)
         help_menu.addSeparator()
-        help_menu.addAction(
-            "报告Bug", lambda: open_url("https://github.com/muziing/Py2exe-GUI/issues")
-        )
+        help_menu.addAction("报告Bug", lambda: open_url(APP_URLs["BugTracker"]))
 
         about_menu = self.menu_bar.addMenu("关于(&A)")
         about_menu.addAction("关于本程序", AboutDlg(self).exec)

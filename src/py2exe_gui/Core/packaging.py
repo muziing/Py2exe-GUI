@@ -12,8 +12,8 @@ from .subprocess_tool import SubProcessTool
 
 class Packaging(QtCore.QObject):
     """
-    执行打包子进程的类
-    不负责输入参数的检查 \n
+    执行打包子进程的类，负责拼接命令选项、设置子进程工作目录、启动子进程等
+    不负责输入参数的检查，输入参数检查由 PackagingTask 对象进行 \n
     """
 
     # 自定义信号
@@ -27,9 +27,9 @@ class Packaging(QtCore.QObject):
         super().__init__(parent)
 
         self.args_dict: dict = dict.fromkeys(PyinstallerArgs, "")
-        self._args: List[str] = []
+        self._args: List[str] = []  # PyInstaller 命令
         self._subprocess_working_dir: str = ""
-        self.subprocess: SubProcessTool = SubProcessTool("pyinstaller", parent=self)
+        self.subprocess: SubProcessTool = SubProcessTool("", parent=self)
 
     @QtCore.Slot(tuple)
     def set_pyinstaller_args(self, arg: tuple[PyinstallerArgs, str]) -> None:
@@ -44,9 +44,16 @@ class Packaging(QtCore.QObject):
             self._add_pyinstaller_args()
             self._set_subprocess_working_dir()
 
+    def set_python_path(self, python_path):
+        """
+        :param python_path: Python 可执行文件路径
+        """
+
+        self.subprocess.set_program(python_path)
+
     def _add_pyinstaller_args(self) -> None:
         """
-        将命令参数字典中的参数按顺序添加到命令参数列表中 \n
+        将命令参数字典中的参数按顺序添加到PyInstaller命令参数列表中 \n
         """
 
         self._args = []  # 避免重复添加
@@ -78,6 +85,15 @@ class Packaging(QtCore.QObject):
         使用给定的参数启动打包子进程 \n
         """
 
+        # 从 Python 内启动 Pyinstaller，
+        # 参见 https://pyinstaller.org/en/stable/usage.html#running-pyinstaller-from-python-code
+        cmd = [
+            "-c",
+            f"import PyInstaller.__main__;PyInstaller.__main__.run({self._args})",
+        ]
+
         self.subprocess.set_working_dir(self._subprocess_working_dir)
-        self.subprocess.set_arguments(self._args)
-        self.subprocess.start_process(time_out=500)
+        self.subprocess.set_arguments(cmd)
+        self.subprocess.start_process(
+            time_out=500, mode=QtCore.QIODeviceBase.OpenModeFlag.ReadOnly
+        )

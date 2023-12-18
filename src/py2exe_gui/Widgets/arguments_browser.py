@@ -5,8 +5,7 @@ from typing import Optional
 
 from PySide6.QtWidgets import QTextBrowser, QWidget
 
-from ..Constants import PLATFORM
-from ..Core import RUNTIME_INFO
+from ..Constants import PLATFORM, RUNTIME_INFO
 
 # 一组适合浅色背景的颜色
 colors = ["#FD6D5A", "#FEB40B", "#6DC354", "#994487", "#518CD8", "#443295"]
@@ -64,7 +63,7 @@ class ArgumentsBrowser(QTextBrowser):
         for arg in args_list[1:]:
             if arg.startswith("--") or arg.startswith("-"):
                 enriched_arg_texts.append(
-                    get_line_continuation() + "<br>"
+                    get_line_continuation() + "<br>" + "&nbsp;&nbsp;&nbsp;&nbsp;"
                 )  # 添加换行，便于阅读与复制导出脚本
                 enriched_arg_texts.append(wrap_font_tag(arg, color=colors[1]))
             else:

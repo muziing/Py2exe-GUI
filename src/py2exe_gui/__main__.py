@@ -2,15 +2,15 @@
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
 import sys
-from subprocess import call as subprocess_call
 
 from PySide6.QtCore import Slot
 from PySide6.QtGui import QCloseEvent
 from PySide6.QtWidgets import QApplication
 
-from .Constants import PLATFORM  # noqa
-from .Core import RUNTIME_INFO, Packaging, PackagingTask  # noqa
-from .Resources import compiled_resources  # noqa
+from .Constants import PLATFORM, RUNTIME_INFO  # noqa
+from .Core import Packaging, PackagingTask  # noqa
+from .Resources import COMPILED_RESOURCES  # noqa
+from .Utilities import open_dir_in_explorer  # noqa
 from .Widgets import MainWindow, SubProcessDlg  # noqa
 
 
@@ -37,6 +37,7 @@ class MainApp(MainWindow):
 
         self._connect_run_pkg_btn_slot()
         self._connect_mul_btn_slot(self.subprocess_dlg)
+        self._connect_pyenv_change()
 
         self.center_widget.option_selected.connect(self.packaging_task.handle_option)
         self.packaging_task.option_set.connect(self.packager.set_pyinstaller_args)
@@ -57,6 +58,18 @@ class MainApp(MainWindow):
             lambda: self.packager.subprocess.abort_process(2000)
         )
 
+    def _connect_pyenv_change(self):
+        """
+        处理用户通过选择不同的 Python 解释器时的响应
+        """
+
+        self.packager.set_python_path(self.center_widget.pyenv_combobox.currentData())
+        self.center_widget.pyenv_combobox.currentIndexChanged.connect(
+            lambda: self.packager.set_python_path(
+                self.center_widget.pyenv_combobox.currentData()
+            )
+        )
+
     def _connect_mul_btn_slot(self, subprocess_dlg):
         @Slot()
         def handle_multifunction() -> None:
@@ -70,13 +83,7 @@ class MainApp(MainWindow):
                 self.subprocess_dlg.close()
             elif btn_text == "打开输出位置":
                 dist_path = self.packaging_task.script_path.parent / "dist"
-                if PLATFORM.windows == RUNTIME_INFO.platform:
-                    from os import startfile as os_startfile  # fmt: skip
-                    os_startfile(dist_path)  # noqa
-                elif PLATFORM.linux == RUNTIME_INFO.platform:
-                    subprocess_call(["xdg-open", dist_path])
-                elif PLATFORM.macos == RUNTIME_INFO.platform:
-                    subprocess_call(["open", dist_path])
+                open_dir_in_explorer(dist_path)
             elif btn_text == "关闭":
                 self.subprocess_dlg.close()
 
@@ -109,6 +116,7 @@ class MainApp(MainWindow):
 def main() -> None:
     """
     应用程序主入口函数
+    便于 Poetry 由此函数级入口构建启动脚本 \n
     """
 
     app = QApplication(sys.argv)

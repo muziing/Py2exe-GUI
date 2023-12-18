@@ -12,7 +12,8 @@ from .validators import FilePathValidator
 
 class PackagingTask(QtCore.QObject):
     """
-    打包任务类，存储每个打包任务的详细信息 \n
+    打包任务类，处理用户输入
+    接收来自界面的用户输入操作，处理，将结果反馈给界面和实际执行打包子进程的 Packaging 对象 \n
     """
 
     # 自定义信号
@@ -69,11 +70,3 @@ class PackagingTask(QtCore.QObject):
 
         else:
             self.option_set.emit(option)
-
-    def write_to_spec(self):
-        """
-        将打包任务保存至spec文件 \n
-        """
-
-        # TODO 实现写入spec功能
-        pass

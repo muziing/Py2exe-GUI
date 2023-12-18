@@ -71,6 +71,7 @@ options:
 
   - option: "--hidden-import MODULENAME, --hiddenimport MODULENAME"
     description: "Name an import not visible in the code of the script(s). This option can be used multiple times."
+    platform: [all]
 
   - option: "--collect-submodules MODULENAME"
     description: "Collect all submodules from the specified package or module. This option can be used multiple times."
@@ -86,6 +87,7 @@ options:
 
   - option: "--collect-all MODULENAME"
     description: "Collect all submodules, data files, and binaries from the specified package or module. This option can be used multiple times."
+    platform: [all]
 
   - option: "--copy-metadata PACKAGENAME"
     description: "Copy metadata for the specified package. This option can be used multiple times."
