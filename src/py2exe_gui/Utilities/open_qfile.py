@@ -7,7 +7,7 @@ import pathlib
 import warnings
 from typing import Optional, Union
 
-from PySide6.QtCore import QFile, QIODevice
+from PySide6.QtCore import QByteArray, QFile, QIODevice
 
 
 class QtFileOpen:
@@ -91,7 +91,7 @@ class PyQTextFileIo:
         self._file.open(self.mode)
 
     @classmethod
-    def _parse_mode(cls, py_mode: str) -> QIODevice:
+    def _parse_mode(cls, py_mode: str) -> QIODevice.OpenModeFlag:
         """
         解析文件打开模式，将 Python open() 风格转换至 QIODevice.OpenModeFlag
         https://docs.python.org/zh-cn/3/library/functions.html#open
@@ -99,20 +99,27 @@ class PyQTextFileIo:
         :return: mode
         """
 
-        qt_mode: QIODevice = QIODevice.Text
+        qt_mode: QIODevice.OpenModeFlag = QIODevice.OpenModeFlag.Text
 
         # 暂不支持写入
         if "r" in py_mode and "+" not in py_mode:
-            qt_mode = qt_mode | QIODevice.ReadOnly
+            qt_mode = qt_mode | QIODevice.OpenModeFlag.ReadOnly
         elif "w" in py_mode:
-            qt_mode = qt_mode | QIODevice.WriteOnly
+            qt_mode = qt_mode | QIODevice.OpenModeFlag.WriteOnly
         elif "+" in py_mode:
-            qt_mode = qt_mode | QIODevice.ReadWrite
+            qt_mode = qt_mode | QIODevice.OpenModeFlag.ReadWrite
 
         if "x" in py_mode:
-            qt_mode = qt_mode | QIODevice.NewOnly
+            qt_mode = qt_mode | QIODevice.OpenModeFlag.NewOnly
 
         return qt_mode
+
+    @classmethod
+    def qba_to_str(cls, qba: QByteArray, encoding: str = locale.getencoding()) -> str:
+        """
+        将 QByteArray 转换为 str
+        """
+        return qba.data().decode(encoding=encoding)
 
     def readable(self) -> bool:
         """
@@ -135,12 +142,13 @@ class PyQTextFileIo:
 
         if size < 0 or size is None:
             # 读取文件，并将 QByteArray 转为 str
-            text = str(self._file.readAll(), encoding=self.encoding)
+            text = self.qba_to_str(self._file.readAll(), encoding=self.encoding)
         else:
             # 已知问题：性能太差
             # PySide6.QtCore.QIODevice.read(maxlen) 以字节而非字符方式计算长度，行为不一致
             # 而 QTextStream 对字符编码支持太差，许多编码并不支持
-            text = str(self._file.readAll(), encoding=self.encoding)[0:size]  # 性能太差
+            text_all = self.qba_to_str(self._file.readAll(), self.encoding)
+            text = text_all[0:size]  # 性能太差
 
         return text
 
@@ -166,7 +174,7 @@ class PyQTextFileIo:
             if size == 0:
                 return ""
             else:
-                line = str(self._file.readLine(), encoding=self.encoding)
+                line = self.qba_to_str(self._file.readLine(), self.encoding)
                 if size < 0:
                     return line
                 else:
@@ -185,7 +193,7 @@ class PyQTextFileIo:
             raise OSError(f"File '{self._file.fileName()}' is not Readable.")
 
         if hint <= 0 or hint is None:
-            temp = str(self._file.readAll(), encoding=self.encoding)
+            temp = self.qba_to_str(self._file.readAll(), self.encoding)
             all_lines = temp.splitlines(keepends=True)
         else:
             all_lines = []
