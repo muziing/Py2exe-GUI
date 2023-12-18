@@ -63,9 +63,9 @@ class MainApp(MainWindow):
         处理用户通过选择不同的 Python 解释器时的响应
         """
 
-        self.packager.set_pyinstaller(self.center_widget.pyenv_combobox.currentData())
+        self.packager.set_python_path(self.center_widget.pyenv_combobox.currentData())
         self.center_widget.pyenv_combobox.currentIndexChanged.connect(
-            lambda: self.packager.set_pyinstaller(
+            lambda: self.packager.set_python_path(
                 self.center_widget.pyenv_combobox.currentData()
             )
         )

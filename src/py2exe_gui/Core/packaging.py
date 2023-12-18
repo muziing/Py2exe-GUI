@@ -44,7 +44,11 @@ class Packaging(QtCore.QObject):
             self._add_pyinstaller_args()
             self._set_subprocess_working_dir()
 
-    def set_pyinstaller(self, python_path):
+    def set_python_path(self, python_path):
+        """
+        :param python_path: Python 可执行文件路径
+        """
+
         self.subprocess.set_program(python_path)
 
     def _add_pyinstaller_args(self) -> None:

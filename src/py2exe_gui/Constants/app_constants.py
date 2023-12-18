@@ -19,7 +19,7 @@ class AppConstant:
     """
 
     NAME = "Py2exe-GUI"
-    VERSION = "0.1.12"
+    VERSION = "0.1.13"
     AUTHORS = ["muzing <muzi2001@foxmail.com>"]
     LICENSE = "GPL-3.0-or-later"
     HOME_PAGE = APP_URLs["HOME_PAGE"]
