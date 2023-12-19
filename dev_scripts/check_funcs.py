@@ -13,6 +13,7 @@ from dev_scripts.path_constants import (
     SRC_PKG_PATH,
 )
 from py2exe_gui import Constants as py2exe_gui_Constants
+from py2exe_gui import __version__ as py2exe_gui__version__
 
 
 def check_license_statement() -> int:
@@ -32,7 +33,7 @@ def check_license_statement() -> int:
         with open(file, encoding="utf-8") as f:
             if license_statement not in f.read():
                 warning_mes = f"Source code file {file} lacks a license statement."
-                warnings.warn(warning_mes, stacklevel=1)
+                warnings.warn(warning_mes, Warning, stacklevel=2)
             else:
                 check_pass += 1
 
@@ -53,17 +54,19 @@ def check_version_num() -> int:
     print("正在检查各处版本号是否一致...")
 
     app_constant_version = py2exe_gui_Constants.app_constants.AppConstant.VERSION
+    package_version = py2exe_gui__version__
     with open(PROJECT_ROOT / "pyproject.toml", "rb") as ppj_toml_file:
         ppj_dict = tomllib.load(ppj_toml_file)
         ppj_version = ppj_dict["tool"]["poetry"]["version"]
 
-    if ppj_version == app_constant_version:
+    if ppj_version == app_constant_version == package_version:
         print(f"版本号检查完毕，均为 {ppj_version}。")
         return 0
     else:
         warning_mes = (
             """版本号不一致！\n"""
             + f"""pyproject.toml................{ppj_version}\n"""
+            + f"""__version__...................{package_version}\n"""
             + f"""Constants.AppConstant.........{app_constant_version}\n"""
         )
         warnings.warn(warning_mes, stacklevel=1)
