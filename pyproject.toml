@@ -8,6 +8,12 @@ license = "GPL-3.0-or-later"
 readme = ["README.md", "README_zh.md"]
 repository = "https://github.com/muziing/Py2exe-GUI"
 exclude = ["src/py2exe_gui/Resources/Icons", "src/py2exe_gui/Resources/Texts"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS"
+]
 
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/muziing/Py2exe-GUI/issues"
