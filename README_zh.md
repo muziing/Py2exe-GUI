@@ -7,7 +7,10 @@
 <img alt="Python Version" src="https://img.shields.io/pypi/pyversions/py2exe-gui">
 <a href="https://pypi.org/project/py2exe-gui/"><img alt="PyPI Version" src="https://img.shields.io/pypi/v/py2exe-gui"></a>
 <a href="https://pypi.org/project/py2exe-gui/"><img alt="PyPI Downloads" src="https://img.shields.io/pypi/dm/py2exe-gui.svg?label=PyPI%20downloads"></a>
+</p>
+<p align="center">
 <a href="https://doc.qt.io/qtforpython/index.html"><img alt="PySide Version" src="https://img.shields.io/badge/PySide-6.6-blue"></a>
+<a href="https://github.com/astral-sh/ruff"><img alt="Ruff" src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json"></a>
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 <a href="https://mypy-lang.org/"><img alt="Checked with mypy" src="https://img.shields.io/badge/mypy-checked-blue"></a>
 </p>
@@ -19,13 +22,13 @@
 
 Py2exe-GUI 是一个基于 [PySide6](https://doc.qt.io/qtforpython/index.html) 开发的辅助工具，旨在为 [PyInstaller](https://pyinstaller.org/) 提供完整易用的图形化界面，方便用户进行 Python 项目的打包。
 
-![界面截图](docs/source/images/Py2exe-GUI_v0.1.0_screenshot.png)
+![界面截图](docs/source/images/Py2exe-GUI_v0.2.0_screenshot.png)
 
 有如下特性：
 
 - 完全图形化界面，易用
 - 支持 PyInstaller 的全部选项
-- （暂未实现）可以调用本地任一 Python 解释器与对应环境（调用该解释器的 `python3 -m PyInstaller myscript.py` 即可），无需在每个待打包的解释器环境中重复安装
+- （暂未实现）可以调用本地任一 Python 解释器与对应环境，无需在每个待打包的解释器环境中重复安装
 - 跨平台，支持 Windows、Linux、MacOS
 
 ## 如何使用
@@ -84,14 +87,6 @@ poetry install
 cd src
 python  Py2exe-GUI.py
 ```
-
-## 项目结构
-
-所有源代码均在 [py2exe_gui](src/py2exe_gui) 目录下
-- [Constants](src/py2exe_gui/Constants) 中为常量
-- [Core](src/py2exe_gui/Core) 包用于执行打包
-- [Resources](src/py2exe_gui/Resources) 包中为图标等静态资源
-- [Widgets](src/py2exe_gui/Widgets) 包包含所有界面控件
 
 ## 开源许可
 
