@@ -2,7 +2,7 @@
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 from PySide6 import QtCore
 
@@ -40,7 +40,7 @@ class PackagingTask(QtCore.QObject):
         self.clean: Optional[bool] = None
 
     @QtCore.Slot(tuple)
-    def handle_option(self, option: tuple[PyinstallerArgs, str]):
+    def handle_option(self, option: tuple[PyinstallerArgs, Any]):
         """
         处理用户在界面选择的打包选项，进行有效性验证并保存 \n
         :param option: 选项
