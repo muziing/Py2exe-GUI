@@ -61,6 +61,12 @@ class Packaging(QtCore.QObject):
         self._args.append(self.args_dict[PyinstallerArgs.script_path])
         if self.args_dict[PyinstallerArgs.icon_path]:
             self._args.extend(["--icon", self.args_dict[PyinstallerArgs.icon_path]])
+        if self.args_dict[PyinstallerArgs.add_data]:
+            for item in self.args_dict[PyinstallerArgs.add_data]:
+                self._args.extend(["--add-data", f"{item[0]}:{item[1]}"])
+        if self.args_dict[PyinstallerArgs.add_binary]:
+            for item in self.args_dict[PyinstallerArgs.add_binary]:
+                self._args.extend(["--add-binary", f"{item[0]}:{item[1]}"])
         if self.args_dict[PyinstallerArgs.FD]:
             self._args.append(self.args_dict[PyinstallerArgs.FD])
         if self.args_dict[PyinstallerArgs.console]:
@@ -69,12 +75,6 @@ class Packaging(QtCore.QObject):
             self._args.extend(["--name", self.args_dict[PyinstallerArgs.out_name]])
         if self.args_dict[PyinstallerArgs.clean]:
             self._args.append(self.args_dict[PyinstallerArgs.clean])
-        if self.args_dict[PyinstallerArgs.add_data]:
-            for item in self.args_dict[PyinstallerArgs.add_data]:
-                self._args.append(f"--add-data {item[0]}:{item[1]}")
-        if self.args_dict[PyinstallerArgs.add_binary]:
-            for item in self.args_dict[PyinstallerArgs.add_binary]:
-                self._args.append(f"--add-binary {item[0]}:{item[1]}")
 
         self.args_settled.emit(self._args)
 
