@@ -168,6 +168,7 @@ class CenterWidget(QWidget):
             """
 
             self.data_item_list = data_item_list
+            self.parent_widget.statusBar().showMessage("添加数据文件已更新")
             self.option_selected.emit((PyinstallerArgs.add_data, data_item_list))
 
         @QtCore.Slot()
@@ -186,6 +187,7 @@ class CenterWidget(QWidget):
             """
 
             self.binary_item_list = binary_item_list
+            self.parent_widget.statusBar().showMessage("添加二进制文件已更新")
             self.option_selected.emit((PyinstallerArgs.add_binary, binary_item_list))
 
         @QtCore.Slot(bool)
