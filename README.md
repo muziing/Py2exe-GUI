@@ -7,7 +7,10 @@
 <img alt="Python Version" src="https://img.shields.io/pypi/pyversions/py2exe-gui">
 <a href="https://pypi.org/project/py2exe-gui/"><img alt="PyPI Version" src="https://img.shields.io/pypi/v/py2exe-gui"></a>
 <a href="https://pypi.org/project/py2exe-gui/"><img alt="PyPI Downloads" src="https://img.shields.io/pypi/dm/py2exe-gui.svg?label=PyPI%20downloads"></a>
+</p>
+<p align="center">
 <a href="https://doc.qt.io/qtforpython/index.html"><img alt="PySide Version" src="https://img.shields.io/badge/PySide-6.6-blue"></a>
+<a href="https://github.com/astral-sh/ruff"><img alt="Ruff" src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json"></a>
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 <a href="https://mypy-lang.org/"><img alt="Checked with mypy" src="https://img.shields.io/badge/mypy-checked-blue"></a>
 </p>
@@ -20,7 +23,7 @@ English | <a href="README_zh.md">简体中文</a>
 
 Py2exe-GUI is an assist tool based on [PySide6](https://doc.qt.io/qtforpython/index.html), designed to provide a complete yet easy-to-use GUI for [PyInstaller](https://pyinstaller.org/).
 
-![Screenshot of the interface](docs/source/images/Py2exe-GUI_v0.1.0_screenshot.png)
+![Screenshot of the interface](docs/source/images/Py2exe-GUI_v0.2.0_screenshot.png)
 
 It has the following features:
 
@@ -84,15 +87,6 @@ Run [Py2exe-GUI.py](src/Py2exe-GUI.py):
 cd src
 python  Py2exe-GUI.py
 ```
-
-## Structure
-
-All source code is in the [src/py2exe_gui](src/py2exe_gui) directory.
-
-- [Constants](src/py2exe_gui/Constants)
-- [Core](src/py2exe_gui/Core)
-- [Resources](src/py2exe_gui/Resources)
-- [Widgets](src/py2exe_gui/Widgets)
 
 ## License
 
