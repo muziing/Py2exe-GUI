@@ -35,9 +35,9 @@ class MainApp(MainWindow):
         连接各种信号与槽 \n
         """
 
+        self._connect_pyenv_change()
         self._connect_run_pkg_btn_slot()
         self._connect_mul_btn_slot(self.subprocess_dlg)
-        self._connect_pyenv_change()
 
         self.center_widget.option_selected.connect(self.packaging_task.handle_option)
         self.packaging_task.option_set.connect(self.packager.set_pyinstaller_args)
@@ -70,6 +70,19 @@ class MainApp(MainWindow):
             )
         )
 
+    def _connect_run_pkg_btn_slot(self):
+        @Slot()
+        def run_packaging() -> None:
+            """
+            “运行打包”按钮的槽函数 \n
+            """
+
+            # 先显示对话框窗口，后运行子进程，确保调试信息/错误信息能被直观显示
+            self.subprocess_dlg.show()
+            self.packager.run_packaging_process()
+
+        self.center_widget.run_packaging_btn.clicked.connect(run_packaging)
+
     def _connect_mul_btn_slot(self, subprocess_dlg):
         @Slot()
         def handle_multifunction() -> None:
@@ -89,19 +102,6 @@ class MainApp(MainWindow):
 
         # 连接信号与槽
         subprocess_dlg.multifunction_btn.clicked.connect(handle_multifunction)
-
-    def _connect_run_pkg_btn_slot(self):
-        @Slot()
-        def run_packaging() -> None:
-            """
-            “运行打包”按钮的槽函数 \n
-            """
-
-            # 先显示对话框窗口，后运行子进程，确保调试信息/错误信息能被直观显示
-            self.subprocess_dlg.show()
-            self.packager.run_packaging_process()
-
-        self.center_widget.run_packaging_btn.clicked.connect(run_packaging)
 
     def closeEvent(self, event: QCloseEvent) -> None:
         """
