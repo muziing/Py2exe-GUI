@@ -9,11 +9,12 @@ repos:
     - id: trailing-whitespace
     - id: end-of-file-fixer
 
-- repo: https://github.com/psf/black
+- repo: https://github.com/psf/black-pre-commit-mirror
   rev: 23.12.0
   hooks:
     - id: black
-      args: [--config, "./pyproject.toml"]
+      language_version: python3.11
+      args: ["--config", "pyproject.toml"]
 
 - repo: https://github.com/pycqa/isort
   rev: 5.13.2
