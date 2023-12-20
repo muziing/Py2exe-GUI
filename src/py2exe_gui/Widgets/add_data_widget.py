@@ -34,8 +34,7 @@ class AddDataWindow(QWidget):
         super().__init__(parent)
 
         # 工作目录，应由主界面提供，默认为入口脚本所在目录；各种文件处理将以此作为相对路径起点
-        self.work_dir: Path = Path(".").resolve()
-        # self.work_dir = Path("D:/Works/Py2exe-GUI/src/py2exe_gui/")  # 测试用
+        self._work_dir: Path = Path(".").resolve()
 
         # 浏览系统文件/目录的文件对话框
         self.data_browse_dlg = QFileDialog(self)
@@ -64,13 +63,11 @@ class AddDataWindow(QWidget):
         处理 UI 内容 \n
         """
 
-        self.setWindowTitle("添加数据")
+        self.setWindowTitle("添加文件")
         self.setMinimumWidth(550)
 
         self.data_browse_dlg.setFileMode(QFileDialog.FileMode.ExistingFile)
-        self.data_browse_dlg.setDirectory(str(self.work_dir))
         self.data_dir_browse_dlg.setFileMode(QFileDialog.FileMode.Directory)
-        self.data_dir_browse_dlg.setDirectory(str(self.work_dir))
 
         self.item_table.setColumnCount(2)
         self.item_table.setRowCount(0)
@@ -116,6 +113,11 @@ class AddDataWindow(QWidget):
         main_layout.addLayout(lower_box)
 
         self.setLayout(main_layout)
+
+    def set_work_dir(self, work_dir_path: Path) -> None:
+        self._work_dir = work_dir_path
+        self.data_browse_dlg.setDirectory(str(work_dir_path))
+        self.data_dir_browse_dlg.setDirectory(str(work_dir_path))
 
     def _submit(self) -> list[data_item]:
         """
@@ -211,7 +213,7 @@ class AddDataWindow(QWidget):
             self.item_table.setItem(current_row, 0, source_item)
 
             # DEST 列设置为表示顶层目录的"."或与入口脚本的相对路径
-            dest_item = QTableWidgetItem(str(path.relative_to(self.work_dir)))
+            dest_item = QTableWidgetItem(str(path.relative_to(self._work_dir)))
             # FIXME 处理相对路径错误
             if path.is_dir():
                 self.item_table.setItem(current_row, 1, dest_item)
@@ -224,6 +226,7 @@ class AddDataWindow(QWidget):
             self.data_selected.emit(self._submit())
             self.close()
 
+        # noinspection DuplicatedCode
         self.new_btn.clicked.connect(new_btn_handle)
         self.delete_btn.clicked.connect(delete_btn_handle)
         self.browse_btn.clicked.connect(browse_btn_handle)

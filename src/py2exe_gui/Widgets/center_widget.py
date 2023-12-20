@@ -8,6 +8,7 @@ from PySide6.QtWidgets import (
     QButtonGroup,
     QCheckBox,
     QGridLayout,
+    QHBoxLayout,
     QLabel,
     QLineEdit,
     QMainWindow,
@@ -19,6 +20,7 @@ from PySide6.QtWidgets import (
 )
 
 from ..Constants import PyinstallerArgs
+from .add_data_widget import AddDataWindow
 from .arguments_browser import ArgumentsBrowser
 from .dialog_widgets import IconFileDlg, ScriptFileDlg
 from .pyenv_combobox import PyEnvComboBox
@@ -60,6 +62,14 @@ class CenterWidget(QWidget):
         self.one_file_btn = QRadioButton()
         self.fd_group = QButtonGroup()
 
+        # 添加数据与二进制文件
+        self.add_data_btn = QPushButton()
+        self.add_data_dlg = AddDataWindow()
+        self.data_item_list: list[AddDataWindow.data_item] = []
+        self.add_binary_btn = QPushButton()
+        self.add_binary_dlg = AddDataWindow()
+        self.binary_item_list: list[AddDataWindow.data_item] = []
+
         # 清理缓存与临时文件
         self.clean_checkbox = QCheckBox()
 
@@ -92,6 +102,11 @@ class CenterWidget(QWidget):
         self.one_file_btn.setText("打包至单个文件")
         self.fd_group.addButton(self.one_dir_btn, 0)
         self.fd_group.addButton(self.one_file_btn, 1)
+
+        self.add_data_btn.setText("添加数据文件")
+        self.add_binary_btn.setText("添加二进制文件")
+        self.add_data_dlg.setWindowTitle("添加数据文件")
+        self.add_binary_dlg.setWindowTitle("添加二进制文件")
 
         self.clean_checkbox.setText("清理")
         self.clean_checkbox.setChecked(False)
@@ -137,6 +152,42 @@ class CenterWidget(QWidget):
                 self.option_selected.emit((PyinstallerArgs.FD, "--onefile"))
                 self.parent_widget.statusBar().showMessage("将打包至单个文件中")
 
+        @QtCore.Slot()
+        def handle_add_data_btn_clicked() -> None:
+            """
+            用户在界面点击添加数据按钮的槽函数 \n
+            """
+
+            self.add_data_dlg.load_data_item_list(self.data_item_list)
+            self.add_data_dlg.show()
+
+        @QtCore.Slot(list)
+        def add_data_selected(data_item_list: list) -> None:
+            """
+            用户完成了添加数据操作的槽函数 \n
+            """
+
+            self.data_item_list = data_item_list
+            self.option_selected.emit((PyinstallerArgs.add_data, data_item_list))
+
+        @QtCore.Slot()
+        def handle_add_binary_btn_clicked() -> None:
+            """
+            用户在界面点击添加二进制文件按钮的槽函数 \n
+            """
+
+            self.add_binary_dlg.load_data_item_list(self.binary_item_list)
+            self.add_binary_dlg.show()
+
+        @QtCore.Slot(list)
+        def add_binary_selected(binary_item_list: list) -> None:
+            """
+            用户完成了添加二进制文件操作的槽函数 \n
+            """
+
+            self.binary_item_list = binary_item_list
+            self.option_selected.emit((PyinstallerArgs.add_binary, binary_item_list))
+
         @QtCore.Slot(bool)
         def clean_selected(selected: bool) -> None:
             """
@@ -155,8 +206,12 @@ class CenterWidget(QWidget):
         self.script_browse_btn.clicked.connect(self.script_file_dlg.open)
         self.script_file_dlg.fileSelected.connect(script_file_selected)
         self.project_name_le.editingFinished.connect(project_name_selected)
+        # noinspection DuplicatedCode
         self.fd_group.idClicked.connect(one_fd_selected)
-
+        self.add_data_btn.clicked.connect(handle_add_data_btn_clicked)
+        self.add_data_dlg.data_selected.connect(add_data_selected)
+        self.add_binary_btn.clicked.connect(handle_add_binary_btn_clicked)
+        self.add_binary_dlg.data_selected.connect(add_binary_selected)
         self.clean_checkbox.toggled.connect(clean_selected)
 
     def _set_layout(self) -> None:
@@ -178,6 +233,10 @@ class CenterWidget(QWidget):
         fd_layout.addWidget(self.one_dir_btn, 1, 0)
         fd_layout.addWidget(self.one_file_btn, 1, 1)
 
+        add_btn_layout = QHBoxLayout()
+        add_btn_layout.addWidget(self.add_data_btn)
+        add_btn_layout.addWidget(self.add_binary_btn)
+
         main_layout = QVBoxLayout()
         self.main_layout = main_layout
         main_layout.addSpacing(10)
@@ -188,7 +247,7 @@ class CenterWidget(QWidget):
         main_layout.addStretch(10)
         main_layout.addLayout(fd_layout)
         main_layout.addStretch(10)
-
+        main_layout.addLayout(add_btn_layout)
         main_layout.addStretch(10)
         main_layout.addWidget(self.clean_checkbox)
         main_layout.addStretch(10)
@@ -212,6 +271,8 @@ class CenterWidget(QWidget):
             self.parent_widget.statusBar().showMessage(
                 f"打开脚本路径：{str(script_path.resolve())}"
             )
+            self.add_data_dlg.set_work_dir(script_path.parent)
+            self.add_binary_dlg.set_work_dir(script_path.parent)
 
         elif option_key == PyinstallerArgs.out_name:
             self.project_name_le.setText(option_value)
@@ -349,10 +410,6 @@ class WinMacCenterWidget(CenterWidget):
         if option_key == PyinstallerArgs.script_path:
             script_path = Path(option_value)
             self.icon_file_dlg.setDirectory(str(script_path.parent.resolve()))
-            self.script_path_le.setText(script_path.name)
-            self.parent_widget.statusBar().showMessage(
-                f"打开脚本路径：{str(script_path.resolve())}"
-            )
 
         elif option_key == PyinstallerArgs.icon_path:
             icon_path = Path(option_value)
