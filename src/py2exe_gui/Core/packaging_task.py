@@ -7,13 +7,15 @@ from typing import Optional
 from PySide6 import QtCore
 
 from ..Constants import PyinstallerArgs
+from ..Widgets import AddDataWindow
 from .validators import FilePathValidator
 
 
 class PackagingTask(QtCore.QObject):
     """
     打包任务类，处理用户输入
-    接收来自界面的用户输入操作，处理，将结果反馈给界面和实际执行打包子进程的 Packaging 对象 \n
+    接收来自界面的用户输入操作，处理，将结果反馈给界面和实际执行打包子进程的 Packaging 对象
+    在实例属性中保存目前设置的所有参数值 \n
     """
 
     # 自定义信号
@@ -30,11 +32,14 @@ class PackagingTask(QtCore.QObject):
 
         self.script_path: Optional[Path] = None
         self.icon_path: Optional[Path] = None
+        self.add_data_list: Optional[list[AddDataWindow.data_item]] = None
+        self.add_binary_list: Optional[list[AddDataWindow.data_item]] = None
         self.out_name: Optional[str] = None
         self.FD: Optional[bool] = None
         self.console: Optional[str] = None
         self.clean: Optional[bool] = None
 
+    @QtCore.Slot(tuple)
     def handle_option(self, option: tuple[PyinstallerArgs, str]):
         """
         处理用户在界面选择的打包选项，进行有效性验证并保存 \n
@@ -64,8 +69,28 @@ class PackagingTask(QtCore.QObject):
             else:
                 self.option_error.emit(arg_key)
 
+        elif arg_key == PyinstallerArgs.add_data:
+            self.add_data_list = arg_value
+            self.option_set.emit(option)
+
+        elif arg_key == PyinstallerArgs.add_binary:
+            self.add_binary_list = arg_value
+            self.option_set.emit(option)
+
         elif arg_key == PyinstallerArgs.out_name:
             self.out_name = arg_value
+            self.option_set.emit(option)
+
+        elif arg_key == PyinstallerArgs.FD:
+            self.FD = arg_value
+            self.option_set.emit(option)
+
+        elif arg_key == PyinstallerArgs.console:
+            self.console = arg_value
+            self.option_set.emit(option)
+
+        elif arg_key == PyinstallerArgs.clean:
+            self.clean = arg_value
             self.option_set.emit(option)
 
         else:
