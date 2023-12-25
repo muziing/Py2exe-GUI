@@ -31,13 +31,13 @@ class FilePathValidator:
         """
 
         path = Path(icon_path)
-        # TODO 完善验证方法
+        # TODO 完善验证方法，根据 Windows(.ico)、macOS(.icns) 动态分析
         return path.exists() and path.is_file()
 
 
 class InterpreterValidator:
     """
-    验证给定的可执行文件是否为有效的Python解释器，并获取该解释器相关信息
+    验证给定的可执行文件是否为有效的Python解释器 \n
     """
 
     def __init__(self, path: Union[str, os.PathLike[str]]) -> None:
@@ -83,37 +83,6 @@ class InterpreterValidator:
             self._itp_validated = False
             return False
 
-    def itp_info(self):
-        """
-        返回解释器的相关信息 \n
-        """
-
-        # FIXME 完善此方法
-        if self._itp_validated:
-            pass
-
-    def module_installed(self, module: str) -> bool:
-        """
-        验证该解释器环境中是否已安装某个模块 \n
-        :param module: 模块名，要求为import语句中使用的名称
-        :return: 未安装该模块或解释器无效时返回False
-        """
-
-        if self._itp_validated:
-            subprocess_arg_list = [
-                str(self._itp_path.resolve()),
-                "-c",
-                f"import {module}",
-            ]
-            result = subprocess.run(
-                args=subprocess_arg_list,
-                capture_output=True,
-                timeout=300,
-            )
-            return result.returncode != 0 and b"ModuleNotFoundError" in result.stderr
-        else:
-            return False
-
     @classmethod
     def validate(cls, path: Union[str, os.PathLike[str]]) -> bool:
         """
@@ -125,7 +94,4 @@ class InterpreterValidator:
 
 
 if __name__ == "__main__":
-    # print(InterpreterValidator.validate("/usr/bin/python"))
-    iv = InterpreterValidator("/usr/bin/python")
-    print(iv.module_installed("PySide6"))
-    print(iv.module_installed("black"))
+    print(InterpreterValidator.validate("/usr/bin/python"))

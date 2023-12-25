@@ -16,6 +16,7 @@ class PyEnvType(enum.IntFlag):
     venv = enum.auto()  # venv 虚拟环境  https://docs.python.org/3/library/venv.html
     poetry = enum.auto()  # Poetry 环境  https://python-poetry.org/
     conda = enum.auto()  # conda 环境  https://docs.conda.io/en/latest/
+    unknown = enum.auto()  # 未知
 
 
 class PyEnv(NamedTuple):
