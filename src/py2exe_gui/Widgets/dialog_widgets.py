@@ -1,6 +1,7 @@
 # Licensed under the GPLv3 License: https://www.gnu.org/licenses/gpl-3.0.html
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
+import warnings
 from typing import Optional
 
 from PySide6.QtCore import Qt
@@ -80,13 +81,12 @@ class AboutDlg(QMessageBox):
         :return: 关于信息
         """
 
-        # 因使用qrc/rcc系统，所以使用Qt风格读取文本文件
-        with QtFileOpen(":/Texts/About_Text", encoding="utf-8") as about_file:
-            about_text = about_file.read()
-
-        if about_text:
-            self._about_text = about_text
-        else:
+        try:
+            # 因使用qrc/rcc系统，所以使用Qt风格读取文本文件
+            with QtFileOpen(":/Texts/About_Text", encoding="utf-8") as about_file:
+                self._about_text = about_file.read()
+        except OSError as e:
+            warnings.warn(f"无法打开关于文档，错误信息：{e}", RuntimeWarning, stacklevel=1)
             self._about_text = "无法打开关于文档，请尝试重新获取本程序。"
 
         return self._about_text
