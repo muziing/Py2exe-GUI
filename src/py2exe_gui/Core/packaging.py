@@ -6,7 +6,7 @@ from typing import List, Optional
 
 from PySide6 import QtCore
 
-from ..Constants.packaging_constants import PyinstallerArgs
+from ..Constants.packaging_constants import PyInstOpt
 from .subprocess_tool import SubProcessTool
 
 
@@ -26,20 +26,20 @@ class Packaging(QtCore.QObject):
 
         super().__init__(parent)
 
-        self.args_dict: dict = dict.fromkeys(PyinstallerArgs, "")
+        self.args_dict: dict = dict.fromkeys(PyInstOpt, "")
         self._args: List[str] = []  # PyInstaller 命令
         self._subprocess_working_dir: str = ""
         self.subprocess: SubProcessTool = SubProcessTool("", parent=self)
 
     @QtCore.Slot(tuple)
-    def set_pyinstaller_args(self, arg: tuple[PyinstallerArgs, str]) -> None:
+    def set_pyinstaller_args(self, arg: tuple[PyInstOpt, str]) -> None:
         """
         解析传递来的PyInstaller运行参数，并添加至命令参数字典 \n
         :param arg: 运行参数
         """
 
         arg_key, arg_value = arg
-        if isinstance(arg_key, PyinstallerArgs):
+        if isinstance(arg_key, PyInstOpt):
             self.args_dict[arg_key] = arg_value
             self._add_pyinstaller_args()
             self._set_subprocess_working_dir()
@@ -58,23 +58,23 @@ class Packaging(QtCore.QObject):
 
         self._args = []  # 避免重复添加
 
-        self._args.append(self.args_dict[PyinstallerArgs.script_path])
-        if self.args_dict[PyinstallerArgs.icon_path]:
-            self._args.extend(["--icon", self.args_dict[PyinstallerArgs.icon_path]])
-        if self.args_dict[PyinstallerArgs.add_data]:
-            for item in self.args_dict[PyinstallerArgs.add_data]:
+        self._args.append(self.args_dict[PyInstOpt.script_path])
+        if self.args_dict[PyInstOpt.icon_path]:
+            self._args.extend(["--icon", self.args_dict[PyInstOpt.icon_path]])
+        if self.args_dict[PyInstOpt.add_data]:
+            for item in self.args_dict[PyInstOpt.add_data]:
                 self._args.extend(["--add-data", f"{item[0]}:{item[1]}"])
-        if self.args_dict[PyinstallerArgs.add_binary]:
-            for item in self.args_dict[PyinstallerArgs.add_binary]:
+        if self.args_dict[PyInstOpt.add_binary]:
+            for item in self.args_dict[PyInstOpt.add_binary]:
                 self._args.extend(["--add-binary", f"{item[0]}:{item[1]}"])
-        if self.args_dict[PyinstallerArgs.FD]:
-            self._args.append(self.args_dict[PyinstallerArgs.FD])
-        if self.args_dict[PyinstallerArgs.console]:
-            self._args.append(self.args_dict[PyinstallerArgs.console])
-        if self.args_dict[PyinstallerArgs.out_name]:
-            self._args.extend(["--name", self.args_dict[PyinstallerArgs.out_name]])
-        if self.args_dict[PyinstallerArgs.clean]:
-            self._args.append(self.args_dict[PyinstallerArgs.clean])
+        if self.args_dict[PyInstOpt.FD]:
+            self._args.append(self.args_dict[PyInstOpt.FD])
+        if self.args_dict[PyInstOpt.console]:
+            self._args.append(self.args_dict[PyInstOpt.console])
+        if self.args_dict[PyInstOpt.out_name]:
+            self._args.extend(["--name", self.args_dict[PyInstOpt.out_name]])
+        if self.args_dict[PyInstOpt.clean]:
+            self._args.append(self.args_dict[PyInstOpt.clean])
 
         self.args_settled.emit(self._args)
 
@@ -83,7 +83,7 @@ class Packaging(QtCore.QObject):
         设置子进程工作目录 \n
         """
 
-        script_path = self.args_dict[PyinstallerArgs.script_path]
+        script_path = self.args_dict[PyInstOpt.script_path]
         self._subprocess_working_dir = str(Path(script_path).parent)  # 工作目录设置为脚本所在目录
 
     def run_packaging_process(self) -> None:

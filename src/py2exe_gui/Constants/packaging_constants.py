@@ -9,7 +9,11 @@ import enum
 
 
 @enum.unique
-class PyinstallerArgs(enum.IntFlag):
+class PyInstOpt(enum.IntFlag):
+    """
+    PyInstaller 命令行选项枚举类
+    """
+
     script_path = enum.auto()
     icon_path = enum.auto()
     FD = enum.auto()

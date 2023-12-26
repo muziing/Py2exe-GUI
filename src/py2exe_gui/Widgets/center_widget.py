@@ -19,7 +19,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from ..Constants import PyinstallerArgs
+from ..Constants import PyInstOpt
 from .add_data_widget import AddDataWindow
 from .arguments_browser import ArgumentsBrowser
 from .dialog_widgets import IconFileDlg, ScriptFileDlg
@@ -33,6 +33,7 @@ class CenterWidget(QWidget):
 
     # 自定义信号
     option_selected = QtCore.Signal(tuple)  # 用户通过界面控件选择选项后发射此信号
+    # option_selected 实际类型为 tuple[PyinstallerArgs, str]
 
     def __init__(self, parent: QMainWindow) -> None:
         """
@@ -127,7 +128,7 @@ class CenterWidget(QWidget):
             :param file_path: 脚本文件路径
             """
 
-            self.option_selected.emit((PyinstallerArgs.script_path, file_path))
+            self.option_selected.emit((PyInstOpt.script_path, file_path))
 
         @QtCore.Slot()
         def project_name_selected() -> None:
@@ -136,7 +137,7 @@ class CenterWidget(QWidget):
             """
 
             project_name: str = self.project_name_le.text()
-            self.option_selected.emit((PyinstallerArgs.out_name, project_name))
+            self.option_selected.emit((PyInstOpt.out_name, project_name))
 
         @QtCore.Slot(int)
         def one_fd_selected(btn_id: int) -> None:
@@ -146,10 +147,10 @@ class CenterWidget(QWidget):
             """
 
             if btn_id == 0:
-                self.option_selected.emit((PyinstallerArgs.FD, "--onedir"))
+                self.option_selected.emit((PyInstOpt.FD, "--onedir"))
                 self.parent_widget.statusBar().showMessage("将打包至单个目录中")
             elif btn_id == 1:
-                self.option_selected.emit((PyinstallerArgs.FD, "--onefile"))
+                self.option_selected.emit((PyInstOpt.FD, "--onefile"))
                 self.parent_widget.statusBar().showMessage("将打包至单个文件中")
 
         @QtCore.Slot()
@@ -169,7 +170,7 @@ class CenterWidget(QWidget):
 
             self.data_item_list = data_item_list
             self.parent_widget.statusBar().showMessage("添加数据文件已更新")
-            self.option_selected.emit((PyinstallerArgs.add_data, data_item_list))
+            self.option_selected.emit((PyInstOpt.add_data, data_item_list))
 
         @QtCore.Slot()
         def handle_add_binary_btn_clicked() -> None:
@@ -188,7 +189,7 @@ class CenterWidget(QWidget):
 
             self.binary_item_list = binary_item_list
             self.parent_widget.statusBar().showMessage("添加二进制文件已更新")
-            self.option_selected.emit((PyinstallerArgs.add_binary, binary_item_list))
+            self.option_selected.emit((PyInstOpt.add_binary, binary_item_list))
 
         @QtCore.Slot(bool)
         def clean_selected(selected: bool) -> None:
@@ -198,10 +199,10 @@ class CenterWidget(QWidget):
             """
 
             if selected:
-                self.option_selected.emit((PyinstallerArgs.clean, "--clean"))
+                self.option_selected.emit((PyInstOpt.clean, "--clean"))
                 self.parent_widget.statusBar().showMessage("构建前将清理缓存与临时文件")
             else:
-                self.option_selected.emit((PyinstallerArgs.clean, ""))
+                self.option_selected.emit((PyInstOpt.clean, ""))
                 self.parent_widget.statusBar().showMessage("不会删除缓存与临时文件")
 
         # 连接信号与槽
@@ -259,7 +260,7 @@ class CenterWidget(QWidget):
         self.setLayout(main_layout)
 
     @QtCore.Slot(tuple)
-    def handle_option_set(self, option: tuple[PyinstallerArgs, str]) -> None:
+    def handle_option_set(self, option: tuple[PyInstOpt, str]) -> None:
         """
         处理option_set信号的槽，根据已经成功设置的选项调整界面 \n
         :param option: 选项键值对
@@ -267,7 +268,7 @@ class CenterWidget(QWidget):
 
         option_key, option_value = option
 
-        if option_key == PyinstallerArgs.script_path:
+        if option_key == PyInstOpt.script_path:
             script_path = Path(option_value)
             self.script_path_le.setText(script_path.name)
             self.parent_widget.statusBar().showMessage(
@@ -276,19 +277,19 @@ class CenterWidget(QWidget):
             self.add_data_dlg.set_work_dir(script_path.parent)
             self.add_binary_dlg.set_work_dir(script_path.parent)
 
-        elif option_key == PyinstallerArgs.out_name:
+        elif option_key == PyInstOpt.out_name:
             self.project_name_le.setText(option_value)
             self.parent_widget.statusBar().showMessage(f"已将项目名设置为：{option_value}")
 
-    @QtCore.Slot(PyinstallerArgs)
-    def handle_option_error(self, option: PyinstallerArgs) -> None:
+    @QtCore.Slot(PyInstOpt)
+    def handle_option_error(self, option: PyInstOpt) -> None:
         """
         处理option_error信号的槽，重置设置失败的选项对应的界面，并向用户发出警告 \n
         :param option: 选项
         """
 
         # 清空重置该项的输入控件，并弹出警告窗口，等待用户重新输入
-        if option == PyinstallerArgs.script_path:
+        if option == PyInstOpt.script_path:
             self.script_file_dlg.close()
             # 警告对话框
             result = QMessageBox.critical(
@@ -364,10 +365,10 @@ class WinMacCenterWidget(CenterWidget):
             """
 
             if console:
-                self.option_selected.emit((PyinstallerArgs.console, "--console"))
+                self.option_selected.emit((PyInstOpt.console, "--console"))
                 self.parent_widget.statusBar().showMessage("将为打包程序的 stdio 启用终端")
             else:
-                self.option_selected.emit((PyinstallerArgs.console, "--windowed"))
+                self.option_selected.emit((PyInstOpt.console, "--windowed"))
                 self.parent_widget.statusBar().showMessage("不会为打包程序的 stdio 启用终端")
 
         @QtCore.Slot(str)
@@ -377,7 +378,7 @@ class WinMacCenterWidget(CenterWidget):
             :param file_path: 图标路径
             """
 
-            self.option_selected.emit((PyinstallerArgs.icon_path, file_path))
+            self.option_selected.emit((PyInstOpt.icon_path, file_path))
 
         self.icon_browse_btn.clicked.connect(self.icon_file_dlg.open)
         self.icon_file_dlg.fileSelected.connect(icon_file_selected)
@@ -399,7 +400,7 @@ class WinMacCenterWidget(CenterWidget):
         self.main_layout.insertLayout(8, icon_layout)
 
     @QtCore.Slot(tuple)
-    def handle_option_set(self, option: tuple[PyinstallerArgs, str]) -> None:
+    def handle_option_set(self, option: tuple[PyInstOpt, str]) -> None:
         """
         处理option_set信号的槽，根据已经成功设置的选项调整界面 \n
         :param option: 选项键值对
@@ -409,19 +410,19 @@ class WinMacCenterWidget(CenterWidget):
 
         option_key, option_value = option
 
-        if option_key == PyinstallerArgs.script_path:
+        if option_key == PyInstOpt.script_path:
             script_path = Path(option_value)
             self.icon_file_dlg.setDirectory(str(script_path.parent.resolve()))
 
-        elif option_key == PyinstallerArgs.icon_path:
+        elif option_key == PyInstOpt.icon_path:
             icon_path = Path(option_value)
             self.icon_path_le.setText(icon_path.name)
             self.parent_widget.statusBar().showMessage(
                 f"打开图标路径：{str(icon_path.resolve())}"
             )
 
-    @QtCore.Slot(PyinstallerArgs)
-    def handle_option_error(self, option: PyinstallerArgs) -> None:
+    @QtCore.Slot(PyInstOpt)
+    def handle_option_error(self, option: PyInstOpt) -> None:
         """
         处理option_error信号的槽，重置设置失败的选项对应的界面，并向用户发出警告 \n
         :param option: 选项
@@ -429,7 +430,7 @@ class WinMacCenterWidget(CenterWidget):
 
         super().handle_option_error(option)
 
-        if option == PyinstallerArgs.icon_path:
+        if option == PyInstOpt.icon_path:
             self.icon_file_dlg.close()
             # 警告对话框
             result = QMessageBox.critical(
