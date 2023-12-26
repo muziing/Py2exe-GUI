@@ -7,7 +7,7 @@ from PySide6.QtCore import Slot
 from PySide6.QtGui import QCloseEvent
 from PySide6.QtWidgets import QApplication
 
-from .Constants import PLATFORM, RUNTIME_INFO  # noqa
+from .Constants import PyinstallerArgs  # noqa
 from .Core import Packaging, PackagingTask  # noqa
 from .Resources import COMPILED_RESOURCES  # noqa
 from .Utilities import open_dir_in_explorer  # noqa
@@ -95,7 +95,10 @@ class MainApp(MainWindow):
                 self.packager.subprocess.abort_process()
                 self.subprocess_dlg.close()
             elif btn_text == "打开输出位置":
-                dist_path = self.packaging_task.script_path.parent / "dist"
+                script_path = self.packaging_task.using_option[
+                    PyinstallerArgs.script_path
+                ]
+                dist_path = script_path.parent / "dist"
                 open_dir_in_explorer(dist_path)
             elif btn_text == "关闭":
                 self.subprocess_dlg.close()
