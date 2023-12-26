@@ -10,8 +10,9 @@
     - [ ] 增加「将输出导出到日志文件」功能
     - [ ] 增加简单高亮功能
 - [ ] 添加资源文件窗口
-    - [ ] `--add-data`、 `--add-binary`、`--paths`、`--hidden-import`
-    - [ ] 模仿 Windows “编辑环境变量” 窗口，左侧条目，右侧添加删除编辑等按钮
+    - [x] `--add-data`、 `--add-binary`
+    - [ ] `--paths`、`--hidden-import` 等可多次调用的选项
+    - [x] 模仿 Windows “编辑环境变量” 窗口，左侧条目，右侧添加删除编辑等按钮
 - [ ] Python 解释器选择器
     - [ ] 文件浏览对话框选择解释器可执行文件
     - [ ] 处理解释器验证器返回结果，异常时弹出对话框要求用户自行检查确认
@@ -19,14 +20,15 @@
     - [x] ComboBox 中列出各解释器，将解释器路径保存在userData中
     - [ ] 快捷显示已安装的 `PyInstaller` 版本，未安装则提供「一键安装」
     - [ ] (?) 识别系统解释器/venv/Poetry/conda等
+- [ ] 用户自定义选项输入框
+    - [ ] 允许用户自行输入选项，添加到选项列表中
 - [x] 命令浏览器
     - [x] 显示将传递给 PyInstaller 的选项列表
     - [x] 高亮提示
     - [x] 以终端命令格式显示完整命令，并添加续行符
-    - [ ] 导出为脚本功能，根据运行时平台导出 bash、powershell 等格式脚本
-- [ ] "What is this" 提示
-- [ ] 右键菜单，添加指向对应 PyInstaller 文档，提供完整帮助信息
-- [ ] `PyInstaller` 选项参数详解表格
+    - [ ] 导出为脚本功能，根据运行时平台导出 bash、PowerShell 等格式脚本
+- [ ] "What is this" 提示，对应 PyInstaller 文档，提供完整帮助信息
+- [x] `PyInstaller` 选项参数详解表格
 - [x] 主窗口状态栏显示软件版本
 - [ ] 「一键调试」模式，自动选择 `--onedir`、`--console`、`--debug` 等利于调试的选项
 
@@ -42,14 +44,13 @@
     - [x] 优化子进程相关代码，增强异常处理
 - [ ] 打包任务
     - [x] 创建打包任务，保存所有选项
-    - [ ] 创建 [`.spec` 文件](https://pyinstaller.org/en/stable/spec-files.html)
-    - [ ] ~~`spec` 编辑器~~
+    - [ ] 导出打包任务（json 或 yaml 格式）与加载打包任务
+    - [ ] [创建 `.spec` 文件](https://pyinstaller.org/en/stable/man/pyi-makespec.html)
 
 ## 界面
 
 - [x] 实现跨平台功能
-    - [x] 获取当前运行平台
-    - [x] 保存至全局变量中
+    - [x] 获取当前运行平台，保存至全局变量中
     - [x] 定制各平台特有功能
 - [x] 使用 `qrc` 管理静态资源
 - [ ] 翻译与国际化
@@ -76,6 +77,12 @@
 
 分发方式：
 
-- [ ] GitHub Releases
+- [x] GitHub Releases
 - [ ] Arch Linux AUR
 - [ ] Ubuntu PPA
+
+## 可选依赖
+
+- [ ] [Pillow](https://python-pillow.org/)
+  - [ ] 更精确的图标文件格式识别
+  - [ ] 自动将其他格式转换为平台对应的图标格式
