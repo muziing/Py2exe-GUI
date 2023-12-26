@@ -8,12 +8,15 @@ from PySide6.QtCore import Qt, Signal, Slot
 from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtWidgets import (
     QApplication,
+    QDialog,
     QHBoxLayout,
+    QHeaderView,
     QListWidget,
     QListWidgetItem,
     QPushButton,
+    QTableWidget,
     QVBoxLayout,
-    QWidget, QDialog, QTableWidget, QHeaderView,
+    QWidget,
 )
 
 
