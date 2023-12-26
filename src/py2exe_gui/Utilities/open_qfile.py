@@ -7,7 +7,7 @@ import pathlib
 import warnings
 from typing import Optional, Union
 
-from PySide6.QtCore import QByteArray, QFile, QIODevice
+from PySide6.QtCore import QByteArray, QFile, QFileInfo, QIODevice
 
 
 class QtFileOpen:
@@ -30,7 +30,7 @@ class QtFileOpen:
         """
         :param file: 文件路径
         :param mode: 打开模式（暂时只支持文本读取）
-        :param encoding: 文本文件编码
+        :param encoding: 文本文件编码，留空则自动处理
         """
 
         # 预处理文件路径，防止在 Windows 平台下 QFile 只能处理 '/' 导致的问题
@@ -62,7 +62,7 @@ class QtFileOpen:
 
         # 若路径以字节串传入，则先处理成字符串
         if isinstance(path, bytes):
-            path = str(path, encoding="utf-8")
+            path = path.decode("utf-8")
 
         return str(pathlib.PurePath(path).as_posix())
 
@@ -73,12 +73,14 @@ class PyQTextFileIo:
     目前只支持读取，不支持写入
     """
 
-    def __init__(
-        self,
-        file: Union[str, bytes, os.PathLike[str]],
-        mode,
-        encoding: Optional[str] = None,
-    ):
+    def __init__(self, file: str, mode, encoding: Optional[str] = None):
+        """
+        :param file: 文件路径
+        :param mode: 打开模式
+        :param encoding: 文本编码
+        """
+
+        self._detect_error(file)
         self._file = QFile(file)
 
         if encoding is not None:
@@ -89,6 +91,19 @@ class PyQTextFileIo:
 
         self.mode = self._parse_mode(mode)
         self._file.open(self.mode)
+
+    @staticmethod
+    def _detect_error(input_file: str) -> None:
+        """
+        检查传入的文件是否存在错误，如有则抛出对应的异常 \n
+        :param input_file: 文件路径
+        """
+
+        file_info = QFileInfo(input_file)
+        if file_info.isDir():
+            raise IsADirectoryError(f"File '{input_file}' is a directory.")
+        if not file_info.exists():
+            raise FileNotFoundError(f'File "{input_file}" not found.')
 
     @classmethod
     def _parse_mode(cls, py_mode: str) -> QIODevice.OpenModeFlag:
@@ -138,7 +153,7 @@ class PyQTextFileIo:
         """
 
         if not self.readable():
-            raise OSError(f"File '{self._file.fileName()}' is not Readable.")
+            raise PermissionError(f"File '{self._file.fileName()}' is not Readable.")
 
         if size < 0 or size is None:
             # 读取文件，并将 QByteArray 转为 str
@@ -161,7 +176,7 @@ class PyQTextFileIo:
         """
 
         if not self.readable():
-            raise OSError(f"File '{self._file.fileName()}' is not Readable.")
+            raise PermissionError(f"File '{self._file.fileName()}' is not Readable.")
 
         if self._file.atEnd():
             warnings.warn(
@@ -190,7 +205,7 @@ class PyQTextFileIo:
         """
 
         if not self.readable():
-            raise OSError(f"File '{self._file.fileName()}' is not Readable.")
+            raise PermissionError(f"File '{self._file.fileName()}' is not Readable.")
 
         if hint <= 0 or hint is None:
             temp = self.qba_to_str(self._file.readAll(), self.encoding)
