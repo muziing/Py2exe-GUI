@@ -5,8 +5,16 @@ import warnings
 from typing import Optional
 
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QFileDialog, QMessageBox, QWidget
+from PySide6.QtGui import QIcon, QPixmap
+from PySide6.QtWidgets import (
+    QDialog,
+    QFileDialog,
+    QHeaderView,
+    QMessageBox,
+    QTableWidget,
+    QVBoxLayout,
+    QWidget,
+)
 
 from ..Utilities import QtFileOpen
 
@@ -90,3 +98,58 @@ class AboutDlg(QMessageBox):
             self._about_text = "无法打开关于文档，请尝试重新获取本程序。"
 
         return self._about_text
+
+
+class PkgBrowserDlg(QDialog):
+    """
+    浏览已安装的所有包的对话框
+    """
+
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
+        """
+        :param parent: 父控件对象
+        """
+
+        super().__init__(parent)
+
+        self.pkg_list: list[tuple[str, str]] = []  # [("black", "23.12.1"), ...]
+
+        self.pkg_table = QTableWidget(self)
+
+        self._setup_ui()
+
+    def _setup_ui(self) -> None:
+        """
+        处理 UI \n
+        """
+
+        self.setWindowTitle("已安装的包")
+        self.setWindowIcon(QIcon(QPixmap(":/Icons/Python_128px")))
+
+        self.pkg_table.setColumnCount(2)
+        self.pkg_table.setHorizontalHeaderLabels(["包名", "版本"])
+        self.pkg_table.horizontalHeader().setSectionResizeMode(
+            0, QHeaderView.ResizeMode.Stretch
+        )
+        self.pkg_table.horizontalHeader().setSectionResizeMode(
+            1, QHeaderView.ResizeMode.Stretch
+        )
+
+        main_layout = QVBoxLayout()
+        main_layout.setSpacing(0)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.addWidget(self.pkg_table)
+        self.setLayout(main_layout)
+
+    def load_pkg_list(self, pkg_list: list[dict[str, str]]) -> None:
+        """
+        从后端加载包数据，存储到实例属性中 \n
+        :param pkg_list: 已安装的包列表，形如 [{"name": "black", "version": "23.12.1"}, {}, ...]
+        """
+
+        package_lists = []
+        for pkg in pkg_list:
+            pkg_name = pkg["name"]
+            pkg_version = pkg["version"]
+            package_lists.append((pkg_name, pkg_version))
+        self.pkg_list = package_lists

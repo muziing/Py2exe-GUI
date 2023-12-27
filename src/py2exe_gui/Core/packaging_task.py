@@ -38,6 +38,7 @@ class PackagingTask(QtCore.QObject):
             PyInstOpt.out_name: None,
             PyInstOpt.FD: None,
             PyInstOpt.console: None,
+            PyInstOpt.hidden_import: None,
             PyInstOpt.clean: None,
         }  # TODO: 设法补充类型注解
 

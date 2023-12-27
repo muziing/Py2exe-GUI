@@ -1,23 +1,20 @@
 # Licensed under the GPLv3 License: https://www.gnu.org/licenses/gpl-3.0.html
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
-import sys
 from typing import Optional
 
 from PySide6.QtCore import Qt, Signal, Slot
 from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtWidgets import (
-    QApplication,
-    QDialog,
     QHBoxLayout,
-    QHeaderView,
     QListWidget,
     QListWidgetItem,
     QPushButton,
-    QTableWidget,
     QVBoxLayout,
     QWidget,
 )
+
+from .dialog_widgets import PkgBrowserDlg
 
 
 class MultiItemEditWindow(QWidget):
@@ -132,7 +129,7 @@ class MultiItemEditWindow(QWidget):
         item_list = []
 
         for row in range(self.item_list_widget.count()):
-            item_text = self.item_list_widget.item(row=row).text()
+            item_text = self.item_list_widget.item(row).text()
             if item_text == "":
                 self.item_list_widget.takeItem(row)
             else:
@@ -160,8 +157,6 @@ class MultiPkgEditWindow(MultiItemEditWindow):
     相比MultiItemEditWindow，主要是多了一个浏览当前 Python 环境中所有已安装第三方包
     并将包名作为条目添加的功能 \n
     """
-
-    # TODO 实现一个能够浏览并选中/多选Python包的对话框窗口
 
     def __init__(self, parent: Optional[QWidget] = None):
         """
@@ -192,65 +187,3 @@ class MultiPkgEditWindow(MultiItemEditWindow):
         super()._connect_slots()
 
         self.browse_pkg_button.clicked.connect(self.pkg_browser_dlg.exec)
-
-
-class PkgBrowserDlg(QDialog):
-    """
-    浏览已安装的所有包的对话框
-    """
-
-    def __init__(self, parent: Optional[QWidget] = None) -> None:
-        """
-        :param parent: 父控件对象
-        """
-
-        super().__init__(parent)
-
-        self.pkg_list: list[tuple[str, str]] = []  # [("black", "23.12.1"), ...]
-
-        self.pkg_table = QTableWidget(self)
-
-        self._setup_ui()
-
-    def _setup_ui(self) -> None:
-        """
-        处理 UI \n
-        """
-
-        self.setWindowTitle("已安装的包")
-        self.setWindowIcon(QIcon(QPixmap(":/Icons/Python_128px")))
-
-        self.pkg_table.setColumnCount(2)
-        self.pkg_table.setHorizontalHeaderLabels(["包名", "版本"])
-        self.pkg_table.horizontalHeader().setSectionResizeMode(
-            0, QHeaderView.ResizeMode.Stretch
-        )
-        self.pkg_table.horizontalHeader().setSectionResizeMode(
-            1, QHeaderView.ResizeMode.Stretch
-        )
-
-        main_layout = QVBoxLayout()
-        main_layout.setSpacing(0)
-        main_layout.setContentsMargins(0, 0, 0, 0)
-        main_layout.addWidget(self.pkg_table)
-        self.setLayout(main_layout)
-
-    def load_pkg_list(self, pkg_list: list[dict[str, str]]) -> None:
-        """
-        从后端加载包数据，存储到实例属性中 \n
-        :param pkg_list: 已安装的包列表，形如 [{"name": "black", "version": "23.12.1"}, {}, ...]
-        """
-
-        package_lists = []
-        for pkg in pkg_list:
-            pkg_name = pkg["name"]
-            pkg_version = pkg["version"]
-            package_lists.append((pkg_name, pkg_version))
-        self.pkg_list = package_lists
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = MultiPkgEditWindow()
-    window.show()
-    sys.exit(app.exec())
