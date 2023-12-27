@@ -26,8 +26,6 @@ class PyEnvComboBox(QComboBox):
             # 在非 PyInstaller 捆绑环境中，第一项为当前用于运行 Py2exe-GUI 的 Python 环境
             current_pyenv = PyEnv(sys.executable, PyEnvType.poetry)
             self.addItem(*self.gen_item(current_pyenv))
-            sys_pyenv = PyEnv(get_sys_python(), PyEnvType.system)
-            self.addItem(*self.gen_item(sys_pyenv))
         else:
             # 若已由 PyInstaller 捆绑成冻结应用程序，则第一项为系统 Python 环境
             sys_pyenv = PyEnv(get_sys_python(), PyEnvType.system)
