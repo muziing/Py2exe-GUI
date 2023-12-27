@@ -12,6 +12,7 @@ from PySide6.QtWidgets import (
     QHeaderView,
     QMessageBox,
     QTableWidget,
+    QTableWidgetItem,
     QVBoxLayout,
     QWidget,
 )
@@ -113,7 +114,6 @@ class PkgBrowserDlg(QDialog):
         super().__init__(parent)
 
         self.pkg_list: list[tuple[str, str]] = []  # [("black", "23.12.1"), ...]
-
         self.pkg_table = QTableWidget(self)
 
         self._setup_ui()
@@ -143,7 +143,8 @@ class PkgBrowserDlg(QDialog):
 
     def load_pkg_list(self, pkg_list: list[dict[str, str]]) -> None:
         """
-        从后端加载包数据，存储到实例属性中 \n
+        从后端加载包数据，存储到实例属性 pkg_list 中 \n
+        self.pkg_list 形如 [("black", "23.12.1"), ...]
         :param pkg_list: 已安装的包列表，形如 [{"name": "black", "version": "23.12.1"}, {}, ...]
         """
 
@@ -153,3 +154,14 @@ class PkgBrowserDlg(QDialog):
             pkg_version = pkg["version"]
             package_lists.append((pkg_name, pkg_version))
         self.pkg_list = package_lists
+        self._pkg_table_update()
+
+    def _pkg_table_update(self) -> None:
+        """
+        更新包列表控件显示内容 \n
+        """
+
+        self.pkg_table.setRowCount(len(self.pkg_list))
+        for row, pkg in enumerate(self.pkg_list):
+            self.pkg_table.setItem(row, 0, QTableWidgetItem(pkg[0]))
+            self.pkg_table.setItem(row, 1, QTableWidgetItem(pkg[1]))
