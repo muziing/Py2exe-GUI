@@ -21,4 +21,5 @@ class PyInstOpt(enum.IntFlag):
     out_name = enum.auto()
     add_data = enum.auto()
     add_binary = enum.auto()
+    hidden_import = enum.auto()
     clean = enum.auto()

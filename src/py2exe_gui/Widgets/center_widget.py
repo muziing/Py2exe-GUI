@@ -23,6 +23,7 @@ from ..Constants import PyInstOpt
 from .add_data_widget import AddDataWindow
 from .arguments_browser import ArgumentsBrowser
 from .dialog_widgets import IconFileDlg, ScriptFileDlg
+from .multi_item_edit_widget import MultiPkgEditWindow
 from .pyenv_combobox import PyEnvComboBox
 from .pyinstaller_option_widget import load_pyinst_options
 
@@ -75,6 +76,11 @@ class CenterWidget(QWidget):
         self.add_binary_dlg = AddDataWindow()
         self.binary_item_list: list[AddDataWindow.data_item] = []
 
+        # 添加隐式导入
+        self.hidden_import_btn = QPushButton()
+        self.hidden_import_dlg = MultiPkgEditWindow()
+        self.hidden_import_list: list[str] = []
+
         # 清理缓存与临时文件
         self.clean_checkbox = QCheckBox()
 
@@ -113,6 +119,9 @@ class CenterWidget(QWidget):
         self.add_data_dlg.setWindowTitle("添加数据文件")
         self.add_binary_dlg.setWindowTitle("添加二进制文件")
 
+        self.hidden_import_btn.setText("隐式导入")
+        self.hidden_import_dlg.setWindowTitle("Hidden import")
+
         self.clean_checkbox.setText("清理")
         self.clean_checkbox.setChecked(False)
         self.pyinstaller_args_browser.setMaximumHeight(80)
@@ -123,11 +132,15 @@ class CenterWidget(QWidget):
         # 将 PyInstaller 选项详情设置成各控件的 ToolTip
         if self.option_dict:
             opt = self.option_dict
+            # TODO: 解绑文本文档中的option字符和此处opt的键
             self.project_name_label.setToolTip(opt["-n NAME, --name NAME"])
             self.one_dir_btn.setToolTip(opt["-D, --onedir"])
             self.one_file_btn.setToolTip(opt["-F, --onefile"])
             self.add_data_btn.setToolTip(opt["--add-data SOURCE:DEST"])
             self.add_binary_btn.setToolTip(opt["--add-binary SOURCE:DEST"])
+            self.hidden_import_btn.setToolTip(
+                opt["--hidden-import MODULENAME, --hiddenimport MODULENAME"]
+            )
             self.clean_checkbox.setToolTip(opt["--clean"])
 
     def _connect_slots(self) -> None:
@@ -205,6 +218,24 @@ class CenterWidget(QWidget):
             self.parent_widget.statusBar().showMessage("添加二进制文件已更新")
             self.option_selected.emit((PyInstOpt.add_binary, binary_item_list))
 
+        @QtCore.Slot()
+        def handle_hidden_import_btn_clicked() -> None:
+            """
+            点击隐式导入按钮的槽函数 \n
+            """
+            self.hidden_import_dlg.show()
+
+        @QtCore.Slot(list)
+        def hidden_import_selected(hidden_import_list: list[str]) -> None:
+            """
+            用户完成了隐式导入编辑操作的槽函数 \n
+            :param hidden_import_list: 隐式导入项列表
+            """
+
+            self.hidden_import_list = hidden_import_list
+            self.parent_widget.statusBar().showMessage("隐式导入已更新")
+            self.option_selected.emit((PyInstOpt.hidden_import, hidden_import_list))
+
         @QtCore.Slot(bool)
         def clean_selected(selected: bool) -> None:
             """
@@ -229,6 +260,8 @@ class CenterWidget(QWidget):
         self.add_data_dlg.data_selected.connect(add_data_selected)
         self.add_binary_btn.clicked.connect(handle_add_binary_btn_clicked)
         self.add_binary_dlg.data_selected.connect(add_binary_selected)
+        self.hidden_import_btn.clicked.connect(handle_hidden_import_btn_clicked)
+        self.hidden_import_dlg.items_selected.connect(hidden_import_selected)
         self.clean_checkbox.toggled.connect(clean_selected)
 
     def _set_layout(self) -> None:
@@ -265,6 +298,8 @@ class CenterWidget(QWidget):
         main_layout.addLayout(fd_layout)
         main_layout.addStretch(10)
         main_layout.addLayout(add_btn_layout)
+        main_layout.addStretch(10)
+        main_layout.addWidget(self.hidden_import_btn)
         main_layout.addStretch(10)
         main_layout.addWidget(self.clean_checkbox)
         main_layout.addStretch(10)

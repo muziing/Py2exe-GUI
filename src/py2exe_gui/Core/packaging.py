@@ -59,20 +59,31 @@ class Packaging(QtCore.QObject):
         self._args = []  # 避免重复添加
 
         self._args.append(self.args_dict[PyInstOpt.script_path])
+
         if self.args_dict[PyInstOpt.icon_path]:
             self._args.extend(["--icon", self.args_dict[PyInstOpt.icon_path]])
+
         if self.args_dict[PyInstOpt.add_data]:
             for item in self.args_dict[PyInstOpt.add_data]:
                 self._args.extend(["--add-data", f"{item[0]}:{item[1]}"])
+
         if self.args_dict[PyInstOpt.add_binary]:
             for item in self.args_dict[PyInstOpt.add_binary]:
                 self._args.extend(["--add-binary", f"{item[0]}:{item[1]}"])
+
         if self.args_dict[PyInstOpt.FD]:
             self._args.append(self.args_dict[PyInstOpt.FD])
+
         if self.args_dict[PyInstOpt.console]:
             self._args.append(self.args_dict[PyInstOpt.console])
+
+        if self.args_dict[PyInstOpt.hidden_import]:
+            for item in self.args_dict[PyInstOpt.hidden_import]:
+                self._args.extend(["--hidden-import", item])
+
         if self.args_dict[PyInstOpt.out_name]:
             self._args.extend(["--name", self.args_dict[PyInstOpt.out_name]])
+
         if self.args_dict[PyInstOpt.clean]:
             self._args.append(self.args_dict[PyInstOpt.clean])
 
