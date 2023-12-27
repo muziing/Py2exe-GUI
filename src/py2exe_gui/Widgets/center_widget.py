@@ -24,6 +24,7 @@ from .add_data_widget import AddDataWindow
 from .arguments_browser import ArgumentsBrowser
 from .dialog_widgets import IconFileDlg, ScriptFileDlg
 from .pyenv_combobox import PyEnvComboBox
+from .pyinstaller_option_widget import load_pyinst_options
 
 
 class CenterWidget(QWidget):
@@ -43,6 +44,9 @@ class CenterWidget(QWidget):
         super().__init__(parent)
 
         self.parent_widget = parent
+
+        # 读取PyInstaller选项详细描述，用于各控件ToolTip
+        self.option_dict = load_pyinst_options()  # TODO 待优化：避免重复加载
 
         # 待打包的入口脚本
         self.script_path_label = QLabel()
@@ -115,6 +119,16 @@ class CenterWidget(QWidget):
 
         self.run_packaging_btn.setText("打包！")
         self.run_packaging_btn.setEnabled(False)
+
+        # 将 PyInstaller 选项详情设置成各控件的 ToolTip
+        if self.option_dict:
+            opt = self.option_dict
+            self.project_name_label.setToolTip(opt["-n NAME, --name NAME"])
+            self.one_dir_btn.setToolTip(opt["-D, --onedir"])
+            self.one_file_btn.setToolTip(opt["-F, --onefile"])
+            self.add_data_btn.setToolTip(opt["--add-data SOURCE:DEST"])
+            self.add_binary_btn.setToolTip(opt["--add-binary SOURCE:DEST"])
+            self.clean_checkbox.setToolTip(opt["--clean"])
 
     def _connect_slots(self) -> None:
         """
@@ -349,6 +363,18 @@ class WinMacCenterWidget(CenterWidget):
         self.icon_browse_btn.setText("浏览")
         self.console_checkbox.setText("为标准I/O启用终端")
         self.console_checkbox.setChecked(True)  # 默认值
+
+        # 将 PyInstaller 选项详情设置成各控件的 ToolTip
+        if self.option_dict:
+            opt = self.option_dict
+            self.icon_path_label.setToolTip(
+                opt[
+                    '-i <FILE.ico or FILE.exe,ID or FILE.icns or Image or "NONE">, '
+                    "--icon <FILE.ico or FILE.exe,"
+                    'ID or FILE.icns or Image or "NONE">'
+                ]
+            )
+            self.console_checkbox.setToolTip(opt["-c, --console, --nowindowed"])
 
     def _connect_slots(self) -> None:
         """

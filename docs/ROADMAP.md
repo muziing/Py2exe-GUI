@@ -27,7 +27,7 @@
     - [x] 高亮提示
     - [x] 以终端命令格式显示完整命令，并添加续行符
     - [ ] 导出为脚本功能，根据运行时平台导出 bash、PowerShell 等格式脚本
-- [ ] "What is this" 提示，对应 PyInstaller 文档，提供完整帮助信息
+- [x] ToolTip 提示，对应 PyInstaller 文档，提供完整帮助信息
 - [x] `PyInstaller` 选项参数详解表格
 - [x] 主窗口状态栏显示软件版本
 - [ ] 「一键调试」模式，自动选择 `--onedir`、`--console`、`--debug` 等利于调试的选项
