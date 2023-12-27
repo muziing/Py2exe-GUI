@@ -1,7 +1,6 @@
 # Licensed under the GPLv3 License: https://www.gnu.org/licenses/gpl-3.0.html
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
-import platform
 import sys
 from typing import Optional
 
@@ -9,8 +8,8 @@ from PySide6.QtCore import QSize
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QComboBox, QWidget
 
-from ..Constants import RUNTIME_INFO, PyEnv, PyEnvType, get_pyenv_version
-from ..Utilities import get_sys_python
+from ..Constants import RUNTIME_INFO, PyEnvType
+from ..Utilities import PyEnv, get_sys_python
 
 
 class PyEnvComboBox(QComboBox):
@@ -25,19 +24,14 @@ class PyEnvComboBox(QComboBox):
 
         if not RUNTIME_INFO.is_bundled:
             # 在非 PyInstaller 捆绑环境中，第一项为当前用于运行 Py2exe-GUI 的 Python 环境
-            current_pyenv = PyEnv(PyEnvType.poetry, executable_path=sys.executable)
+            current_pyenv = PyEnv(sys.executable, PyEnvType.poetry)
             self.addItem(*self.gen_item(current_pyenv))
+            sys_pyenv = PyEnv(get_sys_python(), PyEnvType.system)
+            self.addItem(*self.gen_item(sys_pyenv))
         else:
             # 若已由 PyInstaller 捆绑成冻结应用程序，则第一项为系统 Python 环境
-            sys_pyenv = PyEnv(PyEnvType.system, executable_path=get_sys_python())
+            sys_pyenv = PyEnv(get_sys_python(), PyEnvType.system)
             self.addItem(*self.gen_item(sys_pyenv))
-
-        # 测试项
-        self.addItem(
-            QIcon(":/Icons/Python_128px"),
-            f"Python {platform.python_version()}",
-            sys.executable,
-        )
 
     @classmethod
     def gen_item(cls, pyenv: PyEnv) -> tuple:
@@ -47,8 +41,8 @@ class PyEnvComboBox(QComboBox):
         :return: (icon, text, data)
         """
 
-        data = pyenv.executable_path
-        version = get_pyenv_version(pyenv)
+        data = pyenv
+        version = pyenv.pyversion
 
         if pyenv.type == PyEnvType.system:
             icon = QIcon(":/Icons/Python_128px")

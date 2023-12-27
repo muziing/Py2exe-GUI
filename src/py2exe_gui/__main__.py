@@ -7,11 +7,11 @@ from PySide6.QtCore import Slot
 from PySide6.QtGui import QCloseEvent
 from PySide6.QtWidgets import QApplication
 
-from .Constants import PyInstOpt  # noqa
-from .Core import Packaging, PackagingTask  # noqa
+from .Constants import PyInstOpt
+from .Core import Packaging, PackagingTask
 from .Resources import COMPILED_RESOURCES  # noqa
-from .Utilities import open_dir_in_explorer  # noqa
-from .Widgets import MainWindow, SubProcessDlg  # noqa
+from .Utilities import PyEnv, open_dir_in_explorer
+from .Widgets import MainWindow, SubProcessDlg
 
 
 class MainApp(MainWindow):
@@ -22,6 +22,7 @@ class MainApp(MainWindow):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
+        self.current_pyenv: PyEnv
         self.packaging_task = PackagingTask(self)
         self.packager = Packaging(self)
         self.subprocess_dlg = SubProcessDlg(self)
@@ -63,16 +64,24 @@ class MainApp(MainWindow):
         处理用户通过选择不同的 Python 解释器时的响应
         """
 
-        self.packager.set_python_path(self.center_widget.pyenv_combobox.currentData())
-        self.center_widget.pyenv_combobox.currentIndexChanged.connect(
-            lambda: self.packager.set_python_path(
-                self.center_widget.pyenv_combobox.currentData()
+        @Slot()
+        def on_pyenv_change() -> None:
+            """
+            处理用户通过选择不同的 Python 解释器时的响应
+            """
+
+            self.current_pyenv = self.center_widget.pyenv_combobox.currentData()
+            self.packager.set_python_path(self.current_pyenv.exe_path)
+            self.center_widget.hidden_import_dlg.pkg_browser_dlg.load_pkg_list(
+                self.current_pyenv.installed_packages
             )
-        )
+
+        on_pyenv_change()  # 显式调用一次，确保用户无任何操作时也能正确处理默认pyenv
+        self.center_widget.pyenv_combobox.currentIndexChanged.connect(on_pyenv_change)
 
     def _connect_run_pkg_btn_slot(self):
         @Slot()
-        def run_packaging() -> None:
+        def on_run_packaging_btn_clicked() -> None:
             """
             “运行打包”按钮的槽函数 \n
             """
@@ -81,11 +90,13 @@ class MainApp(MainWindow):
             self.subprocess_dlg.show()
             self.packager.run_packaging_process()
 
-        self.center_widget.run_packaging_btn.clicked.connect(run_packaging)
+        self.center_widget.run_packaging_btn.clicked.connect(
+            on_run_packaging_btn_clicked
+        )
 
     def _connect_mul_btn_slot(self, subprocess_dlg):
         @Slot()
-        def handle_multifunction() -> None:
+        def on_multifunction_btn_clicked() -> None:
             """
             处理子进程窗口多功能按钮点击信号的槽 \n
             """
@@ -102,7 +113,7 @@ class MainApp(MainWindow):
                 self.subprocess_dlg.close()
 
         # 连接信号与槽
-        subprocess_dlg.multifunction_btn.clicked.connect(handle_multifunction)
+        subprocess_dlg.multifunction_btn.clicked.connect(on_multifunction_btn_clicked)
 
     def closeEvent(self, event: QCloseEvent) -> None:
         """
