@@ -149,9 +149,9 @@ class MultiItemEditWindow(QWidget):
         self.item_list_widget.clear()
 
         for item in items:
-            item = QListWidgetItem(item)
-            item.setFlags(self._QListWidgetItem_flag)
-            self.item_list_widget.addItem(QListWidgetItem(item))
+            list_widget_item = QListWidgetItem(item)
+            list_widget_item.setFlags(self._QListWidgetItem_flag)
+            self.item_list_widget.addItem(list_widget_item)
 
 
 class MultiPkgEditWindow(MultiItemEditWindow):

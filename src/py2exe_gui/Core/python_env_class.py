@@ -48,9 +48,9 @@ class PyEnv:
         :return: 包列表，形如 [{'name': 'aiohttp', 'version': '3.9.1'}, {'name': 'aiosignal', 'version': '1.3.1'}, ...]
         """
 
-        cmd = f"{executable_path.resolve()} -m pip list --format json"
+        cmd = f"{executable_path} -m pip list --format json"
         pip_list = subprocess.getoutput(cmd)
-        installed_packages = json.loads(pip_list)
+        installed_packages: list[dict] = json.loads(pip_list)
         return installed_packages
 
     @classmethod

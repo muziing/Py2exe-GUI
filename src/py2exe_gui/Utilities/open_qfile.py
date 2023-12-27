@@ -13,7 +13,7 @@ from PySide6.QtCore import QByteArray, QFile, QFileInfo, QIODevice
 class QtFileOpen:
     """
     通过 QFile 读写文件的上下文管理器 \n
-    使与 Python 的 with 语句风格统一 \n
+    使与 Python 的 "with open() as" 语句风格统一 \n
 
     使用举例：
 
@@ -52,10 +52,10 @@ class QtFileOpen:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.io_obj.close()
 
-    @classmethod
-    def deal_path(cls, path: Union[str, bytes, os.PathLike[str]]) -> str:
+    @staticmethod
+    def deal_path(path: Union[str, bytes, os.PathLike[str]]) -> str:
         """
-        预处理文件路径，确保使用 / 风格
+        预处理文件路径，统一成字符串类型、确保使用 posix / 风格
         :param path: 文件路径
         :return: 使用正斜杠（/）的路径字符串
         """
@@ -105,13 +105,13 @@ class PyQTextFileIo:
         if not file_info.exists():
             raise FileNotFoundError(f'File "{input_file}" not found.')
 
-    @classmethod
-    def _parse_mode(cls, py_mode: str) -> QIODevice.OpenModeFlag:
+    @staticmethod
+    def _parse_mode(py_mode: str) -> QIODevice.OpenModeFlag:
         """
         解析文件打开模式，将 Python open() 风格转换至 QIODevice.OpenModeFlag
         https://docs.python.org/zh-cn/3/library/functions.html#open
         https://doc.qt.io/qt-6/qiodevicebase.html#OpenModeFlag-enum
-        :return: mode
+        :return: QIODevice.OpenModeFlag
         """
 
         qt_mode: QIODevice.OpenModeFlag = QIODevice.OpenModeFlag.Text
@@ -129,11 +129,12 @@ class PyQTextFileIo:
 
         return qt_mode
 
-    @classmethod
-    def qba_to_str(cls, qba: QByteArray, encoding: str = locale.getencoding()) -> str:
+    @staticmethod
+    def qba_to_str(qba: QByteArray, encoding: str = locale.getencoding()) -> str:
         """
         将 QByteArray 转换为 str
         """
+
         return qba.data().decode(encoding=encoding)
 
     def readable(self) -> bool:
@@ -146,6 +147,7 @@ class PyQTextFileIo:
 
     def read(self, size: int = -1) -> str:
         """
+        模仿 `io.TextIOBase.read` 的行为，读取流中的文本。 \n
         从流中读取至多 size 个字符并以单个 str 的形式返回。 如果 size 为负值或 None，则读取至 EOF。 \n
         https://docs.python.org/3/library/io.html#io.TextIOBase.read
         :param size: 读取的字符数，负值或 None 表示一直读取直到 EOF
@@ -169,7 +171,7 @@ class PyQTextFileIo:
 
     def readline(self, size: int = -1, /) -> str:
         """
-        模仿 io.TextIOBase.readline 的行为，读取文件中的一行。 \n
+        模仿 `io.TextIOBase.readline` 的行为，读取文件中的一行。 \n
         https://docs.python.org/3/library/io.html#io.TextIOBase.readline
         :param size: 如果指定了 size ，最多将读取 size 个字符。
         :return: 单行文本
@@ -197,7 +199,7 @@ class PyQTextFileIo:
 
     def readlines(self, hint: int = -1, /) -> list[str]:
         """
-        模仿 Python 中 io.IOBase.readlines() 的行为，返回由所有行组成的字符串列表。 \n
+        模仿 `io.IOBase.readlines()` 的行为，返回由所有行组成的字符串列表。 \n
         Known issue： slower than `readline()` \n
         https://docs.python.org/3/library/io.html#io.IOBase.readlines
         :param hint: 要读取的字符数
@@ -222,7 +224,7 @@ class PyQTextFileIo:
 
     def close(self) -> None:
         """
-        关闭打开的文件对象
+        关闭打开的文件对象 \n
         """
 
         self._file.close()
