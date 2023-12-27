@@ -38,8 +38,16 @@ class PyEnv:
         :return: Version of the Python interpreter, such as "3.11.7".
         """
 
-        cmd = f"{executable_path} -c \"import platform;print(platform.python_version(), end='')\""
-        version = subprocess.getoutput(cmd, encoding="utf-8")
+        cmd = [
+            f"{executable_path}",
+            "-c",
+            "import platform;print(platform.python_version(), end='')",
+        ]
+        try:
+            result = subprocess.run(cmd, capture_output=True, text=True)
+            version = result.stdout
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError(f"Failed to get Python version: {e.output}") from e
         return version
 
     @staticmethod
@@ -50,14 +58,33 @@ class PyEnv:
         :return: 包列表，形如 [{'name': 'aiohttp', 'version': '3.9.1'}, {'name': 'aiosignal', 'version': '1.3.1'}, ...]
         """
 
-        cmd = (
-            f"{executable_path} -m pip list --format json "
-            "--disable-pip-version-check --no-color "
-            "--no-python-version-warning"
-        )
-        pip_list = subprocess.getoutput(cmd)
-        # TODO 添加异常处理机制
-        installed_packages: list[dict] = json.loads(pip_list)
+        cmd = [
+            f"{executable_path}",
+            "-m",
+            "pip",
+            "list",
+            "--format",
+            "json",
+            "--disable-pip-version-check",
+            "--no-color",
+            "--no-python-version-warning",
+        ]
+
+        try:
+            # 运行 pip list 命令，获取输出
+            result = subprocess.run(cmd, capture_output=True, text=True)
+            pip_list = result.stdout
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError(f"Failed to get installed packages: {e.output}") from e
+        except Exception as e:
+            raise RuntimeError(f"An error occurred: {e}") from e
+
+        try:
+            # json 解析
+            installed_packages: list[dict] = json.loads(pip_list)
+        except json.decoder.JSONDecodeError as e:
+            raise RuntimeError(f"Failed to parse installed packages: {e}") from e
+
         return installed_packages
 
     @classmethod
@@ -70,16 +97,12 @@ class PyEnv:
 
     def pkg_installed(self, package_name: str) -> bool:
         """
-        检索某个包是否已安装 \n
-        :param package_name: 待检索的包名
+        检查特定软件包是否已安装 \n
+        :param package_name: 待检索的软件包名称
         :return: 是否已安装
         """
 
-        for package in self.installed_packages:
-            if package["name"] == package_name:
-                return True
-        else:
-            return False
+        return any(pkg["name"] == package_name for pkg in self.installed_packages)
 
 
 if __name__ == "__main__":

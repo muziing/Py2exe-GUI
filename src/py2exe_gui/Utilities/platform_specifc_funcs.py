@@ -7,6 +7,7 @@
 """
 
 import subprocess
+import warnings
 from pathlib import Path
 from typing import Union
 
@@ -19,13 +20,22 @@ def open_dir_in_explorer(dir_path: Union[str, Path]) -> None:
     :param dir_path: 待打开的目录路径
     """
 
-    if RUNTIME_INFO.platform == PLATFORM.windows:
-        import os  # fmt: skip
-        os.startfile(dir_path)  # type: ignore
-    elif RUNTIME_INFO.platform == PLATFORM.linux:
-        subprocess.call(["xdg-open", dir_path])
-    elif RUNTIME_INFO.platform == PLATFORM.macos:
-        subprocess.call(["open", dir_path])
+    try:
+        if RUNTIME_INFO.platform == PLATFORM.windows:
+            import os  # fmt: skip
+            os.startfile(dir_path)  # type: ignore
+        elif RUNTIME_INFO.platform == PLATFORM.linux:
+            subprocess.call(["xdg-open", dir_path])
+        elif RUNTIME_INFO.platform == PLATFORM.macos:
+            subprocess.call(["open", dir_path])
+        else:
+            raise ValueError(f"Unsupported platform: {RUNTIME_INFO.platform}.")
+    except OSError as e:
+        warnings.warn(
+            f"Error occurred while trying to open directory: {e}",
+            RuntimeWarning,
+            stacklevel=2,
+        )
 
 
 def get_sys_python() -> str:
@@ -35,10 +45,24 @@ def get_sys_python() -> str:
     """
 
     if RUNTIME_INFO.platform == PLATFORM.windows:
-        cmd = "powershell.exe (Get-Command python).Path"  # PowerShell
+        cmd = ["powershell.exe", "(Get-Command python).Path"]  # PowerShell
     elif RUNTIME_INFO.platform in (PLATFORM.linux, PLATFORM.macos):
-        cmd = "which python3"
+        cmd = ["which", "python3"]
     else:
         raise ValueError("Current OS is not supported.")
 
-    return subprocess.getoutput(cmd)
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        python_path = result.stdout.strip()
+    except subprocess.CalledProcessError as e:
+        warnings.warn(
+            f"Error occurred while trying to get system default Python interpreter: {e.output}",
+            RuntimeWarning,
+            stacklevel=2,
+        )
+        raise
+
+    if not Path(python_path).exists():
+        raise FileNotFoundError(f"Python interpreter not found: {python_path}")
+
+    return python_path
