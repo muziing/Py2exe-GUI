@@ -9,9 +9,9 @@
     - [x] 处理不能正确显示子进程错误的问题（会被“打包完成”遮盖）
     - [ ] 增加「将输出导出到日志文件」功能
     - [ ] 增加简单高亮功能
-- [ ] 添加资源文件窗口
+- [x] 添加资源文件窗口
     - [x] `--add-data`、 `--add-binary`
-    - [ ] `--paths`、`--hidden-import` 等可多次调用的选项
+    - [x] `--paths`、`--hidden-import` 等可多次调用的选项
     - [x] 模仿 Windows “编辑环境变量” 窗口，左侧条目，右侧添加删除编辑等按钮
 - [ ] Python 解释器选择器
     - [ ] 文件浏览对话框选择解释器可执行文件
@@ -77,6 +77,7 @@
 
 分发方式：
 
+- [x] PyPI
 - [x] GitHub Releases
 - [ ] Arch Linux AUR
 - [ ] Ubuntu PPA
