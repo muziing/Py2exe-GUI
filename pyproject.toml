@@ -45,18 +45,23 @@ types-pyyaml = "^6.0.12.12"
 [tool.black]
 line-length = 88
 target-version = ["py311"]
-extend-exclude = "COMPILED_RESOURCES.py"
+extend-exclude = "COMPILED_RESOURCES\\.py"
 
 [tool.isort]
 profile = "black"
 line_length = 88
-py_version=311
+py_version = 311
+skip_glob = ["src/py2exe_gui/Resources/*"]
 
 [tool.mypy]
 python_version = "3.11"
 warn_return_any = true
 ignore_missing_imports = true
 check_untyped_defs = true
+exclude = ["COMPILED_RESOURCES\\.py$"]
+
+[tool.ruff]
+extend-exclude = ["COMPILED_RESOURCES.py"]
 
 [tool.ruff.lint]
 select = [
