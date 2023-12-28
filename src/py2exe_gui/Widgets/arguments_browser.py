@@ -6,10 +6,9 @@
 
 from typing import Optional
 
-from Constants.runtime_info import Platform
 from PySide6.QtWidgets import QTextBrowser, QWidget
 
-from ..Constants import RUNTIME_INFO
+from ..Constants import RUNTIME_INFO, Platform
 
 # 一组适合浅色背景的颜色
 colors = ["#FD6D5A", "#FEB40B", "#6DC354", "#994487", "#518CD8", "#443295"]

@@ -11,9 +11,7 @@ import warnings
 from pathlib import Path
 from typing import Union
 
-from Constants.runtime_info import Platform
-
-from ..Constants import RUNTIME_INFO
+from ..Constants import RUNTIME_INFO, Platform
 
 
 def open_dir_in_explorer(dir_path: Union[str, Path]) -> None:
