@@ -3,7 +3,7 @@
 
 """各类常量、枚举值与全局变量"""
 
-from .app_constants import *
-from .packaging_constants import *
-from .platform_constants import *
-from .python_env_constants import *
+from .app_constants import APP_URLs, AppConstant
+from .packaging_constants import PyInstOpt
+from .python_env_constants import PyEnvType
+from .runtime_info import RUNTIME_INFO, Platform, get_platform

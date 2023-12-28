@@ -1,19 +1,24 @@
 # Licensed under the GPLv3 License: https://www.gnu.org/licenses/gpl-3.0.html
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
+"""此模块主要包含 `MainWindow` 主窗口控件，定义并配置了一个有工具栏、中央控件、状态栏的主窗口
+
+仅包含控件（前端界面）部分，不包含打包任务等（后端）功能
+"""
+
 from PySide6.QtCore import QUrl
 from PySide6.QtGui import QDesktopServices, QIcon, QPixmap
 from PySide6.QtWidgets import QApplication, QLabel, QMainWindow, QMenuBar, QStatusBar
 
-from ..Constants import PLATFORM, RUNTIME_INFO, APP_URLs, AppConstant
+from ..Constants import RUNTIME_INFO, APP_URLs, AppConstant, Platform
 from .center_widget import CenterWidget, WinMacCenterWidget
 from .dialog_widgets import AboutDlg
 from .pyinstaller_option_widget import PyinstallerOptionTable
 
 
 def open_url(url: str) -> None:
-    """
-    辅助函数，在系统默认浏览器中打开URL \n
+    """辅助函数，在系统默认浏览器中打开 `url`
+
     :param url: 待打开的URL
     """
 
@@ -29,7 +34,7 @@ class MainWindow(QMainWindow):
         super().__init__(*args, **kwargs)
 
         self.center_widget: CenterWidget
-        if RUNTIME_INFO.platform in (PLATFORM.windows, PLATFORM.macos):
+        if RUNTIME_INFO.platform in (Platform.windows, Platform.macos):
             self.center_widget = WinMacCenterWidget(self)
         else:
             self.center_widget = CenterWidget(self)
@@ -45,9 +50,7 @@ class MainWindow(QMainWindow):
         self._setup()
 
     def _setup(self) -> None:
-        """
-        设置主窗口 \n
-        """
+        """设置主窗口"""
 
         self.setWindowTitle("Py2exe-GUI")
         self.setMinimumSize(350, 430)
@@ -58,9 +61,7 @@ class MainWindow(QMainWindow):
         self._setup_status_bar()
 
     def _setup_menu_bar(self) -> None:
-        """
-        配置主窗口菜单栏 \n
-        """
+        """配置主窗口菜单栏"""
 
         file_menu = self.menu_bar.addMenu("文件(&F)")
         file_menu.addAction("打开打包任务")  # 暂时只为占位
@@ -85,9 +86,7 @@ class MainWindow(QMainWindow):
         about_menu.addAction("关于 &Qt", QApplication.aboutQt)
 
     def _setup_status_bar(self) -> None:
-        """
-        配置主窗口状态栏 \n
-        """
+        """配置主窗口状态栏"""
 
         # 在最右侧固定显示版本信息
         version_label = QLabel("V" + AppConstant.VERSION, self.status_bar)
