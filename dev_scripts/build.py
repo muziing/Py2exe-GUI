@@ -1,5 +1,4 @@
-"""
-用于构建项目的脚本
+"""用于构建项目的脚本
 """
 
 import subprocess
@@ -21,10 +20,11 @@ from dev_scripts.path_constants import (
 
 
 def process_md_images(md_file_list: list[Path]) -> None:
-    """
-    处理 Markdown 文档中的图片链接 \n
-    在构建前替换为 GitHub 图床链接，在构建后替换回本地目录中的路径 \n
-    :return: 处理方向，0-处置至本地路径，1-处理至GitHub路径
+    """处理 Markdown 文档中的图片链接
+
+    在构建前替换为 GitHub 图床链接，在构建后替换回本地目录中的路径
+
+    :param md_file_list: Markdown 文件列表
     """
 
     md_uri = "docs/source/images/"
@@ -47,8 +47,8 @@ def process_md_images(md_file_list: list[Path]) -> None:
 
 
 def compile_resources() -> int:
-    """
-    调用 RCC 工具编译静态资源 \n
+    """调用 RCC 工具编译静态资源
+
     :return: rcc 进程返回码
     """
 
@@ -57,17 +57,22 @@ def compile_resources() -> int:
     cmd = [
         "pyside6-rcc",
         "-o",
-        str(compiled_file_path.resolve()),
-        str(qrc_file_path.resolve()),
+        str(compiled_file_path.absolute()),
+        str(qrc_file_path.absolute()),
     ]
-    result = subprocess.run(cmd)
-    print(f"已完成静态资源文件编译，RCC返回码：{result.returncode}。")
-    return result.returncode
+    try:
+        result = subprocess.run(cmd)
+    except subprocess.SubprocessError as e:
+        print(f"RCC编译进程错误：{e}")
+        raise e
+    else:
+        print(f"已完成静态资源文件编译，RCC返回码：{result.returncode}。")
+        return result.returncode
 
 
 def export_requirements() -> int:
-    """
-    将项目依赖项导出至 requirements.txt 中
+    """将项目依赖项导出至 requirements.txt 中
+
     :return: poetry export 命令返回值
     """
 
@@ -79,15 +84,19 @@ def export_requirements() -> int:
         PROJECT_ROOT / "requirements.txt",
         "--format=requirements.txt",
     ]
-    result = subprocess.run(poetry_export_cmd)
-    print(f"已将当前项目依赖导出至 requirements.txt，poetry export 返回码：{result.returncode}")
-    return result.returncode
+
+    try:
+        result = subprocess.run(poetry_export_cmd)
+    except subprocess.SubprocessError as e:
+        print(f"poetry export 进程错误：{e}")
+        raise e
+    else:
+        print(f"已将当前项目依赖导出至 requirements.txt，poetry export 返回码：{result.returncode}")
+        return result.returncode
 
 
 def build_py2exe_gui() -> None:
-    """
-    构建项目的总函数 \n
-    """
+    """构建项目的总函数"""
 
     if check_version_num() + check_license_statement() == 0:
         # 准备工作
