@@ -3,6 +3,7 @@
     <qresource prefix="Icons">
         <file alias="Py2exe-GUI_icon_72px">Icons/Py2exe-GUI_icon_72px.png</file>
         <file alias="Python_128px">Icons/Python_128px.png</file>
+        <file alias="Python_cyan">Icons/Python-logo-cyan-72px.png</file>
         <file alias="PyInstaller">Icons/pyinstaller-icon-console.png</file>
         <file alias="Poetry">Icons/poetry-icon_128px.png</file>
         <file alias="Conda">Icons/conda-icon_200px.png</file>
