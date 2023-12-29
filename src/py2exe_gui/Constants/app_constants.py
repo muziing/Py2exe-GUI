@@ -1,6 +1,8 @@
 # Licensed under the GPLv3 License: https://www.gnu.org/licenses/gpl-3.0.html
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
+"""应用程序级常量与部分全局变量"""
+
 from .runtime_info import RUNTIME_INFO
 
 APP_URLs = {
@@ -14,9 +16,7 @@ if RUNTIME_INFO.language_code == "zh_CN":
 
 
 class AppConstant:
-    """
-    应用程序级的常量
-    """
+    """应用程序级的常量"""
 
     NAME = "Py2exe-GUI"
     VERSION = "0.2.1"

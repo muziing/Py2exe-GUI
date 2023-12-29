@@ -1,6 +1,14 @@
 # Licensed under the GPLv3 License: https://www.gnu.org/licenses/gpl-3.0.html
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
+"""此模块主要包含主界面中央控件类
+
+CenterWidget 是主要类，定义了各种界面控件及其大部分信号与槽功能
+
+WinMacCenterWidget 继承自 CenterWidget，额外添加了仅 Windows 和 macOS 平台才支持的
+PyInstaller 功能所对应的控件及其槽函数
+"""
+
 from pathlib import Path
 
 from PySide6 import QtCore
@@ -29,9 +37,7 @@ from .pyinstaller_option_widget import load_pyinst_options
 
 
 class CenterWidget(QWidget):
-    """
-    主界面的中央控件
-    """
+    """主界面的中央控件"""
 
     # 自定义信号
     option_selected = QtCore.Signal(tuple)  # 用户通过界面控件选择选项后发射此信号
@@ -39,7 +45,7 @@ class CenterWidget(QWidget):
 
     def __init__(self, parent: QMainWindow) -> None:
         """
-        :param parent: 父控件对象，应为主程序主窗口 \n
+        :param parent: 父控件对象，应为主程序主窗口
         """
 
         super().__init__(parent)
@@ -95,9 +101,7 @@ class CenterWidget(QWidget):
         self._set_layout()
 
     def _setup_ui(self) -> None:
-        """
-        设置各种控件的属性 \n
-        """
+        """设置各种控件的属性"""
 
         self.script_path_label.setText("待打包脚本：")
         self.script_path_le.setReadOnly(True)
@@ -144,14 +148,12 @@ class CenterWidget(QWidget):
             self.clean_checkbox.setToolTip(opt["--clean"])
 
     def _connect_slots(self) -> None:
-        """
-        定义、连接信号与槽 \n
-        """
+        """定义、连接信号与槽"""
 
         @QtCore.Slot(str)
         def script_file_selected(file_path: str) -> None:
-            """
-            脚本文件完成选择的槽函数 \n
+            """脚本文件完成选择的槽函数
+
             :param file_path: 脚本文件路径
             """
 
@@ -159,18 +161,16 @@ class CenterWidget(QWidget):
 
         @QtCore.Slot()
         def project_name_selected() -> None:
-            """
-            输出程序名称完成输入的槽 \n
-            """
+            """输出程序名称完成输入的槽"""
 
             project_name: str = self.project_name_le.text()
             self.option_selected.emit((PyInstOpt.out_name, project_name))
 
         @QtCore.Slot(int)
         def one_fd_selected(btn_id: int) -> None:
-            """
-            选择输出至单文件/单目录的槽 \n
-            :param btn_id: fd_group按钮组中按钮的id
+            """选择输出至单文件/单目录的槽
+
+            :param btn_id: `fd_group` 按钮组中按钮的 id
             """
 
             if btn_id == 0:
@@ -182,18 +182,14 @@ class CenterWidget(QWidget):
 
         @QtCore.Slot()
         def handle_add_data_btn_clicked() -> None:
-            """
-            用户在界面点击添加数据按钮的槽函数 \n
-            """
+            """用户在界面点击添加数据按钮的槽函数"""
 
             self.add_data_dlg.load_data_item_list(self.data_item_list)
             self.add_data_dlg.show()
 
         @QtCore.Slot(list)
         def add_data_selected(data_item_list: list) -> None:
-            """
-            用户完成了添加数据操作的槽函数 \n
-            """
+            """用户完成了添加数据操作的槽函数"""
 
             self.data_item_list = data_item_list
             self.parent_widget.statusBar().showMessage("添加数据文件已更新")
@@ -201,18 +197,14 @@ class CenterWidget(QWidget):
 
         @QtCore.Slot()
         def handle_add_binary_btn_clicked() -> None:
-            """
-            用户在界面点击添加二进制文件按钮的槽函数 \n
-            """
+            """用户在界面点击添加二进制文件按钮的槽函数"""
 
             self.add_binary_dlg.load_data_item_list(self.binary_item_list)
             self.add_binary_dlg.show()
 
         @QtCore.Slot(list)
         def add_binary_selected(binary_item_list: list) -> None:
-            """
-            用户完成了添加二进制文件操作的槽函数 \n
-            """
+            """用户完成了添加二进制文件操作的槽函数"""
 
             self.binary_item_list = binary_item_list
             self.parent_widget.statusBar().showMessage("添加二进制文件已更新")
@@ -220,15 +212,14 @@ class CenterWidget(QWidget):
 
         @QtCore.Slot()
         def handle_hidden_import_btn_clicked() -> None:
-            """
-            点击隐式导入按钮的槽函数 \n
-            """
+            """点击隐式导入按钮的槽函数"""
+
             self.hidden_import_dlg.show()
 
         @QtCore.Slot(list)
         def hidden_import_selected(hidden_import_list: list[str]) -> None:
-            """
-            用户完成了隐式导入编辑操作的槽函数 \n
+            """用户完成了隐式导入编辑操作的槽函数
+
             :param hidden_import_list: 隐式导入项列表
             """
 
@@ -238,8 +229,8 @@ class CenterWidget(QWidget):
 
         @QtCore.Slot(bool)
         def clean_selected(selected: bool) -> None:
-            """
-            选择了清理缓存复选框的槽 \n
+            """选择了清理缓存复选框的槽
+
             :param selected: 是否勾选了 clean 复选框
             """
 
@@ -264,10 +255,9 @@ class CenterWidget(QWidget):
         self.hidden_import_dlg.items_selected.connect(hidden_import_selected)
         self.clean_checkbox.toggled.connect(clean_selected)
 
+    # noinspection DuplicatedCode
     def _set_layout(self) -> None:
-        """
-        设置布局管理器 \n
-        """
+        """设置布局管理器"""
 
         script_layout = QGridLayout()
         script_layout.addWidget(self.script_path_label, 0, 0, 1, 2)
@@ -310,8 +300,8 @@ class CenterWidget(QWidget):
 
     @QtCore.Slot(tuple)
     def handle_option_set(self, option: tuple[PyInstOpt, str]) -> None:
-        """
-        处理option_set信号的槽，根据已经成功设置的选项调整界面 \n
+        """处理option_set信号的槽，根据已经成功设置的选项调整界面
+
         :param option: 选项键值对
         """
 
@@ -321,7 +311,7 @@ class CenterWidget(QWidget):
             script_path = Path(option_value)
             self.script_path_le.setText(script_path.name)
             self.parent_widget.statusBar().showMessage(
-                f"打开脚本路径：{str(script_path.resolve())}"
+                f"打开脚本路径：{str(script_path.absolute())}"
             )
             self.add_data_dlg.set_work_dir(script_path.parent)
             self.add_binary_dlg.set_work_dir(script_path.parent)
@@ -332,8 +322,8 @@ class CenterWidget(QWidget):
 
     @QtCore.Slot(PyInstOpt)
     def handle_option_error(self, option: PyInstOpt) -> None:
-        """
-        处理option_error信号的槽，重置设置失败的选项对应的界面，并向用户发出警告 \n
+        """处理option_error信号的槽，重置设置失败的选项对应的界面，并向用户发出警告
+
         :param option: 选项
         """
 
@@ -445,10 +435,9 @@ class WinMacCenterWidget(CenterWidget):
         self.icon_file_dlg.fileSelected.connect(icon_file_selected)
         self.console_checkbox.toggled.connect(console_selected)
 
+    # noinspection DuplicatedCode
     def _set_layout(self) -> None:
-        """
-        设置布局管理器 \n
-        """
+        """设置布局管理器"""
 
         super()._set_layout()
 
@@ -462,8 +451,8 @@ class WinMacCenterWidget(CenterWidget):
 
     @QtCore.Slot(tuple)
     def handle_option_set(self, option: tuple[PyInstOpt, str]) -> None:
-        """
-        处理option_set信号的槽，根据已经成功设置的选项调整界面 \n
+        """处理option_set信号的槽，根据已经成功设置的选项调整界面
+
         :param option: 选项键值对
         """
 
@@ -473,19 +462,19 @@ class WinMacCenterWidget(CenterWidget):
 
         if option_key == PyInstOpt.script_path:
             script_path = Path(option_value)
-            self.icon_file_dlg.setDirectory(str(script_path.parent.resolve()))
+            self.icon_file_dlg.setDirectory(str(script_path.parent.absolute()))
 
         elif option_key == PyInstOpt.icon_path:
             icon_path = Path(option_value)
             self.icon_path_le.setText(icon_path.name)
             self.parent_widget.statusBar().showMessage(
-                f"打开图标路径：{str(icon_path.resolve())}"
+                f"打开图标路径：{str(icon_path.absolute())}"
             )
 
     @QtCore.Slot(PyInstOpt)
     def handle_option_error(self, option: PyInstOpt) -> None:
-        """
-        处理option_error信号的槽，重置设置失败的选项对应的界面，并向用户发出警告 \n
+        """处理option_error信号的槽，重置设置失败的选项对应的界面，并向用户发出警告
+
         :param option: 选项
         """
 

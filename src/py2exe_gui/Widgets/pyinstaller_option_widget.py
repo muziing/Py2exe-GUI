@@ -1,6 +1,12 @@
 # Licensed under the GPLv3 License: https://www.gnu.org/licenses/gpl-3.0.html
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
+"""本模块主要用于加载、解析、界面显示 PyInstaller 选项的详细描述
+
+`load_pyinst_options()` 函数用于从数据文件中读取并解析 PyInstaller 命令选项信息，按运行时平台筛选后返回；
+`PyinstallerOptionTable` 类是用于显示 PyInstaller 命令行选项的表格控件
+"""
+
 import warnings
 
 import yaml
@@ -12,8 +18,8 @@ from ..Utilities import QtFileOpen
 
 
 def load_pyinst_options() -> dict[str, str]:
-    """
-    从数据文件中读取并解析 PyInstaller 命令选项信息，按运行时平台筛选后返回 \n
+    """从数据文件中读取并解析 PyInstaller 命令选项信息，按运行时平台筛选后返回
+
     :return: 选项信息字典，{option: description}
     """
 
@@ -40,9 +46,7 @@ def load_pyinst_options() -> dict[str, str]:
 
 
 class PyinstallerOptionTable(QTableWidget):
-    """
-    用于显示 PyInstaller 命令行选项的表格控件
-    """
+    """用于显示 PyInstaller 命令行选项的表格控件"""
 
     def __init__(self) -> None:
         super().__init__()
@@ -60,9 +64,7 @@ class PyinstallerOptionTable(QTableWidget):
         self.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
 
     def _set_items(self) -> None:
-        """
-        为表格控件中填充条目 \n
-        """
+        """为表格控件中填充条目"""
 
         for index, (option, description) in enumerate(self.option_dict.items()):
             self.setItem(index, 0, QTableWidgetItem(option))

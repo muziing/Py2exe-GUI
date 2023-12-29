@@ -1,6 +1,13 @@
 # Licensed under the GPLv3 License: https://www.gnu.org/licenses/gpl-3.0.html
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
+"""此模块包含一组供用户编辑多个文本条目的控件，用于实现 PyInstaller 的 --hidden-import 等可以多次调用的选项
+
+`MultiItemEditWindow` 是最主要的类，提供一个左侧有条目展示与编辑、右侧有删减条目按钮的窗口
+
+`MultiPkgEditWindow` 继承自 `MultiItemEditWindow`，多了一个浏览当前 Python 环境中已安装 Python 包的功能
+"""
+
 from typing import Optional
 
 from PySide6.QtCore import Qt, Signal, Slot
@@ -18,13 +25,11 @@ from .dialog_widgets import PkgBrowserDlg
 
 
 class MultiItemEditWindow(QWidget):
-    """
-    用于添加多个条目的窗口控件，实现如 --hidden-import、--collect-submodules 等功能 \n
-    """
+    """用于添加多个条目的窗口控件，实现如 --hidden-import、--collect-submodules 等功能"""
 
     items_selected = Signal(list)  # 用户在添加条目窗口完成所有编辑后，提交的信号.完整数据类型为 list[str]
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
         """
         :param parent: 父控件对象
         """
@@ -34,6 +39,7 @@ class MultiItemEditWindow(QWidget):
         # 条目列表控件
         self.item_list_widget = QListWidget(self)
 
+        # 可选中且可编辑
         self._QListWidgetItem_flag = (
             Qt.ItemFlag.ItemIsEnabled
             | Qt.ItemFlag.ItemIsSelectable
@@ -52,10 +58,8 @@ class MultiItemEditWindow(QWidget):
         self._setup_layout()
         self._connect_slots()
 
-    def _setup_ui(self):
-        """
-        处理 UI \n
-        """
+    def _setup_ui(self) -> None:
+        """处理 UI"""
 
         self.setWindowIcon(QIcon(QPixmap(":/Icons/Py2exe-GUI_icon_72px")))
 
@@ -66,10 +70,8 @@ class MultiItemEditWindow(QWidget):
         self.cancel_btn.setText("取消")
 
     # noinspection DuplicatedCode
-    def _setup_layout(self):
-        """
-        构建与设置布局管理器 \n
-        """
+    def _setup_layout(self) -> None:
+        """构建与设置布局管理器"""
 
         btn_group_boxlayout = QVBoxLayout()
         self.btn_group_boxlayout = btn_group_boxlayout
@@ -93,23 +95,27 @@ class MultiItemEditWindow(QWidget):
         self.setLayout(main_layout)
 
     def _connect_slots(self) -> None:
-        """
-        构建各槽函数、连接信号 \n
-        """
+        """构建各槽函数、连接信号"""
 
         @Slot()
-        def handle_new_btn():
+        def handle_new_btn() -> None:
+            """新建按钮点击的槽函数"""
+
             new_item = QListWidgetItem("")
             new_item.setFlags(self._QListWidgetItem_flag)
             self.item_list_widget.addItem(new_item)
             self.item_list_widget.editItem(new_item)
 
         @Slot()
-        def handle_delete_btn():
+        def handle_delete_btn() -> None:
+            """删除按钮点击的槽函数"""
+
             self.item_list_widget.takeItem(self.item_list_widget.currentRow())
 
         @Slot()
-        def handle_ok_btn():
+        def handle_ok_btn() -> None:
+            """确定按钮点击的槽函数，将用户编辑好的条目列表以信号方式传出，并自身关闭窗口"""
+
             self.items_selected.emit(self._submit())
             self.close()
 
@@ -120,9 +126,10 @@ class MultiItemEditWindow(QWidget):
         self.ok_btn.clicked.connect(handle_ok_btn)
 
     def _submit(self) -> list[str]:
-        """
-        将控件界面内容整理为字符串列表，准备提交 \n
-        会自动删去空白行 \n
+        """将控件界面内容整理为字符串列表，准备提交
+
+        会自动删去空白行
+
         :return: 条目列表
         """
 
@@ -138,8 +145,8 @@ class MultiItemEditWindow(QWidget):
         return item_list
 
     def load_items(self, items: list[str]) -> None:
-        """
-        从给定的条目列表加载界面控件，用于打开先前已保存过的条目
+        """从给定的条目列表加载界面控件，用于打开先前已保存过的条目
+
         :param items: 条目列表
         """
 
@@ -152,13 +159,13 @@ class MultiItemEditWindow(QWidget):
 
 
 class MultiPkgEditWindow(MultiItemEditWindow):
-    """
-    用于添加多个Python模块条目的窗口控件，实现如 --hidden-import 等选项 \n
+    """用于添加多个Python模块条目的窗口控件，实现如 --hidden-import 等选项
+
     相比MultiItemEditWindow，主要是多了一个浏览当前 Python 环境中所有已安装第三方包
-    并将包名作为条目添加的功能 \n
+    并将包名作为条目添加的功能
     """
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
         """
         :param parent: 父控件对象
         """
@@ -167,23 +174,20 @@ class MultiPkgEditWindow(MultiItemEditWindow):
         self.pkg_browser_dlg = PkgBrowserDlg()
         super().__init__(parent)
 
-    def _setup_ui(self):
-        """
-        处理 UI \n
-        """
+    def _setup_ui(self) -> None:
+        """处理 UI"""
 
         super()._setup_ui()
         self.browse_pkg_button.setText("浏览包(&B)")
 
-    def _setup_layout(self):
+    def _setup_layout(self) -> None:
+        """构建与设置布局管理器"""
+
         super()._setup_layout()
         self.btn_group_boxlayout.insertWidget(2, self.browse_pkg_button)
 
     def _connect_slots(self) -> None:
-        """
-        构建各槽函数、连接信号 \n
-        """
+        """构建各槽函数、连接信号"""
 
         super()._connect_slots()
-
         self.browse_pkg_button.clicked.connect(self.pkg_browser_dlg.exec)

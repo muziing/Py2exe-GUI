@@ -1,6 +1,9 @@
 # Licensed under the GPLv3 License: https://www.gnu.org/licenses/gpl-3.0.html
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
+"""此模块主要包含用于提供 PyInstaller `--add-data` 和 `--add-binary` 功能的窗口类 `AddDataWindow`
+"""
+
 import sys
 from pathlib import Path
 from typing import Optional
@@ -21,9 +24,7 @@ from PySide6.QtWidgets import (
 
 
 class AddDataWindow(QWidget):
-    """
-    用于提供 PyInstaller --add-data 和 --add-binary 功能的窗口
-    """
+    """用于提供 PyInstaller --add-data 和 --add-binary 功能的窗口"""
 
     # 类型别名
     data_item = tuple[Path, str]  # 数据条目，第一项为在文件系统中的路径，第二项为捆绑后环境中的路径
@@ -31,11 +32,15 @@ class AddDataWindow(QWidget):
     # 自定义信号
     data_selected = Signal(list)  # 用户在添加数据窗口完成所有编辑后，提交的信号
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
+        """
+        :param parent: 父控件对象
+        """
+
         super().__init__(parent)
 
         # 工作目录，应由主界面提供，默认为入口脚本所在目录；各种文件处理将以此作为相对路径起点
-        self._work_dir: Path = Path(".").resolve()
+        self._work_dir: Path = Path(".").absolute()
 
         # 浏览系统文件/目录的文件对话框
         self.data_browse_dlg = QFileDialog(self)
@@ -59,9 +64,7 @@ class AddDataWindow(QWidget):
         self._connect_slots()
 
     def _setup_ui(self) -> None:
-        """
-        处理 UI 内容 \n
-        """
+        """处理 UI 内容"""
 
         self.setWindowTitle("添加文件")
         self.setMinimumWidth(550)
@@ -88,10 +91,9 @@ class AddDataWindow(QWidget):
         self.ok_btn.setText("确定")
         self.cancel_btn.setText("取消")
 
+    # noinspection DuplicatedCode
     def _setup_layout(self) -> None:
-        """
-        构建与设置布局管理器 \n
-        """
+        """构建与设置布局管理器"""
 
         btn_group_box = QVBoxLayout()
         btn_group_box.addWidget(self.new_btn)
@@ -116,13 +118,12 @@ class AddDataWindow(QWidget):
         self.setLayout(main_layout)
 
     def _connect_slots(self) -> None:
-        """
-        构建各槽函数、连接信号 \n
-        """
+        """构建各槽函数、连接信号"""
 
         @Slot()
-        def handle_new_btn():
-            # “新建”按钮槽函数
+        def handle_new_btn() -> None:
+            """“新建”按钮槽函数"""
+
             row_count = self.item_table.rowCount()
             source_item = QTableWidgetItem("")
             source_item.setFlags(
@@ -136,13 +137,15 @@ class AddDataWindow(QWidget):
             )  # 自动选中新建行的第一列
 
         @Slot()
-        def handle_delete_btn():
-            # “删除”按钮槽函数
+        def handle_delete_btn() -> None:
+            """“删除”按钮槽函数"""
+
             self.item_table.removeRow(self.item_table.currentRow())
 
         @Slot()
-        def handel_browse_btn():
-            # “浏览文件”按钮槽函数
+        def handel_browse_btn() -> None:
+            """“浏览文件”按钮槽函数"""
+
             if (
                 self.item_table.currentRow() == -1
                 or self.item_table.currentColumn() == 1
@@ -153,8 +156,9 @@ class AddDataWindow(QWidget):
             self.data_browse_dlg.open()
 
         @Slot()
-        def handle_browse_dir_btn():
-            # “浏览文件夹”按钮槽函数
+        def handle_browse_dir_btn() -> None:
+            """“浏览文件夹”按钮槽函数"""
+
             if (
                 self.item_table.currentRow() == -1
                 or self.item_table.currentColumn() == 1
@@ -165,9 +169,9 @@ class AddDataWindow(QWidget):
             self.data_dir_browse_dlg.open()
 
         @Slot(str)
-        def handle_browse_selected(file_path: str):
-            """
-            处理文件对话框获取到用户打开文件/目录的槽函数 \n
+        def handle_browse_selected(file_path: str) -> None:
+            """处理文件对话框获取到用户打开文件/目录的槽函数
+
             :param file_path: 用户打开的文件/目录路径
             """
 
@@ -175,7 +179,7 @@ class AddDataWindow(QWidget):
             current_row = self.item_table.currentRow()
 
             # SOURCE 列设置为操作系统绝对路径
-            source_item = QTableWidgetItem(str(path.resolve()))
+            source_item = QTableWidgetItem(str(path.absolute()))
             source_item.setFlags(
                 Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable
             )
@@ -192,8 +196,8 @@ class AddDataWindow(QWidget):
                 self.item_table.setItem(current_row, 1, QTableWidgetItem("."))
 
         @Slot()
-        def handle_ok_btn():
-            # “确定”按钮槽函数
+        def handle_ok_btn() -> None:
+            """“确定”按钮槽函数"""
 
             # 删掉所有空白行
             row = 0
@@ -218,8 +222,9 @@ class AddDataWindow(QWidget):
         self.cancel_btn.clicked.connect(self.close)
 
     def _submit(self) -> list[data_item]:
-        """
-        将当前界面上的所有配置项转换为 data_item 列表，准备提交给主界面和打包流使用 \n
+        """将当前界面上的所有配置项转换为 data_item 列表，准备提交给主界面和打包流使用
+
+        :return: `data-item` 列表
         """
 
         all_data_item_list = []
@@ -231,19 +236,24 @@ class AddDataWindow(QWidget):
         return all_data_item_list
 
     def set_work_dir(self, work_dir_path: Path) -> None:
+        """设置工作目录并更新相关文件对话框路径起点
+
+        :param work_dir_path: 新的工作目录路径
+        """
+
         self._work_dir = work_dir_path
         self.data_browse_dlg.setDirectory(str(work_dir_path))
         self.data_dir_browse_dlg.setDirectory(str(work_dir_path))
 
     def load_data_item_list(self, all_data_item_list: list[data_item]) -> None:
-        """
-        从 data_item 列表加载待添加的数据文件至界面控件
+        """从 `all_data_item_list` 列表加载待添加的数据文件至界面控件
+
         :param all_data_item_list: 保存数据条目的列表
         """
 
         self.item_table.setRowCount(len(all_data_item_list))
         for row, data_item in enumerate(all_data_item_list):
-            source_item = QTableWidgetItem(str(data_item[0].resolve()))
+            source_item = QTableWidgetItem(str(data_item[0].absolute()))
             source_item.setFlags(
                 Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable
             )
