@@ -63,6 +63,24 @@ class IconFileDlg(QFileDialog):
         self.setLabelText(QFileDialog.DialogLabel.Reject, "取消")
 
 
+class InterpreterFileDlg(QFileDialog):
+    """用于获取 Python 解释器可执行文件的对话框"""
+
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
+        """
+        :param parent: 父控件对象
+        """
+
+        super().__init__(parent)
+
+        self.setAcceptMode(QFileDialog.AcceptMode.AcceptOpen)
+        self.setViewMode(QFileDialog.ViewMode.Detail)
+        self.setFileMode(QFileDialog.FileMode.ExistingFile)
+        self.setLabelText(QFileDialog.DialogLabel.FileName, "Python解释器")
+        self.setLabelText(QFileDialog.DialogLabel.FileType, "可执行文件")
+        # TODO 增加一定筛选，如 Windows 平台自动设置 .exe setNameFilters
+
+
 class AboutDlg(QMessageBox):
     """用于显示关于信息的对话框"""
 

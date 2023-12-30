@@ -45,6 +45,9 @@ class PyEnv:
         else:
             self.type = type_
 
+    def __repr__(self) -> str:
+        return f"PyEnv object (executable_path={self.exe_path}, type={self.type})"
+
     @staticmethod
     def get_py_version(executable_path: Union[str, Path]) -> str:
         """获取Python解释器的版本，以形如 "3.11.7" 的字符串形式返回

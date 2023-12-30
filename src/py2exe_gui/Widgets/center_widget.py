@@ -28,9 +28,11 @@ from PySide6.QtWidgets import (
 )
 
 from ..Constants import PyInstOpt
+from ..Core import InterpreterValidator
+from ..Utilities import PyEnv
 from .add_data_widget import AddDataWindow
 from .arguments_browser import ArgumentsBrowser
-from .dialog_widgets import IconFileDlg, ScriptFileDlg
+from .dialog_widgets import IconFileDlg, InterpreterFileDlg, ScriptFileDlg
 from .multi_item_edit_widget import MultiPkgEditWindow
 from .pyenv_combobox import PyEnvComboBox
 from .pyinstaller_option_widget import load_pyinst_options
@@ -41,6 +43,7 @@ class CenterWidget(QWidget):
 
     # 自定义信号
     option_selected = QtCore.Signal(tuple)  # 用户通过界面控件选择选项后发射此信号
+
     # option_selected 实际类型为 tuple[PyinstallerArgs, str]
 
     def __init__(self, parent: QMainWindow) -> None:
@@ -61,8 +64,10 @@ class CenterWidget(QWidget):
         self.script_browse_btn = QPushButton()
         self.script_path_le = QLineEdit()
 
-        # Python 解释器选择下拉框
+        # Python 解释器选择
         self.pyenv_combobox = PyEnvComboBox()
+        self.pyenv_browse_btn = QPushButton()
+        self.itp_dlg = InterpreterFileDlg()
 
         # 打包后输出的项目名称
         self.project_name_label = QLabel()
@@ -107,6 +112,10 @@ class CenterWidget(QWidget):
         self.script_path_le.setReadOnly(True)
         self.script_path_le.setPlaceholderText("Python入口文件路径")
         self.script_browse_btn.setText("浏览")
+        self.script_browse_btn.setFixedWidth(80)
+
+        self.pyenv_browse_btn.setText("浏览")
+        self.pyenv_browse_btn.setFixedWidth(80)
 
         self.project_name_label.setText("项目名称：")
         self.project_name_le.setPlaceholderText("打包的应用程序名称")
@@ -147,6 +156,7 @@ class CenterWidget(QWidget):
             )
             self.clean_checkbox.setToolTip(opt["--clean"])
 
+    # noinspection DuplicatedCode
     def _connect_slots(self) -> None:
         """定义、连接信号与槽"""
 
@@ -245,7 +255,6 @@ class CenterWidget(QWidget):
         self.script_browse_btn.clicked.connect(self.script_file_dlg.open)
         self.script_file_dlg.fileSelected.connect(script_file_selected)
         self.project_name_le.editingFinished.connect(project_name_selected)
-        # noinspection DuplicatedCode
         self.fd_group.idClicked.connect(one_fd_selected)
         self.add_data_btn.clicked.connect(handle_add_data_btn_clicked)
         self.add_data_dlg.data_selected.connect(add_data_selected)
@@ -255,14 +264,26 @@ class CenterWidget(QWidget):
         self.hidden_import_dlg.items_selected.connect(hidden_import_selected)
         self.clean_checkbox.toggled.connect(clean_selected)
 
+        # 添加 Python 解释器
+        self.pyenv_browse_btn.clicked.connect(self.itp_dlg.open)
+        self.itp_dlg.fileSelected.connect(self._handle_itp_file_selected)
+
     # noinspection DuplicatedCode
     def _set_layout(self) -> None:
         """设置布局管理器"""
+
+        self.main_layout = QVBoxLayout()
 
         script_layout = QGridLayout()
         script_layout.addWidget(self.script_path_label, 0, 0, 1, 2)
         script_layout.addWidget(self.script_path_le, 1, 0)
         script_layout.addWidget(self.script_browse_btn, 1, 1)
+
+        pyenv_layout = QHBoxLayout()
+        pyenv_layout.addWidget(self.pyenv_combobox)
+        pyenv_layout.addWidget(self.pyenv_browse_btn)
+        pyenv_layout.setStretchFactor(self.pyenv_combobox, 3)
+        pyenv_layout.setStretchFactor(self.pyenv_browse_btn, 1)
 
         name_layout = QVBoxLayout()
         name_layout.addWidget(self.project_name_label)
@@ -277,26 +298,24 @@ class CenterWidget(QWidget):
         add_btn_layout.addWidget(self.add_data_btn)
         add_btn_layout.addWidget(self.add_binary_btn)
 
-        main_layout = QVBoxLayout()
-        self.main_layout = main_layout
-        main_layout.addSpacing(10)
-        main_layout.addLayout(script_layout)
-        main_layout.addWidget(self.pyenv_combobox)
-        main_layout.addStretch(10)
-        main_layout.addLayout(name_layout)
-        main_layout.addStretch(10)
-        main_layout.addLayout(fd_layout)
-        main_layout.addStretch(10)
-        main_layout.addLayout(add_btn_layout)
-        main_layout.addStretch(10)
-        main_layout.addWidget(self.hidden_import_btn)
-        main_layout.addStretch(10)
-        main_layout.addWidget(self.clean_checkbox)
-        main_layout.addStretch(10)
-        main_layout.addWidget(self.pyinstaller_args_browser)
-        main_layout.addWidget(self.run_packaging_btn)
+        self.main_layout.addSpacing(10)
+        self.main_layout.addLayout(script_layout)
+        self.main_layout.addLayout(pyenv_layout)
+        self.main_layout.addStretch(10)
+        self.main_layout.addLayout(name_layout)
+        self.main_layout.addStretch(10)
+        self.main_layout.addLayout(fd_layout)
+        self.main_layout.addStretch(10)
+        self.main_layout.addLayout(add_btn_layout)
+        self.main_layout.addStretch(10)
+        self.main_layout.addWidget(self.hidden_import_btn)
+        self.main_layout.addStretch(10)
+        self.main_layout.addWidget(self.clean_checkbox)
+        self.main_layout.addStretch(10)
+        self.main_layout.addWidget(self.pyinstaller_args_browser)
+        self.main_layout.addWidget(self.run_packaging_btn)
 
-        self.setLayout(main_layout)
+        self.setLayout(self.main_layout)
 
     @QtCore.Slot(tuple)
     def handle_option_set(self, option: tuple[PyInstOpt, str]) -> None:
@@ -346,12 +365,66 @@ class CenterWidget(QWidget):
 
     @QtCore.Slot(bool)
     def handle_ready_to_pack(self, ready: bool) -> None:
-        """
-        处理 ready_to_pack 信号的槽 \n
+        """处理 ready_to_pack 信号的槽
+
         :param ready: 是否可以进行打包
         """
 
         self.run_packaging_btn.setEnabled(ready)
+
+    @QtCore.Slot(str)
+    def _handle_itp_file_selected(self, file_path: str) -> None:
+        """Python解释器文件完成选择的槽函数
+
+        首先对用户选择的文件进行有效性判断：
+        若有效则以此创建新的 PyEnv 对象、设置到下拉框中并选中；
+        若无效则弹出错误警告对话框，要求重新选择文件；
+
+        :param file_path: 选择的解释器文件路径
+        """
+
+        itp_path = Path(file_path).absolute()
+
+        # 首先判断用户选择的路径是否已在当前存储的列表中，如在则不添加直接返回
+        # FIXME 此段代码似乎无效，需要解决
+        for index in range(self.pyenv_combobox.count()):
+            exist_env: PyEnv = self.pyenv_combobox.itemData(index)
+            print(itp_path)
+            print(exist_env.exe_path)
+            if itp_path == exist_env.exe_path:
+                return
+
+        if InterpreterValidator.validate(itp_path):
+            # 用户选择的解释器有效
+            new_pyenv = PyEnv(itp_path, type_=None)
+
+            if not new_pyenv.pkg_installed("pyinstaller"):
+                # 但在该环境中没有安装 PyInstaller，询问用户是否继续操作
+                result = QMessageBox.warning(
+                    self.parent_widget,
+                    "警告",
+                    "在该 Python 环境中似乎没有安装 Pyinstaller，" "是否仍要继续？",
+                    QMessageBox.StandardButton.Ok,
+                    QMessageBox.StandardButton.Cancel,
+                )
+                if result == QMessageBox.StandardButton.Cancel:
+                    return
+
+            self.pyenv_combobox.addItem(*self.pyenv_combobox.gen_item(new_pyenv))
+            self.pyenv_combobox.setCurrentIndex(self.pyenv_combobox.count() - 1)
+
+        else:
+            self.itp_dlg.close()
+            # 警告对话框
+            result = QMessageBox.critical(
+                self.parent_widget,
+                "错误",
+                "选择的不是有效的Python解释器，请重新选择！",
+                QMessageBox.StandardButton.Cancel,
+                QMessageBox.StandardButton.Ok,
+            )
+            if result == QMessageBox.StandardButton.Ok:
+                self.itp_dlg.exec()
 
 
 class WinMacCenterWidget(CenterWidget):
@@ -386,6 +459,8 @@ class WinMacCenterWidget(CenterWidget):
         self.icon_path_le.setReadOnly(True)
         self.icon_path_le.setPlaceholderText("图标文件路径")
         self.icon_browse_btn.setText("浏览")
+        self.icon_browse_btn.setFixedWidth(80)
+
         self.console_checkbox.setText("为标准I/O启用终端")
         self.console_checkbox.setChecked(True)  # 默认值
 
@@ -441,12 +516,13 @@ class WinMacCenterWidget(CenterWidget):
 
         super()._set_layout()
 
-        self.main_layout.insertWidget(7, self.console_checkbox)
-        self.main_layout.addStretch(10)
         icon_layout = QGridLayout()
         icon_layout.addWidget(self.icon_path_label, 0, 0, 1, 2)
         icon_layout.addWidget(self.icon_path_le, 1, 0)
         icon_layout.addWidget(self.icon_browse_btn, 1, 1)
+
+        self.main_layout.insertWidget(7, self.console_checkbox)
+        self.main_layout.addStretch(10)
         self.main_layout.insertLayout(8, icon_layout)
 
     @QtCore.Slot(tuple)

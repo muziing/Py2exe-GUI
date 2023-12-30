@@ -30,14 +30,14 @@ class PyEnvComboBox(QComboBox):
         if not RUNTIME_INFO.is_bundled:
             # 在非 PyInstaller 捆绑环境中，第一项为当前用于运行 Py2exe-GUI 的 Python 环境
             current_pyenv = PyEnv(sys.executable, None)
-            self.addItem(*self._gen_item(current_pyenv))
+            self.addItem(*self.gen_item(current_pyenv))
         else:
             # 若已由 PyInstaller 捆绑成冻结应用程序，则第一项为系统 Python 环境
             sys_pyenv = PyEnv(get_sys_python(), PyEnvType.system)
-            self.addItem(*self._gen_item(sys_pyenv))
+            self.addItem(*self.gen_item(sys_pyenv))
 
     @staticmethod
-    def _gen_item(pyenv: PyEnv) -> tuple:
+    def gen_item(pyenv: PyEnv) -> tuple:
         """根据传入的 Python 环境，生成一个适用于 QComboBox.addItem() 参数的三元素元组
 
         :param pyenv: Python 解释器环境

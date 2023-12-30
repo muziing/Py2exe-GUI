@@ -86,7 +86,7 @@ class InterpreterValidator:
         except subprocess.SubprocessError:
             return False
         except OSError as e:
-            print(f"无法启动Python解释器有效性验证子进程：{e}")
+            print(f"对 {path} 启动 Python 解释器有效性验证子进程失败：{e}")
             return False
         else:
             return True
