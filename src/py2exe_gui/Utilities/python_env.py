@@ -29,28 +29,63 @@ class PyEnv:
         self,
         executable_path: Union[str, Path],
         type_: Optional[PyEnvType] = PyEnvType.unknown,
-    ):
+    ) -> None:
         """
         :param executable_path: Python 可执行文件路径
         :param type_: Python 解释器类型，PyEnvType 枚举类的成员。传入显式的 None 则会触发自动识别。
         """
 
-        self.exe_path = str(Path(executable_path).absolute())
-        self.pyversion = self.get_py_version(self.exe_path)
-        self.installed_packages = self.get_installed_packages(self.exe_path)
+        self.__exe_path = str(Path(executable_path).absolute())
+
+        # 懒加载，如果没有请求访问，则不会运行耗时的get操作；一旦运行过，将结果缓存到这些私有属性中，下次可直接使用
+        self.__pyversion: Optional[str] = None
+        self.__installed_packages: Optional[list[dict]] = None
 
         if type_ is None:
             # type_ 为 None 表示特殊含义“待推断”
-            self.type = self.infer_type(self.exe_path)
+            self.__type = self.infer_type(self.__exe_path)
         else:
-            self.type = type_
+            self.__type = type_
 
     def __repr__(self) -> str:
-        return f"PyEnv object (executable_path={self.exe_path}, type={self.type})"
+        return f"PyEnv object (executable_path={self.__exe_path}, type={self.__type})"
+
+    @property
+    def exe_path(self) -> str:
+        """Python 可执行文件路径（实例属性，只读）"""
+
+        return self.__exe_path
+
+    @property
+    def pyversion(self) -> str:
+        """Python 版本（实例属性，只读）"""
+
+        if self.__pyversion is None:
+            self.__pyversion = self.get_py_version(self.__exe_path)
+        return self.__pyversion
+
+    @property
+    def installed_packages(self) -> list[dict]:
+        """已安装的包列表（实例属性，只读）
+
+        :return: 包列表，形如 [{'name': 'aiohttp', 'version': '3.9.1'}, {'name': 'aiosignal', 'version': '1.3.1'}, ...]
+        """
+
+        if self.__installed_packages is None:
+            self.__installed_packages = self.get_installed_packages(self.__exe_path)
+        return self.__installed_packages
+
+    @property
+    def type(self) -> PyEnvType:
+        """Python 解释器类型（实例属性，只读）"""
+
+        return self.__type
 
     @staticmethod
     def get_py_version(executable_path: Union[str, Path]) -> str:
         """获取Python解释器的版本，以形如 "3.11.7" 的字符串形式返回
+
+        由于需要运行子进程，此函数耗时较长，应尽量减少调用次数
 
         :param executable_path: Python 可执行文件路径
         :return: Version of the Python interpreter, such as "3.11.7".
@@ -62,7 +97,7 @@ class PyEnv:
             "import platform;print(platform.python_version(), end='')",
         ]
         try:
-            result = subprocess.run(cmd, capture_output=True, text=True)
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=0.5)
             version = result.stdout
         except subprocess.CalledProcessError as e:
             raise RuntimeError(f"Failed to get Python version: {e.output}") from e
@@ -71,6 +106,8 @@ class PyEnv:
     @staticmethod
     def get_installed_packages(executable_path: Union[str, Path]) -> list[dict]:
         """获取该 Python 环境中已安装的包信息
+
+        由于需要运行子进程与解析json，此函数耗时极长，应尽量减少调用次数
 
         :param executable_path: Python 解释器可执行文件路径
         :return: 包列表，形如 [{'name': 'aiohttp', 'version': '3.9.1'}, {'name': 'aiosignal', 'version': '1.3.1'}, ...]
@@ -90,7 +127,7 @@ class PyEnv:
 
         try:
             # 运行 pip list 命令，获取输出
-            result = subprocess.run(cmd, capture_output=True, text=True)
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=3)
             pip_list = result.stdout
         except subprocess.CalledProcessError as e:
             raise RuntimeError(f"Failed to get installed packages: {e.output}") from e
@@ -128,7 +165,7 @@ class PyEnv:
         #         PyEnvType.system
         #     )]
         # for regex, env_type in regexes:
-        #     match = re.search(regex, str(exe_path))
+        #     match = re.search(regex, str(__exe_path))
         #     if match:
         #         return env_type
 
