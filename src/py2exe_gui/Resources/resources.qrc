@@ -4,9 +4,9 @@
         <file alias="Py2exe-GUI_icon_72px">Icons/Py2exe-GUI_icon_72px.png</file>
         <file alias="Python_128px">Icons/Python_128px.png</file>
         <file alias="Python_cyan">Icons/Python-logo-cyan-72px.png</file>
-        <file alias="PyInstaller">Icons/pyinstaller-icon-console.png</file>
+        <file alias="PyInstaller">Icons/pyinstaller-icon-console_128px.png</file>
         <file alias="Poetry">Icons/poetry-icon_128px.png</file>
-        <file alias="Conda">Icons/conda-icon_200px.png</file>
+        <file alias="Conda">Icons/conda-icon_72px.png</file>
     </qresource>
     <qresource prefix="Texts" lang="zh">
         <file alias="About_Text">Texts/About_zh.md</file>
