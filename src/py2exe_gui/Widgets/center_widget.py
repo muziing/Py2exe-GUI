@@ -9,6 +9,8 @@ WinMacCenterWidget 继承自 CenterWidget，额外添加了仅 Windows 和 macOS
 PyInstaller 功能所对应的控件及其槽函数
 """
 
+__all__ = ["CenterWidget", "WinMacCenterWidget"]
+
 from pathlib import Path
 
 from PySide6 import QtCore
@@ -32,7 +34,12 @@ from ..Core import InterpreterValidator
 from ..Utilities import PyEnv
 from .add_data_widget import AddDataWindow
 from .arguments_browser import ArgumentsBrowser
-from .dialog_widgets import IconFileDlg, InterpreterFileDlg, ScriptFileDlg
+from .dialog_widgets import (
+    IconFileDlg,
+    InterpreterFileDlg,
+    PkgBrowserDlg,
+    ScriptFileDlg,
+)
 from .multi_item_edit_widget import MultiPkgEditWindow
 from .pyenv_combobox import PyEnvComboBox
 from .pyinstaller_option_widget import load_pyinst_options
@@ -61,6 +68,9 @@ class CenterWidget(QWidget):
 
         # 读取PyInstaller选项详细描述，用于各控件ToolTip
         self.option_dict = load_pyinst_options()  # TODO 待优化：避免重复加载
+
+        # 展示已安装的包
+        self.pkg_browser_dlg = PkgBrowserDlg()
 
         # 待打包的入口脚本
         self.script_path_label = QLabel()
@@ -93,7 +103,7 @@ class CenterWidget(QWidget):
 
         # 添加隐式导入
         self.hidden_import_btn = QPushButton()
-        self.hidden_import_dlg = MultiPkgEditWindow()
+        self.hidden_import_dlg = MultiPkgEditWindow(self.pkg_browser_dlg)
         self.hidden_import_list: list[str] = []
 
         # 清理缓存与临时文件
@@ -297,8 +307,6 @@ class CenterWidget(QWidget):
         pyenv_layout = QHBoxLayout()
         pyenv_layout.addWidget(self.pyenv_combobox)
         pyenv_layout.addWidget(self.pyenv_browse_btn)
-        pyenv_layout.setStretchFactor(self.pyenv_combobox, 3)
-        pyenv_layout.setStretchFactor(self.pyenv_browse_btn, 1)
 
         name_layout = QVBoxLayout()
         name_layout.addWidget(self.project_name_label)

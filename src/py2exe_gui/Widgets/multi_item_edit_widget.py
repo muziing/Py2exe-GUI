@@ -8,6 +8,8 @@
 `MultiPkgEditWindow` 继承自 `MultiItemEditWindow`，多了一个浏览当前 Python 环境中已安装 Python 包的功能
 """
 
+__all__ = ["MultiItemEditWindow", "MultiPkgEditWindow"]
+
 from typing import Optional
 
 from PySide6.QtCore import Qt, Signal, Slot
@@ -165,13 +167,18 @@ class MultiPkgEditWindow(MultiItemEditWindow):
     并将包名作为条目添加的功能
     """
 
-    def __init__(self, parent: Optional[QWidget] = None) -> None:
+    def __init__(
+        self, pkg_browser_dlg: PkgBrowserDlg, parent: Optional[QWidget] = None
+    ) -> None:
         """
+        :param pkg_browser_dlg: PkgBrowserDlg 实例，用于显示已安装包的列表
         :param parent: 父控件对象
         """
 
+        # TODO 新增一种可以由用户选中的已安装包浏览器，并替代目前的 PkgBrowserDlg
+
         self.browse_pkg_button = QPushButton()
-        self.pkg_browser_dlg = PkgBrowserDlg()
+        self.pkg_browser_dlg = pkg_browser_dlg
         super().__init__(parent)
 
     def _setup_ui(self) -> None:
