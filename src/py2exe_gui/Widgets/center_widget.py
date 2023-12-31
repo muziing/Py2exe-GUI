@@ -39,7 +39,11 @@ from .pyinstaller_option_widget import load_pyinst_options
 
 
 class CenterWidget(QWidget):
-    """主界面的中央控件"""
+    """主界面的中央控件
+
+    此类为可以实例化的基类，适用于所有平台。
+    有专有功能的平台应继承此类，并重写对应方法来添加相关控件与功能。
+    """
 
     # 自定义信号
     option_selected = QtCore.Signal(tuple)  # 用户通过界面控件选择选项后发射此信号
@@ -161,7 +165,7 @@ class CenterWidget(QWidget):
         """定义、连接信号与槽"""
 
         @QtCore.Slot(str)
-        def script_file_selected(file_path: str) -> None:
+        def handle_script_file_selected(file_path: str) -> None:
             """脚本文件完成选择的槽函数
 
             :param file_path: 脚本文件路径
@@ -170,14 +174,14 @@ class CenterWidget(QWidget):
             self.option_selected.emit((PyInstOpt.script_path, file_path))
 
         @QtCore.Slot()
-        def project_name_selected() -> None:
+        def handle_project_name_selected() -> None:
             """输出程序名称完成输入的槽"""
 
             project_name: str = self.project_name_le.text()
             self.option_selected.emit((PyInstOpt.out_name, project_name))
 
         @QtCore.Slot(int)
-        def one_fd_selected(btn_id: int) -> None:
+        def handle_one_fd_selected(btn_id: int) -> None:
             """选择输出至单文件/单目录的槽
 
             :param btn_id: `fd_group` 按钮组中按钮的 id
@@ -198,7 +202,7 @@ class CenterWidget(QWidget):
             self.add_data_dlg.show()
 
         @QtCore.Slot(list)
-        def add_data_selected(data_item_list: list) -> None:
+        def handle_add_data_selected(data_item_list: list) -> None:
             """用户完成了添加数据操作的槽函数"""
 
             self.data_item_list = data_item_list
@@ -213,7 +217,7 @@ class CenterWidget(QWidget):
             self.add_binary_dlg.show()
 
         @QtCore.Slot(list)
-        def add_binary_selected(binary_item_list: list) -> None:
+        def handle_add_binary_selected(binary_item_list: list) -> None:
             """用户完成了添加二进制文件操作的槽函数"""
 
             self.binary_item_list = binary_item_list
@@ -227,7 +231,7 @@ class CenterWidget(QWidget):
             self.hidden_import_dlg.show()
 
         @QtCore.Slot(list)
-        def hidden_import_selected(hidden_import_list: list[str]) -> None:
+        def handle_hidden_import_selected(hidden_import_list: list[str]) -> None:
             """用户完成了隐式导入编辑操作的槽函数
 
             :param hidden_import_list: 隐式导入项列表
@@ -238,7 +242,7 @@ class CenterWidget(QWidget):
             self.option_selected.emit((PyInstOpt.hidden_import, hidden_import_list))
 
         @QtCore.Slot(bool)
-        def clean_selected(selected: bool) -> None:
+        def handle_clean_selected(selected: bool) -> None:
             """选择了清理缓存复选框的槽
 
             :param selected: 是否勾选了 clean 复选框
@@ -252,21 +256,32 @@ class CenterWidget(QWidget):
                 self.parent_widget.statusBar().showMessage("不会删除缓存与临时文件")
 
         # 连接信号与槽
+        # 入口脚本文件
         self.script_browse_btn.clicked.connect(self.script_file_dlg.open)
-        self.script_file_dlg.fileSelected.connect(script_file_selected)
-        self.project_name_le.editingFinished.connect(project_name_selected)
-        self.fd_group.idClicked.connect(one_fd_selected)
-        self.add_data_btn.clicked.connect(handle_add_data_btn_clicked)
-        self.add_data_dlg.data_selected.connect(add_data_selected)
-        self.add_binary_btn.clicked.connect(handle_add_binary_btn_clicked)
-        self.add_binary_dlg.data_selected.connect(add_binary_selected)
-        self.hidden_import_btn.clicked.connect(handle_hidden_import_btn_clicked)
-        self.hidden_import_dlg.items_selected.connect(hidden_import_selected)
-        self.clean_checkbox.toggled.connect(clean_selected)
+        self.script_file_dlg.fileSelected.connect(handle_script_file_selected)
 
         # 添加 Python 解释器
         self.pyenv_browse_btn.clicked.connect(self.itp_dlg.open)
         self.itp_dlg.fileSelected.connect(self._handle_itp_file_selected)
+
+        # 项目名称
+        self.project_name_le.editingFinished.connect(handle_project_name_selected)
+
+        # 单目录/单文件模式
+        self.fd_group.idClicked.connect(handle_one_fd_selected)
+
+        # 添加数据文件与二进制文件
+        self.add_data_btn.clicked.connect(handle_add_data_btn_clicked)
+        self.add_data_dlg.data_selected.connect(handle_add_data_selected)
+        self.add_binary_btn.clicked.connect(handle_add_binary_btn_clicked)
+        self.add_binary_dlg.data_selected.connect(handle_add_binary_selected)
+
+        # 隐式导入
+        self.hidden_import_btn.clicked.connect(handle_hidden_import_btn_clicked)
+        self.hidden_import_dlg.items_selected.connect(handle_hidden_import_selected)
+
+        # 清理
+        self.clean_checkbox.toggled.connect(handle_clean_selected)
 
     # noinspection DuplicatedCode
     def _set_layout(self) -> None:
@@ -386,20 +401,17 @@ class CenterWidget(QWidget):
         itp_path = Path(file_path).absolute()
 
         # 首先判断用户选择的路径是否已在当前存储的列表中，如在则不添加直接返回
-        # FIXME 此段代码似乎无效，需要解决
         for index in range(self.pyenv_combobox.count()):
             exist_env: PyEnv = self.pyenv_combobox.itemData(index)
-            print(itp_path)
-            print(exist_env.exe_path)
-            if itp_path == exist_env.exe_path:
+            if str(itp_path) == exist_env.exe_path:
                 return
 
         if InterpreterValidator.validate(itp_path):
             # 用户选择的解释器有效
             new_pyenv = PyEnv(itp_path, type_=None)
 
+            # 但在该环境中没有安装 PyInstaller，询问用户是否继续操作
             if not new_pyenv.pkg_installed("pyinstaller"):
-                # 但在该环境中没有安装 PyInstaller，询问用户是否继续操作
                 result = QMessageBox.warning(
                     self.parent_widget,
                     "警告",
@@ -414,8 +426,8 @@ class CenterWidget(QWidget):
             self.pyenv_combobox.setCurrentIndex(self.pyenv_combobox.count() - 1)
 
         else:
+            # 用户选择的解释器无效
             self.itp_dlg.close()
-            # 警告对话框
             result = QMessageBox.critical(
                 self.parent_widget,
                 "错误",
@@ -428,30 +440,29 @@ class CenterWidget(QWidget):
 
 
 class WinMacCenterWidget(CenterWidget):
-    """
-    包含 Windows 与 MacOS 特有功能的主界面中央控件
+    """包含 Windows 与 MacOS 特有功能的主界面中央控件
+
+    适用于所有平台功能的控件已由基类 `CenterWidget` 提供，此类仅实现平台特有功能对应的控件
     """
 
     def __init__(self, parent=QMainWindow):
         """
-        :param parent: 父控件对象，应为主程序主窗口 \n
+        :param parent: 父控件对象，应为主程序主窗口
         """
 
-        # 应用图标（仅 Windows 与 macOS）
+        # 应用图标
         self.icon_path_label = QLabel()
         self.icon_file_dlg = IconFileDlg()
         self.icon_browse_btn = QPushButton()
         self.icon_path_le = QLineEdit()
 
-        # 是否为stdio启用终端（仅 Windows 与 macOS）
+        # 是否为stdio启用终端
         self.console_checkbox = QCheckBox()
 
         super().__init__(parent)
 
     def _setup_ui(self) -> None:
-        """
-        设置各种控件的属性 \n
-        """
+        """设置各种控件的属性"""
 
         super()._setup_ui()
 
@@ -477,16 +488,23 @@ class WinMacCenterWidget(CenterWidget):
             self.console_checkbox.setToolTip(opt["-c, --console, --nowindowed"])
 
     def _connect_slots(self) -> None:
-        """
-        定义、连接信号与槽 \n
-        """
+        """定义、连接信号与槽"""
 
         super()._connect_slots()
 
-        @QtCore.Slot(bool)
-        def console_selected(console: bool) -> None:
+        @QtCore.Slot(str)
+        def handle_icon_file_selected(file_path: str) -> None:
             """
-            选择打包的程序是否为stdio启用终端的槽 \n
+            图标文件完成选择的槽函数 \n
+            :param file_path: 图标路径
+            """
+
+            self.option_selected.emit((PyInstOpt.icon_path, file_path))
+
+        @QtCore.Slot(bool)
+        def handle_console_selected(console: bool) -> None:
+            """选择打包的程序是否为stdio启用终端的槽
+
             :param console: 是否启用终端
             """
 
@@ -497,18 +515,12 @@ class WinMacCenterWidget(CenterWidget):
                 self.option_selected.emit((PyInstOpt.console, "--windowed"))
                 self.parent_widget.statusBar().showMessage("不会为打包程序的 stdio 启用终端")
 
-        @QtCore.Slot(str)
-        def icon_file_selected(file_path: str) -> None:
-            """
-            图标文件完成选择的槽函数 \n
-            :param file_path: 图标路径
-            """
-
-            self.option_selected.emit((PyInstOpt.icon_path, file_path))
-
+        # 图标文件
         self.icon_browse_btn.clicked.connect(self.icon_file_dlg.open)
-        self.icon_file_dlg.fileSelected.connect(icon_file_selected)
-        self.console_checkbox.toggled.connect(console_selected)
+        self.icon_file_dlg.fileSelected.connect(handle_icon_file_selected)
+
+        # 是否启用 stdio 终端
+        self.console_checkbox.toggled.connect(handle_console_selected)
 
     # noinspection DuplicatedCode
     def _set_layout(self) -> None:
@@ -537,6 +549,7 @@ class WinMacCenterWidget(CenterWidget):
         option_key, option_value = option
 
         if option_key == PyInstOpt.script_path:
+            # 根据入口脚本路径，重新设置图标文件对话框的初始路径
             script_path = Path(option_value)
             self.icon_file_dlg.setDirectory(str(script_path.parent.absolute()))
 
@@ -558,7 +571,6 @@ class WinMacCenterWidget(CenterWidget):
 
         if option == PyInstOpt.icon_path:
             self.icon_file_dlg.close()
-            # 警告对话框
             result = QMessageBox.critical(
                 self.parent_widget,
                 "错误",

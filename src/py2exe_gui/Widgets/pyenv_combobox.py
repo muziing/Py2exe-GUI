@@ -26,7 +26,9 @@ class PyEnvComboBox(QComboBox):
         super().__init__(parent)
 
         self.setIconSize(QSize(18, 18))
+        self.setMinimumHeight(24)  # 确保图标显示完整
 
+        # 添加默认项
         if not RUNTIME_INFO.is_bundled:
             # 在非 PyInstaller 捆绑环境中，第一项为当前用于运行 Py2exe-GUI 的 Python 环境
             current_pyenv = PyEnv(sys.executable, None)
@@ -50,7 +52,7 @@ class PyEnvComboBox(QComboBox):
                 f'Current PyEnv type "{pyenv.type}" is not instance of "PyEnvType"'
             )
 
-        data = pyenv
+        data = pyenv  # TODO 直接存储 PyEnv 对象是否会造成性能问题？如有，如何解决？
         version = pyenv.pyversion
 
         icon_map = {
@@ -68,6 +70,7 @@ class PyEnvComboBox(QComboBox):
             PyEnvType.conda: f"Conda [Python {version}]",
             PyEnvType.unknown: f"Python {version}",
         }
+        # TODO 根据路径为环境命名，如 "Poetry (Py2exe-GUI) [Python 3.11.7]"
 
         icon = icon_map.get(pyenv.type, QIcon(":/Icons/Python_128px"))
         text = text_map.get(pyenv.type, f"Python {version}")
