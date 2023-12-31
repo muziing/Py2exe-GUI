@@ -183,6 +183,18 @@ class CenterWidget(QWidget):
 
             self.option_selected.emit((PyInstOpt.script_path, file_path))
 
+        @QtCore.Slot(int)
+        def handle_pyenv_change(new_index: int) -> None:
+            """处理用户通过选择不同的 Python 解释器时的响应
+
+            :param new_index: 选择的 Python 解释器在 `pyenv_combobox` 中的索引
+            """
+
+            current_pyenv: PyEnv = self.pyenv_combobox.itemData(new_index)
+
+            # TODO 设置为懒加载，用户打开“已安装的包”对话框时才运行
+            self.pkg_browser_dlg.load_pkg_list(current_pyenv.installed_packages)
+
         @QtCore.Slot()
         def handle_project_name_selected() -> None:
             """输出程序名称完成输入的槽"""
@@ -270,9 +282,11 @@ class CenterWidget(QWidget):
         self.script_browse_btn.clicked.connect(self.script_file_dlg.open)
         self.script_file_dlg.fileSelected.connect(handle_script_file_selected)
 
-        # 添加 Python 解释器
+        # 添加与选择 Python 解释器
         self.pyenv_browse_btn.clicked.connect(self.itp_dlg.open)
         self.itp_dlg.fileSelected.connect(self._handle_itp_file_selected)
+        handle_pyenv_change(0)  # 显式调用一次，为默认项设置相关内容
+        self.pyenv_combobox.currentIndexChanged.connect(handle_pyenv_change)
 
         # 项目名称
         self.project_name_le.editingFinished.connect(handle_project_name_selected)

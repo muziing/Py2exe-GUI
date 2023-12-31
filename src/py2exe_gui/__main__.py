@@ -35,10 +35,16 @@ class MainApp(MainWindow):
 
         self.status_bar.showMessage("就绪")
 
+    # def show(self):
+    #     """仅供性能分析使用，切勿取消注释！！！
+    #     """
+    #
+    #     super().show()
+    #     sys.exit()
+
     def _connect_slots(self) -> None:
         """连接各种信号与槽"""
 
-        self._connect_pyenv_change()
         self._connect_run_pkg_btn_slot()
         self._connect_mul_btn_slot(self.subprocess_dlg)
 
@@ -50,9 +56,7 @@ class MainApp(MainWindow):
             self.center_widget.handle_ready_to_pack
         )
         self.packager.args_settled.connect(
-            lambda val: self.center_widget.pyinstaller_args_browser.enrich_args_text(
-                val
-            )
+            self.center_widget.pyinstaller_args_browser.enrich_args_text
         )
         self.packager.subprocess.output.connect(self.subprocess_dlg.handle_output)
 
@@ -61,38 +65,24 @@ class MainApp(MainWindow):
             lambda: self.packager.subprocess.abort_process(2000)
         )
 
-    def _connect_pyenv_change(self) -> None:
-        """处理用户通过选择不同的 Python 解释器时的响应"""
-
-        @Slot()
-        def on_pyenv_change() -> None:
-            """处理用户通过选择不同的 Python 解释器时的响应"""
-
-            self.current_pyenv = self.center_widget.pyenv_combobox.currentData()
-            self.packager.set_python_path(self.current_pyenv.exe_path)
-            self.center_widget.hidden_import_dlg.pkg_browser_dlg.load_pkg_list(
-                self.current_pyenv.installed_packages
-            )
-
-        on_pyenv_change()  # 显式调用一次，确保用户无任何操作时也能正确处理默认pyenv
-        self.center_widget.pyenv_combobox.currentIndexChanged.connect(on_pyenv_change)
-
     def _connect_run_pkg_btn_slot(self):
         @Slot()
-        def on_run_packaging_btn_clicked() -> None:
+        def handle_run_pkg_btn_clicked() -> None:
             """“运行打包”按钮的槽函数"""
+
+            # 将当前选择的 Python 解释器作为打包使用的解释器
+            current_pyenv: PyEnv = self.center_widget.pyenv_combobox.currentData()
+            self.packager.set_python_path(current_pyenv.exe_path)
 
             # 先显示对话框窗口，后运行子进程，确保调试信息/错误信息能被直观显示
             self.subprocess_dlg.show()
             self.packager.run_packaging_process()
 
-        self.center_widget.run_packaging_btn.clicked.connect(
-            on_run_packaging_btn_clicked
-        )
+        self.center_widget.run_packaging_btn.clicked.connect(handle_run_pkg_btn_clicked)
 
     def _connect_mul_btn_slot(self, subprocess_dlg):
         @Slot()
-        def on_multifunction_btn_clicked() -> None:
+        def handle_mul_btn_clicked() -> None:
             """处理子进程窗口多功能按钮点击信号的槽"""
 
             btn_text = self.subprocess_dlg.multifunction_btn.text()
@@ -106,7 +96,7 @@ class MainApp(MainWindow):
             elif btn_text == "关闭":
                 self.subprocess_dlg.close()
 
-        subprocess_dlg.multifunction_btn.clicked.connect(on_multifunction_btn_clicked)
+        subprocess_dlg.multifunction_btn.clicked.connect(handle_mul_btn_clicked)
 
     def closeEvent(self, event: QCloseEvent) -> None:
         """重写关闭事件，进行收尾清理
