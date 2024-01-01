@@ -4,6 +4,14 @@
 """此模块集中处理数个对话框(QDialog)控件
 """
 
+__all__ = [
+    "ScriptFileDlg",
+    "IconFileDlg",
+    "InterpreterFileDlg",
+    "AboutDlg",
+    "PkgBrowserDlg",
+]
+
 import warnings
 from typing import Optional
 
@@ -153,7 +161,7 @@ class PkgBrowserDlg(QDialog):
         self.setLayout(main_layout)
 
     def load_pkg_list(self, pkg_list: list[dict[str, str]]) -> None:
-        """从后端加载包数据，存储到实例属性 pkg_list 中
+        """从后端加载包数据，存储到实例属性 pkg_list 中，并更新界面
 
         self.pkg_list 形如 [("black", "23.12.1"), ...]
 

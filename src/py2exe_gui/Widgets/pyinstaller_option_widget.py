@@ -7,6 +7,8 @@
 `PyinstallerOptionTable` 类是用于显示 PyInstaller 命令行选项的表格控件窗口，界面有待进一步优化
 """
 
+__all__ = ["load_pyinst_options", "PyinstallerOptionTable"]
+
 import warnings
 from typing import Optional
 
@@ -16,8 +18,6 @@ from PySide6.QtWidgets import QHeaderView, QTableWidget, QTableWidgetItem
 
 from ..Constants import RUNTIME_INFO
 from ..Utilities import QtFileOpen
-
-__all__ = ["load_pyinst_options", "PyinstallerOptionTable"]
 
 
 def load_pyinst_options() -> dict[str, str]:

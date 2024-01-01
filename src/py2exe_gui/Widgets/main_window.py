@@ -6,6 +6,8 @@
 仅包含控件（前端界面）部分，不包含打包任务等（后端）功能
 """
 
+__all__ = ["open_url", "MainWindow"]
+
 from PySide6.QtCore import QUrl
 from PySide6.QtGui import QDesktopServices, QIcon, QPixmap
 from PySide6.QtWidgets import QApplication, QLabel, QMainWindow, QMenuBar, QStatusBar

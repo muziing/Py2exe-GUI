@@ -4,6 +4,8 @@
 """本模块主要包含用于选择 Python 解释器环境的下拉框控件 `PyEnvComboBox`
 """
 
+__all__ = ["PyEnvComboBox"]
+
 import sys
 from typing import Optional
 
@@ -52,7 +54,7 @@ class PyEnvComboBox(QComboBox):
                 f'Current PyEnv type "{pyenv.type}" is not instance of "PyEnvType"'
             )
 
-        data = pyenv  # TODO 直接存储 PyEnv 对象是否会造成性能问题？如有，如何解决？
+        data = pyenv
         version = pyenv.pyversion
 
         icon_map = {

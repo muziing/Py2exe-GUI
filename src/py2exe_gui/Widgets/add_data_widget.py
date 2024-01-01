@@ -4,6 +4,8 @@
 """此模块主要包含用于提供 PyInstaller `--add-data` 和 `--add-binary` 功能的窗口类 `AddDataWindow`
 """
 
+__all__ = ["AddDataWindow"]
+
 import sys
 from pathlib import Path
 from typing import Optional
