@@ -6,6 +6,12 @@
 暂时仅实现了文本文件的读取方法
 """
 
+__all__ = [
+    "qba_to_str",
+    "QtFileOpen",
+]
+__author__ = "Muzing"
+
 import locale
 import os
 import pathlib
@@ -28,8 +34,7 @@ def qba_to_str(qba: QByteArray, encoding: str = getdefaultencoding()) -> str:
 
 
 class QtFileOpen:
-    """
-    通过 QFile 读写文件的上下文管理器，
+    """通过 QFile 读写文件的上下文管理器，
     使与 Python 的 "with open() as" 语句风格统一
 
     使用举例：

@@ -8,6 +8,11 @@
 `InterpreterValidator.validate()` 用于验证用户给定的路径是否为有效的 Python 解释器可执行文件；
 """
 
+__all__ = [
+    "FilePathValidator",
+    "InterpreterValidator",
+]
+
 import os
 import subprocess
 from pathlib import Path

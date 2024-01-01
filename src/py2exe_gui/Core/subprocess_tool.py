@@ -2,7 +2,11 @@
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
 """此模块包含辅助 QProcess 使用的工具类 `SubProcessTool`
+
+待考量：是否有必要使用此类，还是仅需使用其他技巧创建单例QProcess、自行处理信号
 """
+
+__all__ = ["SubProcessTool"]
 
 from enum import IntEnum
 from pathlib import Path

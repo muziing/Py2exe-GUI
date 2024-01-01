@@ -6,6 +6,8 @@
 `PackagingTask.using_option` 是一个数据类型为 dict[PyInstOpt, Any] 的字典，存储着当前确认使用的所有选项
 """
 
+__all__ = ["PackagingTask"]
+
 from pathlib import Path
 from typing import Any, Optional
 

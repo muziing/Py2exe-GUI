@@ -6,6 +6,8 @@
 用于存储 Python 环境的相关信息，如解释器可执行文件路径、Python 版本、已安装的包等
 """
 
+__all__ = ["PyEnv"]
+
 import json
 import subprocess
 from pathlib import Path
@@ -97,7 +99,7 @@ class PyEnv:
             "import platform;print(platform.python_version(), end='')",
         ]
         try:
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=0.5)
+            result = subprocess.run(cmd, capture_output=True, text=True)
             version = result.stdout
         except subprocess.CalledProcessError as e:
             raise RuntimeError(f"Failed to get Python version: {e.output}") from e
@@ -127,7 +129,7 @@ class PyEnv:
 
         try:
             # 运行 pip list 命令，获取输出
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=3)
+            result = subprocess.run(cmd, capture_output=True, text=True)
             pip_list = result.stdout
         except subprocess.CalledProcessError as e:
             raise RuntimeError(f"Failed to get installed packages: {e.output}") from e

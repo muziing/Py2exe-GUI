@@ -3,6 +3,11 @@
 
 """应用程序级常量与部分全局变量"""
 
+__all__ = [
+    "APP_URLs",
+    "AppConstant",
+]
+
 from .runtime_info import RUNTIME_INFO
 
 APP_URLs = {

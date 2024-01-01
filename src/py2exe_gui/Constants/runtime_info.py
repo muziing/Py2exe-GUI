@@ -6,6 +6,13 @@
 目前包括运行时平台（操作系统）、运行时语言（本地化）、运行时捆绑状态（是否已经被 PyInstaller 打包）
 """
 
+__all__ = [
+    "Platform",
+    "get_platform",
+    "RuntimeInfo",
+    "RUNTIME_INFO",
+]
+
 import enum
 import sys
 from locale import getdefaultlocale
@@ -13,8 +20,11 @@ from typing import NamedTuple, Optional
 
 
 @enum.unique
-class Platform(enum.StrEnum):
-    """运行平台相关的常量"""
+class Platform(enum.Enum):
+    """运行平台相关的常量
+
+    由于 enum.StrEnum 在 Python 3.11 才新增，为保持对低版本的支持，暂不使用
+    """
 
     windows = "Windows"
     linux = "Linux"

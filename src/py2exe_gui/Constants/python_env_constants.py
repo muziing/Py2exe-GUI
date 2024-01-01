@@ -3,6 +3,10 @@
 
 """Python 环境相关常量"""
 
+__all__ = [
+    "PyEnvType",
+]
+
 import enum
 
 

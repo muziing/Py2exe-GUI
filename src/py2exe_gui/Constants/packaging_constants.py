@@ -3,6 +3,10 @@
 
 """PyInstaller 打包相关的常量"""
 
+__all__ = [
+    "PyInstOpt",
+]
+
 import enum
 
 

@@ -6,6 +6,11 @@
 注意，由于开发者没有苹果电脑，所有 macOS 功能均未经过验证
 """
 
+__all__ = [
+    "open_dir_in_explorer",
+    "get_sys_python",
+]
+
 import subprocess
 import warnings
 from pathlib import Path

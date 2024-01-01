@@ -4,6 +4,8 @@
 """此模块包含实际执行打包子进程的类 `Packaging`
 """
 
+__all__ = ["Packaging"]
+
 from pathlib import Path
 from typing import List, Optional
 
