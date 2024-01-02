@@ -10,7 +10,6 @@
 __all__ = ["load_pyinst_options", "PyinstallerOptionTable"]
 
 import warnings
-from typing import Optional
 
 import yaml
 from PySide6.QtGui import QPixmap
@@ -72,21 +71,12 @@ class PyinstallerOptionTable(QTableWidget):
         self.setHorizontalHeaderLabels(["选项", "描述"])
         self.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
 
-        # 存储选项信息的字典，懒加载，实际在显示窗口时才为此实例属性赋值
-        self.option_dict: Optional[dict[str, str]] = None
+        # 存储选项信息的字典
+        self.option_dict = load_pyinst_options()
+        self._set_option_items()
 
-    def show(self) -> None:
-        """重写show()方法，实现只有在显示窗口时才加载选项信息的效果，提高主程序启动速度"""
-
-        self._load_and_set_option_items()
-        super().show()
-
-    def _load_and_set_option_items(self) -> None:
+    def _set_option_items(self) -> None:
         """加载选项信息、为表格控件中填充条目"""
-
-        # 加载选项信息
-        if self.option_dict is None:
-            self.option_dict = load_pyinst_options()
 
         # 填充条目
         self.setRowCount(len(self.option_dict))

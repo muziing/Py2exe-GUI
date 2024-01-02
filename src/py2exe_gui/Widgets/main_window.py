@@ -43,7 +43,6 @@ class MainWindow(QMainWindow):
 
         self.menu_bar = QMenuBar(self)
         self.status_bar = QStatusBar(self)
-        self.pyinstaller_option_table = PyinstallerOptionTable()
 
         self.setCentralWidget(self.center_widget)
         self.setMenuBar(self.menu_bar)
@@ -79,7 +78,9 @@ class MainWindow(QMainWindow):
             "PyInstaller官方文档",
             lambda: open_url(APP_URLs["Pyinstaller_doc"]),
         )
-        help_menu.addAction("PyInstaller选项详情", self.pyinstaller_option_table.show)
+        help_menu.addAction(
+            "PyInstaller选项详情", self.center_widget.pyinstaller_option_table.show
+        )
         help_menu.addSeparator()
         help_menu.addAction("报告Bug", lambda: open_url(APP_URLs["BugTracker"]))
 

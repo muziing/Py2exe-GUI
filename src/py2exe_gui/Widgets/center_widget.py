@@ -42,7 +42,7 @@ from .dialog_widgets import (
 )
 from .multi_item_edit_widget import MultiPkgEditWindow
 from .pyenv_combobox import PyEnvComboBox
-from .pyinstaller_option_widget import load_pyinst_options
+from .pyinstaller_option_widget import PyinstallerOptionTable
 
 
 class CenterWidget(QWidget):
@@ -66,8 +66,8 @@ class CenterWidget(QWidget):
 
         self.parent_widget = parent
 
-        # 读取PyInstaller选项详细描述，用于各控件ToolTip
-        self.option_dict = load_pyinst_options()  # TODO 待优化：避免重复加载
+        # 显示 PyInstaller 选项详细描述的控件
+        self.pyinstaller_option_table = PyinstallerOptionTable()
 
         # 展示已安装的包
         self.pkg_browser_dlg = PkgBrowserDlg()
@@ -157,8 +157,8 @@ class CenterWidget(QWidget):
         self.run_packaging_btn.setEnabled(False)
 
         # 将 PyInstaller 选项详情设置成各控件的 ToolTip
-        if self.option_dict:
-            opt = self.option_dict
+        if self.pyinstaller_option_table.option_dict:
+            opt = self.pyinstaller_option_table.option_dict
             # TODO: 解绑文本文档中的option字符和此处opt的键
             self.project_name_label.setToolTip(opt["-n NAME, --name NAME"])
             self.one_dir_btn.setToolTip(opt["-D, --onedir"])
@@ -434,6 +434,7 @@ class CenterWidget(QWidget):
 
             # 但在该环境中没有安装 PyInstaller，询问用户是否继续操作
             if not new_pyenv.pkg_installed("pyinstaller"):
+                # TODO 自实现 MessageBox，包含"仍要使用"、"取消"、"尝试安装PyInstaller"三个按钮
                 result = QMessageBox.warning(
                     self,
                     "警告",
@@ -501,8 +502,8 @@ class WinMacCenterWidget(CenterWidget):
         self.console_checkbox.setChecked(True)  # 默认值
 
         # 将 PyInstaller 选项详情设置成各控件的 ToolTip
-        if self.option_dict:
-            opt = self.option_dict
+        if self.pyinstaller_option_table.option_dict:
+            opt = self.pyinstaller_option_table.option_dict
             self.icon_path_label.setToolTip(
                 opt[
                     '-i <FILE.ico or FILE.exe,ID or FILE.icns or Image or "NONE">, '
