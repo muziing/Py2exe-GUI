@@ -14,7 +14,7 @@ from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QComboBox, QWidget
 
 from ..Constants import RUNTIME_INFO, PyEnvType
-from ..Utilities import PyEnv, get_sys_python
+from ..Utilities import ALL_PY_ENVs, PyEnv, get_sys_python
 
 
 class PyEnvComboBox(QComboBox):
@@ -29,22 +29,27 @@ class PyEnvComboBox(QComboBox):
 
         self.setIconSize(QSize(18, 18))
         self.setMinimumHeight(24)  # 确保图标显示完整
+        self._add_default_item()
 
-        # 添加默认项
+    def _add_default_item(self) -> None:
+        """添加默认解释器环境条目"""
+
         if not RUNTIME_INFO.is_bundled:
             # 在非 PyInstaller 捆绑环境中，第一项为当前用于运行 Py2exe-GUI 的 Python 环境
-            current_pyenv = PyEnv(sys.executable, None)
-            self.addItem(*self.gen_item(current_pyenv))
+            default_pyenv = PyEnv(sys.executable, None)
         else:
             # 若已由 PyInstaller 捆绑成冻结应用程序，则第一项为系统 Python 环境
-            sys_pyenv = PyEnv(get_sys_python(), PyEnvType.system)
-            self.addItem(*self.gen_item(sys_pyenv))
+            default_pyenv = PyEnv(get_sys_python(), PyEnvType.system)
+
+        ALL_PY_ENVs.append(default_pyenv)
+        self.addItem(*self.gen_item(default_pyenv, 0))
 
     @staticmethod
-    def gen_item(pyenv: PyEnv) -> tuple:
+    def gen_item(pyenv: PyEnv, index: int) -> tuple:
         """根据传入的 Python 环境，生成一个适用于 QComboBox.addItem() 参数的三元素元组
 
         :param pyenv: Python 解释器环境
+        :param index: 该环境在全局变量 ALL_PY_ENVs 中的索引值
         :return: (icon, text, data)
         :raise ValueError: PyEnv 类型无效时抛出
         """
@@ -54,7 +59,7 @@ class PyEnvComboBox(QComboBox):
                 f'Current PyEnv type "{pyenv.type}" is not instance of "PyEnvType"'
             )
 
-        data = pyenv
+        data = index
         version = pyenv.pyversion
 
         icon_map = {
@@ -78,3 +83,13 @@ class PyEnvComboBox(QComboBox):
         text = text_map.get(pyenv.type, f"Python {version}")
 
         return icon, text, data
+
+    def get_current_pyenv(self) -> PyEnv:
+        """通过当前选中的条目索引值，从全局变量 `ALL_PY_ENVs` 中获取对应的 Python 环境
+
+        :return: 当前在下拉框中选定的 Python 环境
+        """
+
+        current_pyenv: PyEnv = ALL_PY_ENVs[self.currentData()]
+
+        return current_pyenv

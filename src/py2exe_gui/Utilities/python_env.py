@@ -1,12 +1,15 @@
 # Licensed under the GPLv3 License: https://www.gnu.org/licenses/gpl-3.0.html
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
-"""此模块主要包含 Python 解释器环境类 `PyEnv`
+"""此模块主要包含 Python 解释器环境类 `PyEnv` 与全局变量 `ALL_PY_ENVs`
 
 用于存储 Python 环境的相关信息，如解释器可执行文件路径、Python 版本、已安装的包等
 """
 
-__all__ = ["PyEnv"]
+__all__ = [
+    "PyEnv",
+    "ALL_PY_ENVs",
+]
 
 import json
 import subprocess
@@ -194,3 +197,7 @@ class PyEnv:
         """
 
         return any(pkg["name"] == package_name for pkg in self.installed_packages)
+
+
+# 全局变量，保存所有已创建的 PyEnv 实例
+ALL_PY_ENVs: list[PyEnv] = []

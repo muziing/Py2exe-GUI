@@ -5,4 +5,4 @@
 
 from .open_qfile import QtFileOpen
 from .platform_specifc_funcs import get_sys_python, open_dir_in_explorer
-from .python_env import PyEnv
+from .python_env import ALL_PY_ENVs, PyEnv

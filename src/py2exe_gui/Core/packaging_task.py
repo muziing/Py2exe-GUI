@@ -14,6 +14,7 @@ from typing import Any, Optional
 from PySide6 import QtCore
 
 from ..Constants import PyInstOpt
+from ..Utilities import PyEnv
 from .validators import FilePathValidator
 
 
@@ -21,7 +22,8 @@ class PackagingTask(QtCore.QObject):
     """打包任务类，处理用户输入
 
     接收来自界面的用户输入操作并处理，将结果反馈给界面和实际执行打包子进程的 `Packaging` 对象
-    在实例属性中保存目前设置的所有参数值
+    在实例属性 `pyenv` 中保存目前设置的 Python 环境；
+    在实例属性 `using_option` 中保存目前设置的所有参数值；
     """
 
     # 自定义信号
@@ -37,18 +39,12 @@ class PackagingTask(QtCore.QObject):
 
         super().__init__(parent)
 
-        # 保存所有参数值，非None才表示已设置
-        self.using_option: dict[PyInstOpt, Any] = {
-            PyInstOpt.script_path: None,
-            PyInstOpt.icon_path: None,
-            PyInstOpt.add_data: None,
-            PyInstOpt.add_binary: None,
-            PyInstOpt.out_name: None,
-            PyInstOpt.FD: None,
-            PyInstOpt.console: None,
-            PyInstOpt.hidden_import: None,
-            PyInstOpt.clean: None,
-        }  # TODO: 设法补充类型注解
+        # 保存打包时使用的 Python 环境
+        self.pyenv: Optional[PyEnv] = None
+
+        # 保存所有参数值，None表示未设置
+        self.using_option: dict[PyInstOpt, Any] = {value: None for value in PyInstOpt}
+        # TODO: 设法为值补充类型注解
 
         # self.script_path: Optional[Path] = None
         # self.icon_path: Optional[Path] = None

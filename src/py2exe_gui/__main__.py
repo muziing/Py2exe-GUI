@@ -8,6 +8,7 @@
 """
 
 import sys
+from pathlib import Path
 
 from PySide6.QtCore import Slot
 from PySide6.QtGui import QCloseEvent
@@ -71,7 +72,8 @@ class MainApp(MainWindow):
             """“运行打包”按钮的槽函数"""
 
             # 将当前选择的 Python 解释器作为打包使用的解释器
-            current_pyenv: PyEnv = self.center_widget.pyenv_combobox.currentData()
+            current_pyenv = self.center_widget.pyenv_combobox.get_current_pyenv()
+            self.packaging_task.pyenv = current_pyenv
             self.packager.set_python_path(current_pyenv.exe_path)
 
             # 先显示对话框窗口，后运行子进程，确保调试信息/错误信息能被直观显示
@@ -90,7 +92,9 @@ class MainApp(MainWindow):
                 self.packager.subprocess.abort_process()
                 self.subprocess_dlg.close()
             elif btn_text == "打开输出位置":
-                script_path = self.packaging_task.using_option[PyInstOpt.script_path]
+                script_path: Path = self.packaging_task.using_option[
+                    PyInstOpt.script_path
+                ]
                 dist_path = script_path.parent / "dist"
                 open_dir_in_explorer(dist_path)
             elif btn_text == "关闭":

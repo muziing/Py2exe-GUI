@@ -31,7 +31,7 @@ from PySide6.QtWidgets import (
 
 from ..Constants import PyInstOpt
 from ..Core import InterpreterValidator
-from ..Utilities import PyEnv
+from ..Utilities import ALL_PY_ENVs, PyEnv
 from .add_data_widget import AddDataWindow
 from .arguments_browser import ArgumentsBrowser
 from .dialog_widgets import (
@@ -190,7 +190,7 @@ class CenterWidget(QWidget):
             :param new_index: 选择的 Python 解释器在 `pyenv_combobox` 中的索引
             """
 
-            current_pyenv: PyEnv = self.pyenv_combobox.itemData(new_index)
+            current_pyenv = self.pyenv_combobox.get_current_pyenv()
 
             # TODO 设置为懒加载，用户打开“已安装的包”对话框时才运行
             self.pkg_browser_dlg.load_pkg_list(current_pyenv.installed_packages)
@@ -388,7 +388,7 @@ class CenterWidget(QWidget):
             self.script_file_dlg.close()
             # 警告对话框
             result = QMessageBox.critical(
-                self.parent_widget,
+                self,
                 "错误",
                 "选择的不是有效的Python脚本文件，请重新选择！",
                 QMessageBox.StandardButton.Cancel,
@@ -423,19 +423,19 @@ class CenterWidget(QWidget):
         itp_path = Path(file_path).absolute()
 
         # 首先判断用户选择的路径是否已在当前存储的列表中，如在则不添加直接返回
-        for index in range(self.pyenv_combobox.count()):
-            exist_env: PyEnv = self.pyenv_combobox.itemData(index)
-            if str(itp_path) == exist_env.exe_path:
+        for pyenv in ALL_PY_ENVs:
+            if str(itp_path) == pyenv.exe_path:
                 return
 
         if InterpreterValidator.validate(itp_path):
             # 用户选择的解释器有效
+
             new_pyenv = PyEnv(itp_path, type_=None)
 
             # 但在该环境中没有安装 PyInstaller，询问用户是否继续操作
             if not new_pyenv.pkg_installed("pyinstaller"):
                 result = QMessageBox.warning(
-                    self.parent_widget,
+                    self,
                     "警告",
                     "在该 Python 环境中似乎没有安装 Pyinstaller，" "是否仍要继续？",
                     QMessageBox.StandardButton.Ok,
@@ -444,14 +444,17 @@ class CenterWidget(QWidget):
                 if result == QMessageBox.StandardButton.Cancel:
                     return
 
-            self.pyenv_combobox.addItem(*self.pyenv_combobox.gen_item(new_pyenv))
+            # TODO 将 ALL_PY_ENVs.append() 和 pyenv_combobox.addItem() 统一管理
+            ALL_PY_ENVs.append(new_pyenv)
+            new_item = self.pyenv_combobox.gen_item(new_pyenv, len(ALL_PY_ENVs) - 1)
+            self.pyenv_combobox.addItem(*new_item)
             self.pyenv_combobox.setCurrentIndex(self.pyenv_combobox.count() - 1)
 
         else:
             # 用户选择的解释器无效
             self.itp_dlg.close()
             result = QMessageBox.critical(
-                self.parent_widget,
+                self,
                 "错误",
                 "选择的不是有效的Python解释器，请重新选择！",
                 QMessageBox.StandardButton.Cancel,
