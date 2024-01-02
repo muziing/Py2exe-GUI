@@ -28,6 +28,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from ..Constants import RUNTIME_INFO, Platform
 from ..Utilities import QtFileOpen
 
 
@@ -86,7 +87,12 @@ class InterpreterFileDlg(QFileDialog):
         self.setFileMode(QFileDialog.FileMode.ExistingFile)
         self.setLabelText(QFileDialog.DialogLabel.FileName, "Python解释器")
         self.setLabelText(QFileDialog.DialogLabel.FileType, "可执行文件")
-        # TODO 增加一定筛选，如 Windows 平台自动设置 .exe setNameFilters
+
+        # 进行一定的文件过滤
+        # 目前已知的可行方法只有 Windows 下按文件后缀，Linux 下似乎不可行
+        # https://stackoverflow.com/questions/50213049/
+        if RUNTIME_INFO.platform == Platform.windows:
+            self.setNameFilters(("可执行文件 (*.exe)", "所有文件 (*)"))
 
 
 class AboutDlg(QMessageBox):
