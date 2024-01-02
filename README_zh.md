@@ -20,33 +20,36 @@
 
 ## 简介
 
-Py2exe-GUI 是一个基于 [PySide6](https://doc.qt.io/qtforpython/index.html) 开发的辅助工具，旨在为 [PyInstaller](https://pyinstaller.org/) 提供完整易用的图形化界面，方便用户进行 Python 项目的打包。
+Py2exe-GUI 是一个基于 [PySide6](https://doc.qt.io/qtforpython/index.html)
+开发的辅助工具，旨在为 [PyInstaller](https://pyinstaller.org/) 提供完整易用的图形化界面，方便用户进行 Python 项目的打包。
+
+![界面截图](docs/source/images/Py2exe-GUI_v0.3.0_mainwindow_screenshot.png)
 
 ![界面截图](docs/source/images/Py2exe-GUI_v0.2.0_screenshot.png)
 
 有如下特性：
 
-- 完全图形化界面，易用
-- 支持 PyInstaller 的全部选项
-- （暂未实现）可以调用本地任一 Python 解释器与对应环境，无需在每个待打包的解释器环境中重复安装
-- 跨平台，支持 Windows、Linux、MacOS
+- 完全图形化界面，易用。
+- 将会支持 PyInstaller 的全部选项。
+- 可以调用本地任一 Python 解释器与对应环境，无需在每个待打包的解释器环境中重复安装。
+- 跨平台，支持 Windows、Linux、MacOS。
 
-## 如何使用
+## 如何安装
 
-> 注意：Py2exe-GUI 尚处早期开发阶段，使用方式可能频繁变化，注意经常查阅此使用说明。
+> 注意：Py2exe-GUI 尚处早期开发阶段，提供的分发版本均为*beta-测试版*。安装方式也可能频繁变化，注意经常查阅此使用说明。
 
 ### 方式1：通过 `pip` 安装
 
 首先在待打包的 Python 解释器环境中安装 PyInstaller:
 
 ```shell
-pip install pyinstaller
+pip install pyinstaller  # 必须在你的项目环境中安装
 ```
 
 然后通过 pip 安装 Py2exe-GUI：
 
 ```shell
-pip install py2exe-gui
+pip install py2exe-gui  # 可以安装至任何环境
 ```
 
 运行
@@ -63,38 +66,51 @@ python -m py2exe_gui  # 注意连字符为_
 
 ### 方式2：通过仓库源码运行
 
-克隆仓库：
+对于喜欢尝鲜或急需最新 bug 修复的用户，可以通过仓库源码运行：
 
-```shell
-git clone https://github.com/muziing/Py2exe-GUI.git
-```
+1. 下载[最新 main 分支源码](https://codeload.github.com/muziing/Py2exe-GUI/zip/refs/heads/main)
 
-安装 [Poetry](https://python-poetry.org/) 并创建虚拟环境
+2. 解压后进入目录，启动命令行/终端，创建并激活虚拟环境：
 
-```shell
-poetry init
-```
+    ```shell
+    python -m venv venv  # 创建虚拟环境（Windows）
+    .\venv\Scripts\activate.ps1  # 激活虚拟环境（Windows PowerShell）
+    ```
 
-安装依赖项：
+    ```shell
+    python3 -m venv venv  # 创建虚拟环境（Linux/macOS）
+    source venv/bin/activate  # 激活虚拟环境（Linux/macOS）
+    ```
 
-```shell
-poetry install
-```
+3. 安装依赖、运行程序：
 
-运行 src 目录下的 [Py2exe-GUI.py](src/Py2exe-GUI.py):
+    ```shell
+    pip install -r requirements.txt  # 安装依赖项
+    python ./src/Py2exe-GUI.py  # 运行
+    ```
 
-```shell
-cd src
-python  Py2exe-GUI.py
-```
+## 贡献
+
+Py2exe-GUI 是一个自由的开源软件，欢迎任何人为其开发贡献力量。
+
+如果你在使用时遇到任何问题（包括
+bug、界面错别字等），或者提议新增实用功能，可以提交一个 [issue](https://github.com/muziing/Py2exe-GUI/issues/new)。
+
+如果你有能力有想法贡献代码，欢迎提交 pull
+request。请尽可能遵守原有的代码风格，并确保新增代码能通过[静态检查](dev_scripts/check_funcs.py)。
 
 ## 开源许可
 
 ![GPLv3](docs/source/images/gplv3-127x51.png)
 
+Py2exe-GUI 采用 GPLv3 开源许可证，详情请参见 [LICENSE](LICENSE) 文件。
+
+但有一个例外：如果你的项目仅使用 Py2exe-GUI 作为打包工具，而最终发布的软件中并不包含 Py2exe-GUI 的源码或二进制文件，那么你的项目不会受到
+GPLv3 的限制，仍可作为闭源商业软件发布。
+
 ```text
 Py2exe-GUI
-Copyright (C) 2022-2023  muzing
+Copyright (C) 2022-2024  Muzing
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

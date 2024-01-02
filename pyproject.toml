@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "py2exe-gui"
-version = "0.2.1"
+version = "0.3.0"
 description = "GUI for PyInstaller, based on PySide6"
 keywords = ["PyInstaller", "GUI", "PySide6"]
 authors = ["muzing <muzi2001@foxmail.com>"]
@@ -9,7 +9,7 @@ readme = ["README.md", "README_zh.md"]
 repository = "https://github.com/muziing/Py2exe-GUI"
 exclude = ["src/py2exe_gui/Resources/Icons", "src/py2exe_gui/Resources/Texts"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Operating System :: Microsoft :: Windows",
     "Operating System :: POSIX :: Linux",
     "Operating System :: MacOS"
@@ -41,22 +41,28 @@ ruff = "^0.1.9"
 mypy = "^1.8.0"
 pyinstaller = "^6.2.0"
 types-pyyaml = "^6.0.12.12"
+line-profiler = "^4.1.2"
 
 [tool.black]
 line-length = 88
 target-version = ["py311"]
-extend-exclude = "COMPILED_RESOURCES.py"
+extend-exclude = "COMPILED_RESOURCES\\.py"
 
 [tool.isort]
 profile = "black"
 line_length = 88
-py_version=311
+py_version = 311
+skip_glob = ["src/py2exe_gui/Resources/*"]
 
 [tool.mypy]
 python_version = "3.11"
 warn_return_any = true
 ignore_missing_imports = true
 check_untyped_defs = true
+exclude = ["COMPILED_RESOURCES\\.py$"]
+
+[tool.ruff]
+extend-exclude = ["COMPILED_RESOURCES.py"]
 
 [tool.ruff.lint]
 select = [

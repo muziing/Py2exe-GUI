@@ -1,6 +1,11 @@
 # Licensed under the GPLv3 License: https://www.gnu.org/licenses/gpl-3.0.html
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
+"""此模块包含实际执行打包子进程的类 `Packaging`
+"""
+
+__all__ = ["Packaging"]
+
 from pathlib import Path
 from typing import List, Optional
 
@@ -11,9 +16,8 @@ from .subprocess_tool import SubProcessTool
 
 
 class Packaging(QtCore.QObject):
-    """
-    执行打包子进程的类，负责拼接命令选项、设置子进程工作目录、启动子进程等
-    不负责输入参数的检查，输入参数检查由 PackagingTask 对象进行 \n
+    """执行打包子进程的类，负责拼接命令选项、设置子进程工作目录、启动子进程等。
+    不负责输入参数的检查，输入参数检查由 PackagingTask 对象进行
     """
 
     # 自定义信号
@@ -28,13 +32,12 @@ class Packaging(QtCore.QObject):
 
         self.args_dict: dict = dict.fromkeys(PyInstOpt, "")
         self._args: List[str] = []  # PyInstaller 命令
-        self._subprocess_working_dir: str = ""
         self.subprocess: SubProcessTool = SubProcessTool("", parent=self)
 
     @QtCore.Slot(tuple)
     def set_pyinstaller_args(self, arg: tuple[PyInstOpt, str]) -> None:
-        """
-        解析传递来的PyInstaller运行参数，并添加至命令参数字典 \n
+        """解析传递来的PyInstaller运行参数，并添加至命令参数字典
+
         :param arg: 运行参数
         """
 
@@ -44,17 +47,16 @@ class Packaging(QtCore.QObject):
             self._add_pyinstaller_args()
             self._set_subprocess_working_dir()
 
-    def set_python_path(self, python_path):
-        """
+    def set_python_path(self, python_path: str) -> None:
+        """为内部管理的 SubProcessTool 设置新的 Python 程序路径
+
         :param python_path: Python 可执行文件路径
         """
 
         self.subprocess.set_program(python_path)
 
     def _add_pyinstaller_args(self) -> None:
-        """
-        将命令参数字典中的参数按顺序添加到PyInstaller命令参数列表中 \n
-        """
+        """将命令参数字典中的参数按顺序添加到PyInstaller命令参数列表中"""
 
         self._args = []  # 避免重复添加
 
@@ -90,17 +92,14 @@ class Packaging(QtCore.QObject):
         self.args_settled.emit(self._args)
 
     def _set_subprocess_working_dir(self) -> None:
-        """
-        设置子进程工作目录 \n
-        """
+        """设置子进程工作目录"""
 
         script_path = self.args_dict[PyInstOpt.script_path]
-        self._subprocess_working_dir = str(Path(script_path).parent)  # 工作目录设置为脚本所在目录
+        # 工作目录设置为脚本所在目录
+        self.subprocess.set_working_dir(str(Path(script_path).parent))
 
     def run_packaging_process(self) -> None:
-        """
-        使用给定的参数启动打包子进程 \n
-        """
+        """使用给定的参数启动打包子进程"""
 
         # 从 Python 内启动 Pyinstaller，
         # 参见 https://pyinstaller.org/en/stable/usage.html#running-pyinstaller-from-python-code
@@ -109,7 +108,6 @@ class Packaging(QtCore.QObject):
             f"import PyInstaller.__main__;PyInstaller.__main__.run({self._args})",
         ]
 
-        self.subprocess.set_working_dir(self._subprocess_working_dir)
         self.subprocess.set_arguments(cmd)
         self.subprocess.start_process(
             time_out=500, mode=QtCore.QIODeviceBase.OpenModeFlag.ReadOnly

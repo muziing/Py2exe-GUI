@@ -1,3 +1,6 @@
+"""各种清理函数，如清理 Python 编译缓存、PyInstaller 打包中间文件与输出文件等
+"""
+
 import os
 from pathlib import Path
 from shutil import rmtree

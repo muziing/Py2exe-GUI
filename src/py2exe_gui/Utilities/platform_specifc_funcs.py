@@ -1,32 +1,37 @@
 # Licensed under the GPLv3 License: https://www.gnu.org/licenses/gpl-3.0.html
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
+"""一些因操作系统不同而在具体实现上有差异的功能函数
+
+注意，由于开发者没有苹果电脑，所有 macOS 功能均未经过验证
 """
-一些因操作系统不同而在具体实现上有差异的功能函数
-注意，由于开发者没有苹果电脑，所有关于 macOS 的功能均未经过验证
-"""
+
+__all__ = [
+    "open_dir_in_explorer",
+    "get_sys_python",
+]
 
 import subprocess
 import warnings
 from pathlib import Path
 from typing import Union
 
-from ..Constants import PLATFORM, RUNTIME_INFO
+from ..Constants import RUNTIME_INFO, Platform
 
 
 def open_dir_in_explorer(dir_path: Union[str, Path]) -> None:
-    """
-    在操作系统文件资源管理器中打开指定目录 \n
+    """在操作系统文件资源管理器中打开指定目录
+
     :param dir_path: 待打开的目录路径
     """
 
     try:
-        if RUNTIME_INFO.platform == PLATFORM.windows:
+        if RUNTIME_INFO.platform == Platform.windows:
             import os  # fmt: skip
             os.startfile(dir_path)  # type: ignore
-        elif RUNTIME_INFO.platform == PLATFORM.linux:
+        elif RUNTIME_INFO.platform == Platform.linux:
             subprocess.call(["xdg-open", dir_path])
-        elif RUNTIME_INFO.platform == PLATFORM.macos:
+        elif RUNTIME_INFO.platform == Platform.macos:
             subprocess.call(["open", dir_path])
         else:
             raise ValueError(f"Unsupported platform: {RUNTIME_INFO.platform}.")
@@ -39,14 +44,14 @@ def open_dir_in_explorer(dir_path: Union[str, Path]) -> None:
 
 
 def get_sys_python() -> str:
-    """
-    获取系统默认 Python 解释器的可执行文件位置 \n
+    """获取系统默认 Python 解释器的可执行文件位置
+
     :return: Python 可执行文件路径
     """
 
-    if RUNTIME_INFO.platform == PLATFORM.windows:
+    if RUNTIME_INFO.platform == Platform.windows:
         cmd = ["powershell.exe", "(Get-Command python).Path"]  # PowerShell
-    elif RUNTIME_INFO.platform in (PLATFORM.linux, PLATFORM.macos):
+    elif RUNTIME_INFO.platform in (Platform.linux, Platform.macos):
         cmd = ["which", "python3"]
     else:
         raise ValueError("Current OS is not supported.")

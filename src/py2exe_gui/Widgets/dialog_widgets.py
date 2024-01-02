@@ -1,6 +1,17 @@
 # Licensed under the GPLv3 License: https://www.gnu.org/licenses/gpl-3.0.html
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
+"""此模块集中处理数个对话框(QDialog)控件
+"""
+
+__all__ = [
+    "ScriptFileDlg",
+    "IconFileDlg",
+    "InterpreterFileDlg",
+    "AboutDlg",
+    "PkgBrowserDlg",
+]
+
 import warnings
 from typing import Optional
 
@@ -17,13 +28,12 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from ..Constants import RUNTIME_INFO, Platform
 from ..Utilities import QtFileOpen
 
 
 class ScriptFileDlg(QFileDialog):
-    """
-    用于获取入口脚本文件的对话框
-    """
+    """用于获取入口脚本文件的对话框"""
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         """
@@ -43,9 +53,7 @@ class ScriptFileDlg(QFileDialog):
 
 
 class IconFileDlg(QFileDialog):
-    """
-    用于获取应用图标文件的对话框
-    """
+    """用于获取应用图标文件的对话框"""
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         """
@@ -64,10 +72,31 @@ class IconFileDlg(QFileDialog):
         self.setLabelText(QFileDialog.DialogLabel.Reject, "取消")
 
 
+class InterpreterFileDlg(QFileDialog):
+    """用于获取 Python 解释器可执行文件的对话框"""
+
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
+        """
+        :param parent: 父控件对象
+        """
+
+        super().__init__(parent)
+
+        self.setAcceptMode(QFileDialog.AcceptMode.AcceptOpen)
+        self.setViewMode(QFileDialog.ViewMode.Detail)
+        self.setFileMode(QFileDialog.FileMode.ExistingFile)
+        self.setLabelText(QFileDialog.DialogLabel.FileName, "Python解释器")
+        self.setLabelText(QFileDialog.DialogLabel.FileType, "可执行文件")
+
+        # 进行一定的文件过滤
+        # 目前已知的可行方法只有 Windows 下按文件后缀，Linux 下似乎不可行
+        # https://stackoverflow.com/questions/50213049/
+        if RUNTIME_INFO.platform == Platform.windows:
+            self.setNameFilters(("可执行文件 (*.exe)", "所有文件 (*)"))
+
+
 class AboutDlg(QMessageBox):
-    """
-    用于显示关于信息的对话框
-    """
+    """用于显示关于信息的对话框"""
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         """
@@ -85,8 +114,8 @@ class AboutDlg(QMessageBox):
 
     @property
     def about_text(self) -> str:
-        """
-        返回本程序的关于信息文本 \n
+        """返回本程序的关于信息文本
+
         :return: 关于信息
         """
 
@@ -102,9 +131,7 @@ class AboutDlg(QMessageBox):
 
 
 class PkgBrowserDlg(QDialog):
-    """
-    浏览已安装的所有包的对话框
-    """
+    """浏览已安装的所有包的对话框"""
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         """
@@ -119,9 +146,7 @@ class PkgBrowserDlg(QDialog):
         self._setup_ui()
 
     def _setup_ui(self) -> None:
-        """
-        处理 UI \n
-        """
+        """处理 UI"""
 
         self.setWindowTitle("已安装的包")
         self.setWindowIcon(QIcon(QPixmap(":/Icons/Python_128px")))
@@ -142,9 +167,10 @@ class PkgBrowserDlg(QDialog):
         self.setLayout(main_layout)
 
     def load_pkg_list(self, pkg_list: list[dict[str, str]]) -> None:
-        """
-        从后端加载包数据，存储到实例属性 pkg_list 中 \n
+        """从后端加载包数据，存储到实例属性 pkg_list 中，并更新界面
+
         self.pkg_list 形如 [("black", "23.12.1"), ...]
+
         :param pkg_list: 已安装的包列表，形如 [{"name": "black", "version": "23.12.1"}, {}, ...]
         """
 
@@ -157,9 +183,7 @@ class PkgBrowserDlg(QDialog):
         self._pkg_table_update()
 
     def _pkg_table_update(self) -> None:
-        """
-        更新包列表控件显示内容 \n
-        """
+        """更新包列表控件显示内容"""
 
         self.pkg_table.setRowCount(len(self.pkg_list))
         for row, pkg in enumerate(self.pkg_list):

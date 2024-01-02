@@ -21,32 +21,43 @@ English | <a href="README_zh.md">简体中文</a>
 
 ## Introduction
 
-Py2exe-GUI is an assist tool based on [PySide6](https://doc.qt.io/qtforpython/index.html), designed to provide a complete yet easy-to-use GUI for [PyInstaller](https://pyinstaller.org/).
+Py2exe-GUI is an assist tool based on [PySide6](https://doc.qt.io/qtforpython/index.html), designed to provide a
+complete yet easy-to-use GUI for [PyInstaller](https://pyinstaller.org/).
 
-![Screenshot of the interface](docs/source/images/Py2exe-GUI_v0.2.0_screenshot.png)
+![Screenshot](docs/source/images/Py2exe-GUI_v0.3.0_mainwindow_screenshot.png)
+
+![Screenshot](docs/source/images/Py2exe-GUI_v0.2.0_screenshot.png)
 
 It has the following features:
 
-- All options of PyInstaller are supported.
-- Call any local Python interpreter with the corresponding environment. No need for repeat installations.(Not realized yet)
+- Fully graphical interface, easy to use.
+- All options of PyInstaller will be supported.
+- You can invoke any local Python interpreter with its corresponding environment, eliminating the need to reinstall it
+  in each interpreter environment to be packaged.
 - Cross-platform, supports Windows, Linux and macOS.
 
-## How to use
+> Note: As you can see, I am not an English speaker. Py2exe-GUI is currently only available in Simplified Chinese.
+> However, I've reserved some interfaces in the code for internationalization, and the translation is slowly progressing.
+> If you are interested in this project, you can star it. In a few months it will provide full English support and
+> interfaces for translators to provide translations in more languages.
 
-> Note: Py2exe-GUI is still in the early development stage, the way of using it may change frequently, so please check this instruction frequently.
+## How to install
+
+> Note: Py2exe-GUI is still in the early stages of development, and the distributions provided are *beta versions*.
+> Installation methods may change frequently, so be sure to check these instructions often.
 
 ### Option A: Install with `pip`
 
 First, install PyInstaller in the Python interpreter environment which to be packaged:
 
 ```shell
-pip install pyinstaller
+pip install pyinstaller  # Must be installed in your project environment
 ```
 
 Then install Py2exe-GUI with `pip`:
 
 ```shell
-pip install py2exe-gui
+pip install py2exe-gui  # Can be installed into any environment
 ```
 
 Run:
@@ -63,38 +74,55 @@ python -m py2exe_gui  # `_`, not `-`
 
 ### Option B: Run through source code
 
-Clone repo:
+For those who like to try it out or are in desperate need of the latest bug fixes, you can run it through the repository
+source code:
 
-```shell
-git clone https://github.com/muziing/Py2exe-GUI.git
-```
+1. Download the [latest main branching source code](https://codeload.github.com/muziing/Py2exe-GUI/zip/refs/heads/main).
 
-Install [Poetry](https://python-poetry.org/) and create a virtual environment:
+2. Unzip it and go to the directory. Launch a terminal to create and activate the virtual environment:
 
-```shell
-poetry init
-```
+    ```shell
+    python -m venv venv  # create a virtual environment (Windows)
+    .\venv\Scripts\activate.ps1  # and activate it (Windows, PowerShell)
+    ```
 
-Install the dependencies:
+    ```shell
+    python3 -m venv venv  # create a virtual environment (Linux/macOS)
+    source venv/bin/activate  # and activate it (Linux/macOS)
+    ```
 
-```shell
-poetry install
-```
+3. Install dependencies and run the program.
 
-Run [Py2exe-GUI.py](src/Py2exe-GUI.py):
+    ```shell
+    pip install -r requirements.txt
+    python ./src/Py2exe-GUI.py
+    ```
 
-```shell
-cd src
-python  Py2exe-GUI.py
-```
+## Contributing
+
+Py2exe-GUI is a free and open source software and anyone is welcome to contribute to its development.
+
+If you encounter any problems while using it (including
+bugs, typos, etc.), or if you have suggestions for new features, you can open
+an [issue](https://github.com/muziing/Py2exe-GUI/issues/new).
+
+If you are able to contribute code, feel free to submit a pull-request.
+Please follow the original code style as much as possible, and make sure that the new code passes all
+the [checks](dev_scripts/check_funcs.py).
 
 ## License
 
 ![GPLv3](docs/source/images/gplv3-127x51.png)
 
+Py2exe-GUI is licensed under the GPLv3 open source license, see the [LICENSE](LICENSE) file for details.
+
+There is one exception: if your project uses Py2exe-GUI only as a packaging tool, and your final distribution does not
+contain Py2exe-GUI's source code or binaries, then your project is not restricted by the GPLv3 restrictions and can
+still be distributed as closed-source commercial software.
+
 ```text
 Py2exe-GUI
-Copyright (C) 2022-2023  muzing
+Copyright (C) 2022-2024  muzing
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
