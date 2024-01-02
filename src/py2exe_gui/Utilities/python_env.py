@@ -73,6 +73,8 @@ class PyEnv:
     def installed_packages(self) -> list[dict]:
         """已安装的包列表（实例属性，只读）
 
+        对于每个 PyEnv 实例，首次访问此属性耗时会很长
+
         :return: 包列表，形如 [{'name': 'aiohttp', 'version': '3.9.1'}, {'name': 'aiosignal', 'version': '1.3.1'}, ...]
         """
 
@@ -197,6 +199,33 @@ class PyEnv:
         """
 
         return any(pkg["name"] == package_name for pkg in self.installed_packages)
+
+    def install_package(self, package_name: str) -> int:
+        """安装特定软件包
+
+        :param package_name: 待安装的软件包名称
+        :return: pip install 命令返回值
+        :raise RuntimeError: pip install 错误
+        """
+
+        cmd = [
+            self.__exe_path,
+            "-m",
+            "pip",
+            "install",
+            "--upgrade",
+            package_name,
+        ]
+
+        try:
+            # 运行 pip install 命令，安装指定模块
+            result = subprocess.run(cmd, capture_output=True, text=True)
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError(f"Failed to install package: {e.output}") from e
+        except Exception as e:
+            raise RuntimeError(f"An error occurred: {e}") from e
+        else:
+            return result.returncode
 
 
 # 全局变量，保存所有已创建的 PyEnv 实例
