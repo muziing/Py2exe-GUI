@@ -7,4 +7,4 @@ designed to provide a complete yet easy-to-use GUI for PyInstaller.
 HomePage: https://github.com/muziing/Py2exe-GUI
 """
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"

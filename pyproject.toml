@@ -1,13 +1,14 @@
 [tool.poetry]
 name = "py2exe-gui"
-version = "0.3.0"
+version = "0.3.1"
 description = "GUI for PyInstaller, based on PySide6"
 keywords = ["PyInstaller", "GUI", "PySide6"]
 authors = ["muzing <muzi2001@foxmail.com>"]
 license = "GPL-3.0-or-later"
 readme = ["README.md", "README_zh.md"]
 repository = "https://github.com/muziing/Py2exe-GUI"
-exclude = ["src/py2exe_gui/Resources/Icons", "src/py2exe_gui/Resources/Texts"]
+exclude = ["src/py2exe_gui/Resources"]
+include = ["src/py2exe_gui/Resources/COMPILED_RESOURCES.py"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Operating System :: Microsoft :: Windows",
@@ -32,12 +33,11 @@ PySide6 = "^6.6.0"
 pyyaml = "^6.0.1"
 
 [tool.poetry.group.dev]
-
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.5.0"
 black = "^23.12.0"
 isort = "^5.13.0"
-ruff = "^0.1.9"
+ruff = "^0.1.11"
 mypy = "^1.8.0"
 pyinstaller = "^6.2.0"
 types-pyyaml = "^6.0.12.12"
