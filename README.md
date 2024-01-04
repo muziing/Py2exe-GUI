@@ -1,4 +1,4 @@
-![Py2exe-GUI Logo](https://raw.githubusercontent.com/muziing/Py2exe-GUI/main/https://raw.githubusercontent.com/muziing/Py2exe-GUI/main/docs/source/images/py2exe-gui_logo_big.png)
+![Py2exe-GUI Logo](https://raw.githubusercontent.com/muziing/Py2exe-GUI/main/docs/source/images/py2exe-gui_logo_big.png)
 
 <h2 align="center">Easy-to-use Python GUI packaging tool</h2>
 
