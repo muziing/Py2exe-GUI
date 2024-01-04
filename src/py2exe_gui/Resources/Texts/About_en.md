@@ -6,4 +6,4 @@ This program is **open source software**: all source code is hosted on [GitHub](
 
 This program is **free software**: you can redistribute it and/or modify it under the terms of the [GNU General Public License](https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license) as published by the Free Software Foundation, either version 3 of the License, or any later version.
 
-Copyright © 2022-2023  [Muzing \<muzi2001@foxmail.com\>](https://muzing.top/about)
+Copyright © 2022-2024  [Muzing \<muzi2001@foxmail.com\>](https://muzing.top/about)

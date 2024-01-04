@@ -6,4 +6,4 @@ Py2exe-GUI 是一个基于 [PyInstaller](https://pyinstaller.org/) 的图形化�
 
 本程序为**自由软件**：在自由软件联盟发布的 [*GNU 通用公共许可协议（第3版或更新的版本）*](https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license) 的约束下，你可以对其进行再发布和/或修改。
 
-版权所有 © 2022-2023  [Muzing \<muzi2001@foxmail.com\>](https://muzing.top/about)
+版权所有 © 2022-2024  [Muzing \<muzi2001@foxmail.com\>](https://muzing.top/about)
