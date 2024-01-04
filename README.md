@@ -1,4 +1,4 @@
-![Py2exe-GUI Logo](docs/source/images/py2exe-gui_logo_big.png)
+![Py2exe-GUI Logo](https://raw.githubusercontent.com/muziing/Py2exe-GUI/main/https://raw.githubusercontent.com/muziing/Py2exe-GUI/main/docs/source/images/py2exe-gui_logo_big.png)
 
 <h2 align="center">Easy-to-use Python GUI packaging tool</h2>
 
@@ -24,9 +24,9 @@ English | <a href="README_zh.md">简体中文</a>
 Py2exe-GUI is an assist tool based on [PySide6](https://doc.qt.io/qtforpython/index.html), designed to provide a
 complete yet easy-to-use GUI for [PyInstaller](https://pyinstaller.org/).
 
-![Screenshot](docs/source/images/Py2exe-GUI_v0.3.0_mainwindow_screenshot.png)
+![Screenshot](https://raw.githubusercontent.com/muziing/Py2exe-GUI/main/docs/source/images/Py2exe-GUI_v0.3.1_mainwindow_screenshot_en.png)
 
-![Screenshot](docs/source/images/Py2exe-GUI_v0.2.0_screenshot.png)
+![Screenshot](https://raw.githubusercontent.com/muziing/Py2exe-GUI/main/docs/source/images/Py2exe-GUI_v0.2.0_screenshot.png)
 
 It has the following features:
 
@@ -35,11 +35,6 @@ It has the following features:
 - You can invoke any local Python interpreter with its corresponding environment, eliminating the need to reinstall it
   in each interpreter environment to be packaged.
 - Cross-platform, supports Windows, Linux and macOS.
-
-> Note: As you can see, I am not an English speaker. Py2exe-GUI is currently only available in Simplified Chinese.
-> However, I've reserved some interfaces in the code for internationalization, and the translation is slowly progressing.
-> If you are interested in this project, you can star it. In a few months it will provide full English support and
-> interfaces for translators to provide translations in more languages.
 
 ## How to install
 
@@ -112,7 +107,7 @@ the [checks](dev_scripts/check_funcs.py).
 
 ## License
 
-![GPLv3](docs/source/images/gplv3-127x51.png)
+![GPLv3](https://raw.githubusercontent.com/muziing/Py2exe-GUI/main/docs/source/images/gplv3-127x51.png)
 
 Py2exe-GUI is licensed under the GPLv3 open source license, see the [LICENSE](LICENSE) file for details.
 
