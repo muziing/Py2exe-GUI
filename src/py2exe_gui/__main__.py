@@ -10,14 +10,14 @@
 import sys
 from pathlib import Path
 
-from PySide6.QtCore import Slot
+from PySide6.QtCore import QTranslator, Slot
 from PySide6.QtGui import QCloseEvent
 from PySide6.QtWidgets import QApplication
 
-from .Constants import PyInstOpt
+from .Constants import RUNTIME_INFO, PyInstOpt
 from .Core import Packaging, PackagingTask
 from .Resources import COMPILED_RESOURCES  # noqa
-from .Utilities import PyEnv, open_dir_in_explorer
+from .Utilities import open_dir_in_explorer
 from .Widgets import MainWindow, SubProcessDlg
 
 
@@ -27,17 +27,16 @@ class MainApp(MainWindow):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
-        self.current_pyenv: PyEnv
         self.packaging_task = PackagingTask(self)
         self.packager = Packaging(self)
         self.subprocess_dlg = SubProcessDlg(self)
 
         self._connect_slots()
 
-        self.status_bar.showMessage("就绪")
+        self.status_bar.showMessage(MainApp.tr("Ready."))
 
     # def show(self):
-    #     """仅供性能分析使用，切勿取消注释！！！
+    #     """仅供分析启动性能使用，切勿取消注释！！！
     #     """
     #
     #     super().show()
@@ -88,16 +87,16 @@ class MainApp(MainWindow):
             """处理子进程窗口多功能按钮点击信号的槽"""
 
             btn_text = self.subprocess_dlg.multifunction_btn.text()
-            if btn_text == "取消":
+            if btn_text == SubProcessDlg.tr("Cancel"):
                 self.packager.subprocess.abort_process()
                 self.subprocess_dlg.close()
-            elif btn_text == "打开输出位置":
+            elif btn_text == SubProcessDlg.tr("Open Dist"):
                 script_path: Path = self.packaging_task.using_option[
                     PyInstOpt.script_path
                 ]
                 dist_path = script_path.parent / "dist"
                 open_dir_in_explorer(dist_path)
-            elif btn_text == "关闭":
+            elif btn_text == SubProcessDlg.tr("Close"):
                 self.subprocess_dlg.close()
 
         subprocess_dlg.multifunction_btn.clicked.connect(handle_mul_btn_clicked)
@@ -116,6 +115,13 @@ def main() -> None:
     """应用程序主入口函数，便于 Poetry 由此函数级入口构建启动脚本"""
 
     app = QApplication(sys.argv)
+
+    # TODO 翻译机制待优化
+    translator = QTranslator()
+    if RUNTIME_INFO.language_code == "zh_CN":
+        translator.load(":/i18n/zh_CN.qm")
+    app.installTranslator(translator)
+
     window = MainApp()
     window.show()
     sys.exit(app.exec())

@@ -7,7 +7,10 @@
 `PyinstallerOptionTable` 类是用于显示 PyInstaller 命令行选项的表格控件窗口，界面有待进一步优化
 """
 
-__all__ = ["load_pyinst_options", "PyinstallerOptionTable"]
+__all__ = [
+    "load_pyinst_options",
+    "PyinstallerOptionTable",
+]
 
 import warnings
 
@@ -16,7 +19,7 @@ from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QHeaderView, QTableWidget, QTableWidgetItem
 
 from ..Constants import RUNTIME_INFO
-from ..Utilities import QtFileOpen
+from ..Utilities import QObjTr, QtFileOpen
 
 
 def load_pyinst_options() -> dict[str, str]:
@@ -33,7 +36,7 @@ def load_pyinst_options() -> dict[str, str]:
             option_file_text = option_file.read()
     except OSError as e:
         warnings.warn(
-            f"PyInstaller Options 加载失败，错误信息：{e}", RuntimeWarning, stacklevel=1
+            f"Failed to load PyInstaller Options: {e}", RuntimeWarning, stacklevel=1
         )
         return dict()
 
@@ -57,7 +60,7 @@ def load_pyinst_options() -> dict[str, str]:
     return option_dict
 
 
-class PyinstallerOptionTable(QTableWidget):
+class PyinstallerOptionTable(QObjTr, QTableWidget):
     """用于显示 PyInstaller 命令行选项的表格控件"""
 
     def __init__(self) -> None:
@@ -68,7 +71,12 @@ class PyinstallerOptionTable(QTableWidget):
         self.setMinimumSize(700, 430)
         self.setWindowIcon(QPixmap(":/Icons/PyInstaller"))
         self.setColumnCount(2)
-        self.setHorizontalHeaderLabels(["选项", "描述"])
+        self.setHorizontalHeaderLabels(
+            [
+                PyinstallerOptionTable.tr("Option"),
+                PyinstallerOptionTable.tr("Description"),
+            ]
+        )
         self.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
 
         # 存储选项信息的字典

@@ -6,14 +6,12 @@
 
 __all__ = ["AddDataWindow"]
 
-import sys
 from pathlib import Path
 from typing import Optional
 
 from PySide6.QtCore import QItemSelectionModel, Qt, Signal, Slot
 from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtWidgets import (
-    QApplication,
     QFileDialog,
     QHBoxLayout,
     QHeaderView,
@@ -24,8 +22,10 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from ..Utilities import QObjTr
 
-class AddDataWindow(QWidget):
+
+class AddDataWindow(QObjTr, QWidget):
     """用于提供 PyInstaller --add-data 和 --add-binary 功能的窗口"""
 
     # 类型别名
@@ -68,7 +68,7 @@ class AddDataWindow(QWidget):
     def _setup_ui(self) -> None:
         """处理 UI 内容"""
 
-        self.setWindowTitle("添加文件")
+        self.setWindowTitle(AddDataWindow.tr("Add Files"))
         self.setMinimumWidth(550)
         self.setWindowIcon(QIcon(QPixmap(":/Icons/Py2exe-GUI_icon_72px")))
 
@@ -85,13 +85,13 @@ class AddDataWindow(QWidget):
             1, QHeaderView.ResizeMode.ResizeToContents
         )
 
-        self.new_btn.setText("新建(&N)")
-        self.browse_btn.setText("浏览文件(&B)")
-        self.browse_dir_btn.setText("浏览目录(&F)")
-        self.delete_btn.setText("删除(&D)")
+        self.new_btn.setText(AddDataWindow.tr("&New"))
+        self.browse_btn.setText(AddDataWindow.tr("&Browse File"))
+        self.browse_dir_btn.setText(AddDataWindow.tr("Browse &Folder"))
+        self.delete_btn.setText(AddDataWindow.tr("&Delete"))
 
-        self.ok_btn.setText("确定")
-        self.cancel_btn.setText("取消")
+        self.ok_btn.setText(AddDataWindow.tr("&OK"))
+        self.cancel_btn.setText(AddDataWindow.tr("&Cancel"))
 
     # noinspection DuplicatedCode
     def _setup_layout(self) -> None:
@@ -119,6 +119,7 @@ class AddDataWindow(QWidget):
 
         self.setLayout(main_layout)
 
+    # noinspection DuplicatedCode
     def _connect_slots(self) -> None:
         """构建各槽函数、连接信号"""
 
@@ -212,7 +213,6 @@ class AddDataWindow(QWidget):
             self.data_selected.emit(self._submit())
             self.close()
 
-        # noinspection DuplicatedCode
         self.new_btn.clicked.connect(handle_new_btn)
         self.delete_btn.clicked.connect(handle_delete_btn)
         self.browse_btn.clicked.connect(handel_browse_btn)
@@ -261,10 +261,3 @@ class AddDataWindow(QWidget):
             )
             self.item_table.setItem(row, 0, source_item)
             self.item_table.setItem(row, 1, QTableWidgetItem(data_item[1]))
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = AddDataWindow()
-    window.show()
-    sys.exit(app.exec())
