@@ -11,12 +11,7 @@ from dev_scripts.check_funcs import (
     check_version_num,
 )
 from dev_scripts.clear_cache import clear_pycache, clear_pyinstaller_dist
-from dev_scripts.path_constants import (
-    PROJECT_ROOT,
-    README_FILE_LIST,
-    RESOURCES_PATH,
-    SRC_PATH,
-)
+from dev_scripts.path_constants import PROJECT_ROOT, README_FILE_LIST, SRC_PATH
 
 
 def process_md_images(md_file_list: list[Path]) -> None:
@@ -44,30 +39,6 @@ def process_md_images(md_file_list: list[Path]) -> None:
             f.seek(0)
             f.write(all_text_new)
             # FIXME 会在文件尾部多出来莫名其妙的行
-
-
-def compile_resources() -> int:
-    """调用 RCC 工具编译静态资源
-
-    :return: rcc 进程返回码
-    """
-
-    compiled_file_path = RESOURCES_PATH / "COMPILED_RESOURCES.py"
-    qrc_file_path = RESOURCES_PATH / "resources.qrc"
-    cmd = [
-        "pyside6-rcc",
-        "-o",
-        str(compiled_file_path.absolute()),
-        str(qrc_file_path.absolute()),
-    ]
-    try:
-        result = subprocess.run(cmd)
-    except subprocess.SubprocessError as e:
-        print(f"RCC编译进程错误：{e}")
-        raise e
-    else:
-        print(f"已完成静态资源文件编译，RCC返回码：{result.returncode}。")
-        return result.returncode
 
 
 def export_requirements() -> int:
@@ -109,12 +80,18 @@ def build_py2exe_gui() -> None:
         print(f"mypy 检查完毕，返回码：{check_mypy()}。")
 
         # 正式构建
-        subprocess.run(["poetry", "build"])  # TODO 处理异常与返回值
-
-        # 清理
-        process_md_images(README_FILE_LIST)
+        try:
+            result = subprocess.run(["poetry", "build"], check=True)
+        except subprocess.SubprocessError as e:
+            print(f"Poetry build 失败：{e}")
+            raise
+        else:
+            print(f"Poetry build 完毕，返回码：{result.returncode}。")
+        finally:
+            # 清理
+            process_md_images(README_FILE_LIST)
     else:
-        print("构建失败，有未通过的检查项")
+        print("有未通过的检查项，不进行构建")
 
 
 if __name__ == "__main__":
