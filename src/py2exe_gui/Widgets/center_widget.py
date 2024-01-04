@@ -31,7 +31,7 @@ from PySide6.QtWidgets import (
 
 from ..Constants import PyInstOpt
 from ..Core import InterpreterValidator
-from ..Utilities import ALL_PY_ENVs, PyEnv
+from ..Utilities import ALL_PY_ENVs, PyEnv, QObjTr
 from .add_data_widget import AddDataWindow
 from .arguments_browser import ArgumentsBrowser
 from .dialog_widgets import (
@@ -45,7 +45,7 @@ from .pyenv_combobox import PyEnvComboBox
 from .pyinstaller_option_widget import PyinstallerOptionTable
 
 
-class CenterWidget(QWidget):
+class CenterWidget(QObjTr, QWidget):
     """主界面的中央控件
 
     此类为可以实例化的基类，适用于所有平台。
@@ -54,7 +54,6 @@ class CenterWidget(QWidget):
 
     # 自定义信号
     option_selected = QtCore.Signal(tuple)  # 用户通过界面控件选择选项后发射此信号
-
     # option_selected 实际类型为 tuple[PyinstallerArgs, str]
 
     def __init__(self, parent: QMainWindow) -> None:
@@ -122,38 +121,40 @@ class CenterWidget(QWidget):
     def _setup_ui(self) -> None:
         """设置各种控件的属性"""
 
-        self.script_path_label.setText("待打包脚本：")
+        self.script_path_label.setText(CenterWidget.tr("Python script:"))
         self.script_path_le.setReadOnly(True)
-        self.script_path_le.setPlaceholderText("Python入口文件路径")
-        self.script_browse_btn.setText("浏览")
+        self.script_path_le.setPlaceholderText(
+            CenterWidget.tr("Python entry script path")
+        )
+        self.script_browse_btn.setText(CenterWidget.tr("Browse"))
         self.script_browse_btn.setFixedWidth(80)
 
-        self.pyenv_browse_btn.setText("浏览")
+        self.pyenv_browse_btn.setText(CenterWidget.tr("Browse"))
         self.pyenv_browse_btn.setFixedWidth(80)
 
-        self.project_name_label.setText("项目名称：")
-        self.project_name_le.setPlaceholderText("打包的应用程序名称")
+        self.project_name_label.setText(CenterWidget.tr("App Name:"))
+        self.project_name_le.setPlaceholderText(CenterWidget.tr("Bundled app name"))
 
-        self.fd_label.setText("单文件/单目录：")
-        self.one_dir_btn.setText("打包至单个目录")
+        self.fd_label.setText(CenterWidget.tr("One Folder/ One File:"))
+        self.one_dir_btn.setText(CenterWidget.tr("One Folder"))
         self.one_dir_btn.setChecked(True)  # 默认值
-        self.one_file_btn.setText("打包至单个文件")
+        self.one_file_btn.setText(CenterWidget.tr("One File"))
         self.fd_group.addButton(self.one_dir_btn, 0)
         self.fd_group.addButton(self.one_file_btn, 1)
 
-        self.add_data_btn.setText("添加数据文件")
-        self.add_binary_btn.setText("添加二进制文件")
-        self.add_data_dlg.setWindowTitle("添加数据文件")
-        self.add_binary_dlg.setWindowTitle("添加二进制文件")
+        self.add_data_btn.setText(CenterWidget.tr("Add Data Files"))
+        self.add_binary_btn.setText(CenterWidget.tr("Add Binary Files"))
+        self.add_data_dlg.setWindowTitle(CenterWidget.tr("Add Data Files"))
+        self.add_binary_dlg.setWindowTitle(CenterWidget.tr("Add Binary Files"))
 
-        self.hidden_import_btn.setText("隐式导入")
-        self.hidden_import_dlg.setWindowTitle("Hidden import")
+        self.hidden_import_btn.setText(CenterWidget.tr("Hidden Import"))
+        self.hidden_import_dlg.setWindowTitle("Hidden Import")
 
-        self.clean_checkbox.setText("清理")
+        self.clean_checkbox.setText(CenterWidget.tr("Clean"))
         self.clean_checkbox.setChecked(False)
         self.pyinstaller_args_browser.setMaximumHeight(80)
 
-        self.run_packaging_btn.setText("打包！")
+        self.run_packaging_btn.setText(CenterWidget.tr("Bundle!"))
         self.run_packaging_btn.setEnabled(False)
 
         # 将 PyInstaller 选项详情设置成各控件的 ToolTip
@@ -183,16 +184,13 @@ class CenterWidget(QWidget):
 
             self.option_selected.emit((PyInstOpt.script_path, file_path))
 
-        @QtCore.Slot(int)
-        def handle_pyenv_change(new_index: int) -> None:
-            """处理用户通过选择不同的 Python 解释器时的响应
-
-            :param new_index: 选择的 Python 解释器在 `pyenv_combobox` 中的索引
-            """
+        @QtCore.Slot()
+        def handle_pyenv_change() -> None:
+            """处理用户通过选择不同的 Python 解释器时的响应"""
 
             current_pyenv = self.pyenv_combobox.get_current_pyenv()
 
-            # TODO 设置为懒加载，用户打开“已安装的包”对话框时才运行
+            # 首次调用 current_pyenv.installed_packages 为重大性能热点，优化时应首先考虑
             self.pkg_browser_dlg.load_pkg_list(current_pyenv.installed_packages)
 
         @QtCore.Slot()
@@ -211,10 +209,10 @@ class CenterWidget(QWidget):
 
             if btn_id == 0:
                 self.option_selected.emit((PyInstOpt.FD, "--onedir"))
-                self.parent_widget.statusBar().showMessage("将打包至单个目录中")
+                self.show_status_msg(CenterWidget.tr("Bundling into one folder."))
             elif btn_id == 1:
                 self.option_selected.emit((PyInstOpt.FD, "--onefile"))
-                self.parent_widget.statusBar().showMessage("将打包至单个文件中")
+                self.show_status_msg(CenterWidget.tr("Bundling into one file."))
 
         @QtCore.Slot()
         def handle_add_data_btn_clicked() -> None:
@@ -228,7 +226,7 @@ class CenterWidget(QWidget):
             """用户完成了添加数据操作的槽函数"""
 
             self.data_item_list = data_item_list
-            self.parent_widget.statusBar().showMessage("添加数据文件已更新")
+            self.show_status_msg(CenterWidget.tr("Add data files updated."))
             self.option_selected.emit((PyInstOpt.add_data, data_item_list))
 
         @QtCore.Slot()
@@ -243,7 +241,7 @@ class CenterWidget(QWidget):
             """用户完成了添加二进制文件操作的槽函数"""
 
             self.binary_item_list = binary_item_list
-            self.parent_widget.statusBar().showMessage("添加二进制文件已更新")
+            self.show_status_msg(CenterWidget.tr("Add binary files updated."))
             self.option_selected.emit((PyInstOpt.add_binary, binary_item_list))
 
         @QtCore.Slot()
@@ -260,7 +258,7 @@ class CenterWidget(QWidget):
             """
 
             self.hidden_import_list = hidden_import_list
-            self.parent_widget.statusBar().showMessage("隐式导入已更新")
+            self.show_status_msg(CenterWidget.tr("Hidden import updated."))
             self.option_selected.emit((PyInstOpt.hidden_import, hidden_import_list))
 
         @QtCore.Slot(bool)
@@ -272,10 +270,16 @@ class CenterWidget(QWidget):
 
             if selected:
                 self.option_selected.emit((PyInstOpt.clean, "--clean"))
-                self.parent_widget.statusBar().showMessage("构建前将清理缓存与临时文件")
+                self.show_status_msg(
+                    CenterWidget.tr(
+                        "Clean cache and remove temporary files before building."
+                    )
+                )
             else:
                 self.option_selected.emit((PyInstOpt.clean, ""))
-                self.parent_widget.statusBar().showMessage("不会删除缓存与临时文件")
+                self.show_status_msg(
+                    CenterWidget.tr("Will not delete cache and temporary files.")
+                )
 
         # 连接信号与槽
         # 入口脚本文件
@@ -285,7 +289,7 @@ class CenterWidget(QWidget):
         # 添加与选择 Python 解释器
         self.pyenv_browse_btn.clicked.connect(self.itp_dlg.open)
         self.itp_dlg.fileSelected.connect(self._handle_itp_file_selected)
-        handle_pyenv_change(0)  # 显式调用一次，为默认项设置相关内容
+        handle_pyenv_change()  # 显式调用一次，为默认项设置相关内容
         self.pyenv_combobox.currentIndexChanged.connect(handle_pyenv_change)
 
         # 项目名称
@@ -366,15 +370,18 @@ class CenterWidget(QWidget):
         if option_key == PyInstOpt.script_path:
             script_path = Path(option_value)
             self.script_path_le.setText(script_path.name)
-            self.parent_widget.statusBar().showMessage(
-                f"打开脚本路径：{str(script_path.absolute())}"
+            self.show_status_msg(
+                CenterWidget.tr("Opened script path: ")
+                + f"{str(script_path.absolute())}"
             )
             self.add_data_dlg.set_work_dir(script_path.parent)
             self.add_binary_dlg.set_work_dir(script_path.parent)
 
         elif option_key == PyInstOpt.out_name:
             self.project_name_le.setText(option_value)
-            self.parent_widget.statusBar().showMessage(f"已将项目名设置为：{option_value}")
+            self.show_status_msg(
+                CenterWidget.tr("The app name has been set to:") + f"{option_value}"
+            )
 
     @QtCore.Slot(PyInstOpt)
     def handle_option_error(self, option: PyInstOpt) -> None:
@@ -389,8 +396,11 @@ class CenterWidget(QWidget):
             # 警告对话框
             result = QMessageBox.critical(
                 self,
-                "错误",
-                "选择的不是有效的Python脚本文件，请重新选择！",
+                CenterWidget.tr("Error"),
+                CenterWidget.tr(
+                    "The selection is not a valid Python script file, "
+                    "please reselect it!"
+                ),
                 QMessageBox.StandardButton.Cancel,
                 QMessageBox.StandardButton.Ok,
             )
@@ -437,8 +447,11 @@ class CenterWidget(QWidget):
                 # TODO 自实现 MessageBox，包含"仍要使用"、"取消"、"尝试安装PyInstaller"三个按钮
                 result = QMessageBox.warning(
                     self,
-                    "警告",
-                    "在该 Python 环境中似乎没有安装 Pyinstaller，" "是否仍要继续？",
+                    CenterWidget.tr("Warning"),
+                    CenterWidget.tr(
+                        "Pyinstaller doesn't seem to be installed in this Python "
+                        "environment, still continue?"
+                    ),
                     QMessageBox.StandardButton.Ok,
                     QMessageBox.StandardButton.Cancel,
                 )
@@ -456,13 +469,24 @@ class CenterWidget(QWidget):
             self.itp_dlg.close()
             result = QMessageBox.critical(
                 self,
-                "错误",
-                "选择的不是有效的Python解释器，请重新选择！",
+                CenterWidget.tr("Error"),
+                CenterWidget.tr(
+                    "The selection is not a valid Python interpreter, "
+                    "please reselect it!"
+                ),
                 QMessageBox.StandardButton.Cancel,
                 QMessageBox.StandardButton.Ok,
             )
             if result == QMessageBox.StandardButton.Ok:
                 self.itp_dlg.exec()
+
+    def show_status_msg(self, msg: str) -> None:
+        """向父控件（QMainWindow）的状态栏显示信息
+
+        :param msg: 要在状态栏显示的信息
+        """
+
+        self.parent_widget.statusBar().showMessage(msg)
 
 
 class WinMacCenterWidget(CenterWidget):
@@ -492,13 +516,15 @@ class WinMacCenterWidget(CenterWidget):
 
         super()._setup_ui()
 
-        self.icon_path_label.setText("应用图标：")
+        self.icon_path_label.setText(WinMacCenterWidget.tr("App icon:"))
         self.icon_path_le.setReadOnly(True)
-        self.icon_path_le.setPlaceholderText("图标文件路径")
-        self.icon_browse_btn.setText("浏览")
+        self.icon_path_le.setPlaceholderText(WinMacCenterWidget.tr("Path to icon file"))
+        self.icon_browse_btn.setText(WinMacCenterWidget.tr("Browse"))
         self.icon_browse_btn.setFixedWidth(80)
 
-        self.console_checkbox.setText("为标准I/O启用终端")
+        self.console_checkbox.setText(
+            WinMacCenterWidget.tr("Open a console window for standard I/O")
+        )
         self.console_checkbox.setChecked(True)  # 默认值
 
         # 将 PyInstaller 选项详情设置成各控件的 ToolTip
@@ -520,8 +546,8 @@ class WinMacCenterWidget(CenterWidget):
 
         @QtCore.Slot(str)
         def handle_icon_file_selected(file_path: str) -> None:
-            """
-            图标文件完成选择的槽函数 \n
+            """图标文件完成选择的槽函数
+
             :param file_path: 图标路径
             """
 
@@ -536,10 +562,12 @@ class WinMacCenterWidget(CenterWidget):
 
             if console:
                 self.option_selected.emit((PyInstOpt.console, "--console"))
-                self.parent_widget.statusBar().showMessage("将为打包程序的 stdio 启用终端")
+                self.show_status_msg(WinMacCenterWidget.tr("Terminal will be enabled."))
             else:
                 self.option_selected.emit((PyInstOpt.console, "--windowed"))
-                self.parent_widget.statusBar().showMessage("不会为打包程序的 stdio 启用终端")
+                self.show_status_msg(
+                    WinMacCenterWidget.tr("Terminal will not be enabled.")
+                )
 
         # 图标文件
         self.icon_browse_btn.clicked.connect(self.icon_file_dlg.open)
@@ -582,9 +610,11 @@ class WinMacCenterWidget(CenterWidget):
         elif option_key == PyInstOpt.icon_path:
             icon_path = Path(option_value)
             self.icon_path_le.setText(icon_path.name)
-            self.parent_widget.statusBar().showMessage(
-                f"打开图标路径：{str(icon_path.absolute())}"
+            msg = (
+                WinMacCenterWidget.tr("Opened icon path: ")
+                + f"{str(icon_path.absolute())}"
             )
+            self.show_status_msg(msg)
 
     @QtCore.Slot(PyInstOpt)
     def handle_option_error(self, option: PyInstOpt) -> None:
@@ -599,8 +629,10 @@ class WinMacCenterWidget(CenterWidget):
             self.icon_file_dlg.close()
             result = QMessageBox.critical(
                 self.parent_widget,
-                "错误",
-                "选择的不是有效的图标文件，请重新选择！",
+                WinMacCenterWidget.tr("Error"),
+                WinMacCenterWidget.tr(
+                    "The selection is not a valid icon file, please re-select it!"
+                ),
                 QMessageBox.StandardButton.Cancel,
                 QMessageBox.StandardButton.Ok,
             )

@@ -29,10 +29,10 @@ from PySide6.QtWidgets import (
 )
 
 from ..Constants import RUNTIME_INFO, Platform
-from ..Utilities import QtFileOpen
+from ..Utilities import QObjTr, QtFileOpen
 
 
-class ScriptFileDlg(QFileDialog):
+class ScriptFileDlg(QObjTr, QFileDialog):
     """用于获取入口脚本文件的对话框"""
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
@@ -44,15 +44,24 @@ class ScriptFileDlg(QFileDialog):
 
         self.setAcceptMode(QFileDialog.AcceptMode.AcceptOpen)
         self.setViewMode(QFileDialog.ViewMode.Detail)
-        self.setNameFilters(("Python脚本文件 (*.py *.pyw)", "所有文件 (*)"))
+        self.setNameFilters(
+            (
+                ScriptFileDlg.tr("Python Script (*.py *.pyw)"),
+                ScriptFileDlg.tr("All Files (*)"),
+            )
+        )
         self.setFileMode(QFileDialog.FileMode.ExistingFiles)
-        self.setLabelText(QFileDialog.DialogLabel.FileName, "Python入口文件")
-        self.setLabelText(QFileDialog.DialogLabel.FileType, "Python文件")
-        self.setLabelText(QFileDialog.DialogLabel.Accept, "打开")
-        self.setLabelText(QFileDialog.DialogLabel.Reject, "取消")
+        self.setLabelText(
+            QFileDialog.DialogLabel.FileName, ScriptFileDlg.tr("Python Entry File")
+        )
+        self.setLabelText(
+            QFileDialog.DialogLabel.FileType, ScriptFileDlg.tr("Python File")
+        )
+        self.setLabelText(QFileDialog.DialogLabel.Accept, ScriptFileDlg.tr("Open"))
+        self.setLabelText(QFileDialog.DialogLabel.Reject, ScriptFileDlg.tr("Cancel"))
 
 
-class IconFileDlg(QFileDialog):
+class IconFileDlg(QObjTr, QFileDialog):
     """用于获取应用图标文件的对话框"""
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
@@ -64,15 +73,20 @@ class IconFileDlg(QFileDialog):
 
         self.setAcceptMode(QFileDialog.AcceptMode.AcceptOpen)
         self.setViewMode(QFileDialog.ViewMode.Detail)
-        self.setNameFilters(("图标文件 (*.ico *.icns)", "所有文件 (*)"))
+        self.setNameFilters(
+            (
+                IconFileDlg.tr("Icon Files (*.ico *.icns)"),
+                IconFileDlg.tr("All Files (*)"),
+            )
+        )
         self.setFileMode(QFileDialog.FileMode.ExistingFile)
-        self.setLabelText(QFileDialog.DialogLabel.FileName, "图标")
-        self.setLabelText(QFileDialog.DialogLabel.FileType, "图标文件")
-        self.setLabelText(QFileDialog.DialogLabel.Accept, "打开")
-        self.setLabelText(QFileDialog.DialogLabel.Reject, "取消")
+        self.setLabelText(QFileDialog.DialogLabel.FileName, IconFileDlg.tr("App Icon"))
+        self.setLabelText(QFileDialog.DialogLabel.FileType, IconFileDlg.tr("Icon File"))
+        self.setLabelText(QFileDialog.DialogLabel.Accept, IconFileDlg.tr("Open"))
+        self.setLabelText(QFileDialog.DialogLabel.Reject, IconFileDlg.tr("Cancel"))
 
 
-class InterpreterFileDlg(QFileDialog):
+class InterpreterFileDlg(QObjTr, QFileDialog):
     """用于获取 Python 解释器可执行文件的对话框"""
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
@@ -85,17 +99,32 @@ class InterpreterFileDlg(QFileDialog):
         self.setAcceptMode(QFileDialog.AcceptMode.AcceptOpen)
         self.setViewMode(QFileDialog.ViewMode.Detail)
         self.setFileMode(QFileDialog.FileMode.ExistingFile)
-        self.setLabelText(QFileDialog.DialogLabel.FileName, "Python解释器")
-        self.setLabelText(QFileDialog.DialogLabel.FileType, "可执行文件")
+        self.setLabelText(
+            QFileDialog.DialogLabel.FileName,
+            InterpreterFileDlg.tr("Python Interpreter"),
+        )
+        self.setLabelText(
+            QFileDialog.DialogLabel.FileType, InterpreterFileDlg.tr("Executable File")
+        )
 
-        # 进行一定的文件过滤
-        # 目前已知的可行方法只有 Windows 下按文件后缀，Linux 下似乎不可行
-        # https://stackoverflow.com/questions/50213049/
         if RUNTIME_INFO.platform == Platform.windows:
-            self.setNameFilters(("可执行文件 (*.exe)", "所有文件 (*)"))
+            self.setNameFilters(
+                (
+                    InterpreterFileDlg.tr("Python Interpreter (python.exe)"),
+                    InterpreterFileDlg.tr("Executable Files (*.exe)"),
+                    InterpreterFileDlg.tr("All Files (*)"),
+                )
+            )
+        else:
+            self.setNameFilters(
+                (
+                    InterpreterFileDlg.tr("Python Interpreter (python3*)"),
+                    InterpreterFileDlg.tr("All Files (*)"),
+                )
+            )
 
 
-class AboutDlg(QMessageBox):
+class AboutDlg(QObjTr, QMessageBox):
     """用于显示关于信息的对话框"""
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
@@ -106,7 +135,7 @@ class AboutDlg(QMessageBox):
         super().__init__(parent)
 
         self._about_text: str = ""
-        self.setWindowTitle("关于")
+        self.setWindowTitle(AboutDlg.tr("About"))
         self.setStandardButtons(QMessageBox.StandardButton.Ok)
         self.setTextFormat(Qt.TextFormat.MarkdownText)
         self.setText(self.about_text)
@@ -124,13 +153,17 @@ class AboutDlg(QMessageBox):
             with QtFileOpen(":/Texts/About_Text", encoding="utf-8") as about_file:
                 self._about_text = about_file.read()
         except OSError as e:
-            warnings.warn(f"无法打开关于文档，错误信息：{e}", RuntimeWarning, stacklevel=1)
-            self._about_text = "无法打开关于文档，请尝试重新获取本程序。"
+            warnings.warn(
+                f"Cannot open About document: {e}", RuntimeWarning, stacklevel=1
+            )
+            self._about_text = AboutDlg.tr(
+                "Can't open the About document, try to reinstall this program."
+            )
 
         return self._about_text
 
 
-class PkgBrowserDlg(QDialog):
+class PkgBrowserDlg(QObjTr, QDialog):
     """浏览已安装的所有包的对话框"""
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
@@ -148,11 +181,13 @@ class PkgBrowserDlg(QDialog):
     def _setup_ui(self) -> None:
         """处理 UI"""
 
-        self.setWindowTitle("已安装的包")
+        self.setWindowTitle(PkgBrowserDlg.tr("Installed Packages"))
         self.setWindowIcon(QIcon(QPixmap(":/Icons/Python_128px")))
 
         self.pkg_table.setColumnCount(2)
-        self.pkg_table.setHorizontalHeaderLabels(["包名", "版本"])
+        self.pkg_table.setHorizontalHeaderLabels(
+            [PkgBrowserDlg.tr("Name"), PkgBrowserDlg.tr("Version")]
+        )
         self.pkg_table.horizontalHeader().setSectionResizeMode(
             0, QHeaderView.ResizeMode.Stretch
         )

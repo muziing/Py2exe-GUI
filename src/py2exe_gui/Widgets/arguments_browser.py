@@ -4,7 +4,10 @@
 """此模块主要包含用于在界面上预览显示 PyInstaller 命令选项的 `ArgumentsBrowser` 类
 """
 
-__all__ = ["get_line_continuation", "ArgumentsBrowser"]
+__all__ = [
+    "get_line_continuation",
+    "ArgumentsBrowser",
+]
 
 from typing import Optional
 
@@ -12,6 +15,7 @@ from PySide6.QtGui import QContextMenuEvent
 from PySide6.QtWidgets import QMenu, QTextBrowser, QWidget
 
 from ..Constants import RUNTIME_INFO, Platform
+from ..Utilities import QObjTr
 
 # 一组适合浅色背景的颜色
 colors = ["#FD6D5A", "#FEB40B", "#6DC354", "#994487", "#518CD8", "#443295"]
@@ -46,7 +50,7 @@ def wrap_font_tag(raw_text: str, color: str, **kwargs):
     return f"<font {tag_attributes}>{raw_text}</font>"
 
 
-class ArgumentsBrowser(QTextBrowser):
+class ArgumentsBrowser(QObjTr, QTextBrowser):
     """针对命令行参数列表特别优化的文本浏览器"""
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
@@ -58,9 +62,9 @@ class ArgumentsBrowser(QTextBrowser):
 
         # 右键菜单
         self.context_menu = QMenu(self)
-        copy_action = self.context_menu.addAction("复制")
+        copy_action = self.context_menu.addAction(ArgumentsBrowser.tr("Copy"))
         copy_action.triggered.connect(self._handle_copy_action)
-        export_action = self.context_menu.addAction("导出")
+        export_action = self.context_menu.addAction(ArgumentsBrowser.tr("Export"))
         export_action.triggered.connect(self._handle_export_action)
 
     def contextMenuEvent(self, event: QContextMenuEvent) -> None:

@@ -11,13 +11,6 @@ Py2exe-GUI 启动方式：
     python -m py2exe_gui
 """
 
-import sys
+from py2exe_gui.__main__ import main
 
-from PySide6.QtWidgets import QApplication
-
-from py2exe_gui.__main__ import MainApp
-
-app = QApplication(sys.argv)
-window = MainApp()
-window.show()
-sys.exit(app.exec())
+main()

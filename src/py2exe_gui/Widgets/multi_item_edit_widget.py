@@ -8,7 +8,10 @@
 `MultiPkgEditWindow` 继承自 `MultiItemEditWindow`，多了一个浏览当前 Python 环境中已安装 Python 包的功能
 """
 
-__all__ = ["MultiItemEditWindow", "MultiPkgEditWindow"]
+__all__ = [
+    "MultiItemEditWindow",
+    "MultiPkgEditWindow",
+]
 
 from typing import Optional
 
@@ -23,10 +26,11 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from ..Utilities import QObjTr
 from .dialog_widgets import PkgBrowserDlg
 
 
-class MultiItemEditWindow(QWidget):
+class MultiItemEditWindow(QObjTr, QWidget):
     """用于添加多个条目的窗口控件，实现如 --hidden-import、--collect-submodules 等功能"""
 
     items_selected = Signal(list)  # 用户在添加条目窗口完成所有编辑后，提交的信号.完整数据类型为 list[str]
@@ -65,11 +69,11 @@ class MultiItemEditWindow(QWidget):
 
         self.setWindowIcon(QIcon(QPixmap(":/Icons/Py2exe-GUI_icon_72px")))
 
-        self.new_btn.setText("新建(&N)")
-        self.delete_btn.setText("删除(&D)")
+        self.new_btn.setText(MultiItemEditWindow.tr("&New"))
+        self.delete_btn.setText(MultiItemEditWindow.tr("&Delete"))
 
-        self.ok_btn.setText("确定")
-        self.cancel_btn.setText("取消")
+        self.ok_btn.setText(MultiItemEditWindow.tr("&OK"))
+        self.cancel_btn.setText(MultiItemEditWindow.tr("&Cancel"))
 
     # noinspection DuplicatedCode
     def _setup_layout(self) -> None:
@@ -185,7 +189,7 @@ class MultiPkgEditWindow(MultiItemEditWindow):
         """处理 UI"""
 
         super()._setup_ui()
-        self.browse_pkg_button.setText("浏览包(&B)")
+        self.browse_pkg_button.setText(MultiPkgEditWindow.tr("&Browse packages"))
 
     def _setup_layout(self) -> None:
         """构建与设置布局管理器"""

@@ -18,9 +18,10 @@ from PySide6.QtWidgets import (
 )
 
 from ..Core.subprocess_tool import SubProcessTool
+from ..Utilities import QObjTr
 
 
-class SubProcessDlg(QDialog):
+class SubProcessDlg(QObjTr, QDialog):
     """用于显示子进程信息的对话框"""
 
     def __init__(self, parent: QWidget) -> None:
@@ -64,7 +65,7 @@ class SubProcessDlg(QDialog):
         if output_type == SubProcessTool.OutputType.STATE:
             self.info_label.setText(output_text)
             if output_text == "The process is running...":
-                self.multifunction_btn.setText("取消")
+                self.multifunction_btn.setText(SubProcessDlg.tr("Cancel"))
 
         elif (
             output_type == SubProcessTool.OutputType.STDOUT
@@ -74,20 +75,32 @@ class SubProcessDlg(QDialog):
 
         elif output_type == SubProcessTool.OutputType.FINISHED:
             if output_text == "0":
-                self.info_label.setText("打包完成！")
-                self.multifunction_btn.setText("打开输出位置")
+                self.info_label.setText(SubProcessDlg.tr("Done!"))
+                self.multifunction_btn.setText(SubProcessDlg.tr("Open Dist"))
             else:
-                self.info_label.setText(f"运行结束，但有错误发生，退出码为 {output_text}")
-                self.multifunction_btn.setText("取消")
+                self.info_label.setText(
+                    SubProcessDlg.tr(
+                        "Execution ends, but an error occurs and the exit code is"
+                    )
+                    + f"{output_text}"
+                )
+                self.multifunction_btn.setText(SubProcessDlg.tr("Cancel"))
 
         elif output_type == SubProcessTool.OutputType.ERROR:
-            self.info_label.setText("PyInstaller错误！")
-            self.text_browser.append(f"PyInstaller 子进程输出信息：{output_text}")
-            self.text_browser.append("请检查是否已经安装正确版本的 PyInstaller")
-            self.multifunction_btn.setText("关闭")
+            self.info_label.setText(SubProcessDlg.tr("PyInstaller Error!"))
+            self.text_browser.append(
+                SubProcessDlg.tr("PyInstaller subprocess output:") + f"{output_text}"
+            )
+            self.text_browser.append(
+                SubProcessDlg.tr(
+                    "Please check if you have installed "
+                    "the correct version of PyInstaller or not."
+                )
+            )
+            self.multifunction_btn.setText(SubProcessDlg.tr("Close"))
 
         elif not isinstance(output_type, SubProcessTool.OutputType):
-            raise ValueError(f"不支持的输出类型：{output_type}")
+            raise ValueError(f"Unsupported output type: {output_type}")
 
     def closeEvent(self, event: QCloseEvent) -> None:
         """重写关闭事件，进行收尾清理

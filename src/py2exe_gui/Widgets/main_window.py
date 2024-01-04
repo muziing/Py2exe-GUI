@@ -13,9 +13,9 @@ from PySide6.QtGui import QDesktopServices, QIcon, QPixmap
 from PySide6.QtWidgets import QApplication, QLabel, QMainWindow, QMenuBar, QStatusBar
 
 from ..Constants import RUNTIME_INFO, APP_URLs, AppConstant, Platform
+from ..Utilities.qobject_tr import QObjTr
 from .center_widget import CenterWidget, WinMacCenterWidget
 from .dialog_widgets import AboutDlg
-from .pyinstaller_option_widget import PyinstallerOptionTable
 
 
 def open_url(url: str) -> None:
@@ -27,7 +27,7 @@ def open_url(url: str) -> None:
     QDesktopServices.openUrl(QUrl(url))
 
 
-class MainWindow(QMainWindow):
+class MainWindow(QObjTr, QMainWindow):
     """
     主界面主窗口
     """
@@ -64,29 +64,32 @@ class MainWindow(QMainWindow):
     def _setup_menu_bar(self) -> None:
         """配置主窗口菜单栏"""
 
-        file_menu = self.menu_bar.addMenu("文件(&F)")
-        file_menu.addAction("打开打包任务")  # 暂时只为占位
-        file_menu.addAction("保存当前打包任务")  # 暂时只为占位
+        file_menu = self.menu_bar.addMenu(MainWindow.tr("&File"))
+        file_menu.addAction(MainWindow.tr("Import Config From JSON File"))  # 暂时只为占位
+        file_menu.addAction(MainWindow.tr("Export Config To JSON File"))  # 暂时只为占位
         file_menu.addSeparator()
-        file_menu.addAction("设置")  # 暂时只为占位
+        file_menu.addAction(MainWindow.tr("&Settings"))  # 暂时只为占位
         file_menu.addSeparator()
-        file_menu.addAction("退出(&X)", self.close)
+        file_menu.addAction(MainWindow.tr("&Exit"), self.close)
 
-        help_menu = self.menu_bar.addMenu("帮助(&H)")
+        help_menu = self.menu_bar.addMenu(MainWindow.tr("&Help"))
 
         help_menu.addAction(
-            "PyInstaller官方文档",
+            MainWindow.tr("PyInstaller Documentation"),
             lambda: open_url(APP_URLs["Pyinstaller_doc"]),
         )
         help_menu.addAction(
-            "PyInstaller选项详情", self.center_widget.pyinstaller_option_table.show
+            MainWindow.tr("PyInstaller Options Details"),
+            self.center_widget.pyinstaller_option_table.show,
         )
         help_menu.addSeparator()
-        help_menu.addAction("报告Bug", lambda: open_url(APP_URLs["BugTracker"]))
+        help_menu.addAction(
+            MainWindow.tr("Report Bugs"), lambda: open_url(APP_URLs["BugTracker"])
+        )
 
-        about_menu = self.menu_bar.addMenu("关于(&A)")
-        about_menu.addAction("关于本程序", AboutDlg(self).exec)
-        about_menu.addAction("关于 &Qt", QApplication.aboutQt)
+        about_menu = self.menu_bar.addMenu(MainWindow.tr("&About"))
+        about_menu.addAction(MainWindow.tr("About This Program"), AboutDlg(self).exec)
+        about_menu.addAction(MainWindow.tr("About &Qt"), QApplication.aboutQt)
 
     def _setup_status_bar(self) -> None:
         """配置主窗口状态栏"""

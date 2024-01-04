@@ -1,4 +1,4 @@
-![Py2exe-GUI Logo](docs/source/images/py2exe-gui_logo_big.png)
+![Py2exe-GUI Logo](https://raw.githubusercontent.com/muziing/Py2exe-GUI/main/docs/source/images/py2exe-gui_logo_big.png)
 
 <h2 align="center">强大易用的 Python 图形界面打包工具</h2>
 
@@ -23,9 +23,9 @@
 Py2exe-GUI 是一个基于 [PySide6](https://doc.qt.io/qtforpython/index.html)
 开发的辅助工具，旨在为 [PyInstaller](https://pyinstaller.org/) 提供完整易用的图形化界面，方便用户进行 Python 项目的打包。
 
-![界面截图](docs/source/images/Py2exe-GUI_v0.3.0_mainwindow_screenshot.png)
+![界面截图](https://raw.githubusercontent.com/muziing/Py2exe-GUI/main/docs/source/images/Py2exe-GUI_v0.3.0_mainwindow_screenshot.png)
 
-![界面截图](docs/source/images/Py2exe-GUI_v0.2.0_screenshot.png)
+![界面截图](https://raw.githubusercontent.com/muziing/Py2exe-GUI/main/docs/source/images/Py2exe-GUI_v0.2.0_screenshot.png)
 
 有如下特性：
 
@@ -101,7 +101,7 @@ request。请尽可能遵守原有的代码风格，并确保新增代码能通�
 
 ## 开源许可
 
-![GPLv3](docs/source/images/gplv3-127x51.png)
+![GPLv3](https://raw.githubusercontent.com/muziing/Py2exe-GUI/main/docs/source/images/gplv3-127x51.png)
 
 Py2exe-GUI 采用 GPLv3 开源许可证，详情请参见 [LICENSE](LICENSE) 文件。
 
