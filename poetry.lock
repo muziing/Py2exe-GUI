@@ -443,41 +443,6 @@ packaging = ">=22.0"
 setuptools = ">=42.0.0"
 
 [[package]]
-name = "pyside6"
-version = "6.6.1"
-description = "Python bindings for the Qt cross-platform application and UI framework"
-optional = false
-python-versions = "<3.13,>=3.8"
-files = [
-    {file = "PySide6-6.6.1-cp38-abi3-macosx_11_0_universal2.whl", hash = "sha256:3c348948fe3957b18164c9c7b8942fe065bdb39648b326f212bc114326679fa9"},
-    {file = "PySide6-6.6.1-cp38-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:0a67587c088cb80e90d4ce3023b02466ea858c93a6dc9c4e062b13314e03d464"},
-    {file = "PySide6-6.6.1-cp38-abi3-manylinux_2_31_aarch64.whl", hash = "sha256:ed3822150f0d7a06b68bf4ceebe287515b5e8309bb256e9b49ae405afd062b18"},
-    {file = "PySide6-6.6.1-cp38-abi3-win_amd64.whl", hash = "sha256:3593d605175e83e6952cf3b428ecc9c146af97effb36de921ecf3da2752de082"},
-]
-
-[package.dependencies]
-PySide6-Addons = "6.6.1"
-PySide6-Essentials = "6.6.1"
-shiboken6 = "6.6.1"
-
-[[package]]
-name = "pyside6-addons"
-version = "6.6.1"
-description = "Python bindings for the Qt cross-platform application and UI framework (Addons)"
-optional = false
-python-versions = "<3.13,>=3.8"
-files = [
-    {file = "PySide6_Addons-6.6.1-cp38-abi3-macosx_11_0_universal2.whl", hash = "sha256:7cb7af1b050c40f7ac891b0e61c758c1923863173932f5b92dc47bdfb4158b42"},
-    {file = "PySide6_Addons-6.6.1-cp38-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:a0982da4033319667f9df5ed6fa8eff300a88216aec103a1fff6751a172b19a0"},
-    {file = "PySide6_Addons-6.6.1-cp38-abi3-manylinux_2_31_aarch64.whl", hash = "sha256:5a63a8a943724ce5acd2df72e5ab04982b6906963278cbabb216656b9a26ee18"},
-    {file = "PySide6_Addons-6.6.1-cp38-abi3-win_amd64.whl", hash = "sha256:a223575c81e9a13173136c044c3447e25f6d656b462b4d71fc3c6bd9c935a709"},
-]
-
-[package.dependencies]
-PySide6-Essentials = "6.6.1"
-shiboken6 = "6.6.1"
-
-[[package]]
 name = "pyside6-essentials"
 version = "6.6.1"
 description = "Python bindings for the Qt cross-platform application and UI framework (Essentials)"
@@ -689,4 +654,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.13"
-content-hash = "73b33938229a7a1fa491c925f43bcd0c9d65b1ba4c0518d145420e254eaf8a9a"
+content-hash = "9590a0fd18706c14320958d2f47319478ba2996e72942ec592c9323628d79bcd"
