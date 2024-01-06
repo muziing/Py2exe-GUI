@@ -1,6 +1,12 @@
 """开发脚本，便于调用 PySide6 提供的各种工具程序
 """
 
+__all__ = [
+    "compile_resources",
+    "gen_ts",
+    "gen_qm",
+]
+
 import subprocess
 
 from dev_scripts.path_constants import (
