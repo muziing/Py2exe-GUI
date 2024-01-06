@@ -15,6 +15,8 @@ __all__ = [
 
 import os
 import subprocess
+import warnings
+from importlib import util as importlib_util
 from pathlib import Path
 from typing import Union
 
@@ -29,17 +31,12 @@ class FilePathValidator:
         """验证脚本路径是否有效
 
         :param script_path: 脚本路径
-        :return:脚本路径是否有效
+        :return: 脚本路径是否有效
         """
 
         path = Path(script_path)
 
-        # 文件是否存在
-        if not path.exists() or not path.is_file():
-            return False
-
-        # 是否对文件有读取权限
-        if not os.access(script_path, os.R_OK):
+        if not (path.exists() and path.is_file() and os.access(script_path, os.R_OK)):
             return False
 
         return True
@@ -49,19 +46,39 @@ class FilePathValidator:
         """验证图标路径是否有效
 
         :param icon_path: 图标路径
+        :return: 图标是否有效
         """
 
         path = Path(icon_path)
 
-        if not path.exists() and path.is_file():
+        if not (path.exists() and path.is_file() and os.access(icon_path, os.R_OK)):
             return False
 
-        # TODO 如果安装了可选依赖 Pillow，则进行更精确的判断和尝试转换图像格式
-        if RUNTIME_INFO.platform == Platform.windows:
-            return path.suffix == ".ico"
-        elif RUNTIME_INFO.platform == Platform.macos:
-            return path.suffix == ".icns"
+        if importlib_util.find_spec("PIL") is not None:
+            # 如果安装了可选依赖 Pillow，则进行更精确的判断
+            from PIL import Image, UnidentifiedImageError
 
+            try:
+                with Image.open(path) as img:
+                    img_format: str = img.format
+            except UnidentifiedImageError:
+                return False
+            else:
+                if img_format is None:
+                    return False
+                elif RUNTIME_INFO.platform == Platform.windows:
+                    return img_format == "ICO"
+                elif RUNTIME_INFO.platform == Platform.macos:
+                    return img_format == "ICNS"
+
+        else:
+            # 若未安装 Pillow，则简单地用文件扩展名判断
+            if RUNTIME_INFO.platform == Platform.windows:
+                return path.suffix == ".ico"
+            elif RUNTIME_INFO.platform == Platform.macos:
+                return path.suffix == ".icns"
+
+        # 如果以上所有检查项均通过，默认返回 True
         return True
 
 
@@ -69,33 +86,30 @@ class InterpreterValidator:
     """验证给定的可执行文件是否为有效的Python解释器"""
 
     @classmethod
-    def validate(cls, path: Union[str, Path, os.PathLike[str]]) -> bool:
+    def validate(cls, itp_path: Union[str, Path, os.PathLike[str]]) -> bool:
         """验证 `path` 是否指向有效的Python解释器
 
+        :param itp_path: 文件路径
         :return: 是否有效
         """
 
-        itp_path = Path(path).absolute()
+        path = Path(itp_path).absolute()
 
-        if not (
-            itp_path.exists()  # 该路径存在
-            and itp_path.is_file()  # 为文件
-            and os.access(itp_path, os.X_OK)  # 可执行权限
-        ):
+        if not (path.exists() and path.is_file() and os.access(path, os.X_OK)):
             return False
 
+        # 尝试将该文件作为Python解释器运行
+        subprocess_args = [str(path), "-c", "import sys"]
         try:
-            # 尝试将该文件作为Python解释器运行
-            subprocess_args = [str(itp_path), "-c", "import sys"]
-            subprocess.run(args=subprocess_args, timeout=0.3, check=True)
+            subprocess.run(args=subprocess_args, check=True)
         except subprocess.SubprocessError:
             return False
         except OSError as e:
-            print(f"对 {path} 启动 Python 解释器有效性验证子进程失败：{e}")
+            warnings.warn(
+                f"Failed to start the Python interpreter validation subprocess for {path}: {e}",
+                Warning,
+                stacklevel=2,
+            )
             return False
         else:
             return True
-
-
-if __name__ == "__main__":
-    print(InterpreterValidator.validate("/usr/bin/python"))
