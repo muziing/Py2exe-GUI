@@ -1,6 +1,11 @@
 """用于构建项目的脚本
 """
 
+__all__ = [
+    "export_requirements",
+    "build_py2exe_gui",
+]
+
 import subprocess
 
 from dev_scripts.check_funcs import (
@@ -46,7 +51,7 @@ def build_py2exe_gui() -> None:
         clear_pyinstaller_dist(SRC_PATH)
         clear_pycache(SRC_PATH)
         # compile_resources()
-        export_requirements()
+        # export_requirements()
         print(f"pre-commit 检查完毕，返回码：{check_pre_commit()}。")
         print(f"mypy 检查完毕，返回码：{check_mypy()}。")
 

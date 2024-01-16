@@ -1,6 +1,12 @@
+"""各类检查函数
 """
-各类检查函数
-"""
+
+__all__ = [
+    "check_license_statement",
+    "check_version_num",
+    "check_pre_commit",
+    "check_mypy",
+]
 
 import subprocess
 import tomllib
@@ -17,8 +23,8 @@ from py2exe_gui import __version__ as py2exe_gui__version__
 
 
 def check_license_statement() -> int:
-    """
-    检查源代码文件中是否都包含了许可声明
+    """检查源代码文件中是否都包含了许可声明
+
     :return: 0-所有源文件都包含许可声明；1-存在缺失许可声明的源文件
     """
 
@@ -46,8 +52,8 @@ def check_license_statement() -> int:
 
 
 def check_version_num() -> int:
-    """
-    检查各部分声明的版本号是否一致 \n
+    """检查各部分声明的版本号是否一致
+
     :return: 0-各处版本一致；1-存在版本不一致情况
     """
 
@@ -74,8 +80,10 @@ def check_version_num() -> int:
 
 
 def check_pre_commit() -> int:
-    """
-    调用已有的 pre-commit 检查工具进行检查 \n
+    """调用已有的 pre-commit 检查工具进行检查
+
+    如果首次调用返回值不为0，可能已经进行了一定的自动修复，需要再运行第二次检查返回值
+
     :return: pre-commit 进程返回码
     """
 
@@ -86,7 +94,7 @@ def check_pre_commit() -> int:
         print("开始进行第二次 pre-commit 检查...")
         result_2 = subprocess.run(pre_commit_run_cmd)
         if result_2.returncode != 0:
-            warnings.warn("pre-commit进程返回码非0，建议检查", stacklevel=1)
+            warnings.warn("pre-commit 进程返回码非 0，建议检查", stacklevel=1)
         return result_2.returncode
     else:
         print("pre-commit 检查完成，所有项目通过。")
@@ -94,16 +102,18 @@ def check_pre_commit() -> int:
 
 
 def check_mypy() -> int:
-    """
-    调用mypy进行静态代码分析
-    """
+    """调用mypy进行静态代码分析"""
 
     mypy_cmd = ["mypy", SRC_PKG_PATH, "--config-file", PROJECT_ROOT / "pyproject.toml"]
     print("开始运行 mypy 检查...")
-    result = subprocess.run(mypy_cmd)
-    print("mypy 检查运行完毕。")
-
-    return result.returncode
+    try:
+        result = subprocess.run(mypy_cmd)
+    except subprocess.CalledProcessError as e:
+        warnings.warn(f"mypy 检查失败，错误信息：{e}", stacklevel=1)
+        return e.returncode
+    else:
+        print("mypy 检查运行完毕。")
+        return result.returncode
 
 
 if __name__ == "__main__":

@@ -1,6 +1,8 @@
-![Py2exe-GUI Logo](https://raw.githubusercontent.com/muziing/Py2exe-GUI/main/docs/source/images/py2exe-gui_logo_big.png)
+<p align="center">
+<img alt="Py2exe-GUI Logo" src="https://raw.githubusercontent.com/muziing/Py2exe-GUI/main/docs/source/images/py2exe-gui_logo_big.png">
+</p>
 
-<h2 align="center">Easy-to-use Python GUI packaging tool</h2>
+<h2 align="center">Python GUI packaging tool</h2>
 
 <p align="center">
 <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/muziing/Py2exe-GUI">
@@ -32,8 +34,7 @@ It has the following features:
 
 - Fully graphical interface, easy to use.
 - All options of PyInstaller will be supported.
-- You can invoke any local Python interpreter with its corresponding environment, eliminating the need to reinstall it
-  in each interpreter environment to be packaged.
+- You can invoke any local Python interpreter with its corresponding environment, eliminating the need to reinstall it in each interpreter environment to be packaged.
 - Cross-platform, supports Windows, Linux and macOS.
 
 ## How to install
@@ -69,8 +70,7 @@ python -m py2exe_gui  # `_`, not `-`
 
 ### Option B: Run through source code
 
-For those who like to try it out or are in desperate need of the latest bug fixes, you can run it through the repository
-source code:
+For those who like to try it out or are in desperate need of the latest bug fixes, you can run it through the repository source code:
 
 1. Download the [latest main branching source code](https://codeload.github.com/muziing/Py2exe-GUI/zip/refs/heads/main).
 
@@ -97,13 +97,9 @@ source code:
 
 Py2exe-GUI is a free and open source software and anyone is welcome to contribute to its development.
 
-If you encounter any problems while using it (including
-bugs, typos, etc.), or if you have suggestions for new features, you can open
-an [issue](https://github.com/muziing/Py2exe-GUI/issues/new).
+If you encounter any problems while using it (including bugs, typos, etc.), or if you have suggestions for new features, you can open an [issue](https://github.com/muziing/Py2exe-GUI/issues/new).
 
-If you are able to contribute code, feel free to submit a pull-request.
-Please follow the original code style as much as possible, and make sure that the new code passes all
-the [checks](dev_scripts/check_funcs.py).
+If you have the willingness and ability to contribute code, please read the [contribution guidance](.github/CONTRIBUTING.md) for more details.
 
 ## License
 
@@ -111,9 +107,7 @@ the [checks](dev_scripts/check_funcs.py).
 
 Py2exe-GUI is licensed under the GPLv3 open source license, see the [LICENSE](LICENSE) file for details.
 
-There is one exception: if your project uses Py2exe-GUI only as a packaging tool, and your final distribution does not
-contain Py2exe-GUI's source code or binaries, then your project is not restricted by the GPLv3 restrictions and can
-still be distributed as closed-source commercial software.
+There is one exception: if your project uses Py2exe-GUI only as a packaging tool, and your final distribution does not contain Py2exe-GUI's source code or binaries, then your project is not restricted by the GPLv3 restrictions and can still be distributed as closed-source commercial software.
 
 ```text
 Py2exe-GUI
