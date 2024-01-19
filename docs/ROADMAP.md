@@ -25,10 +25,7 @@
 - [x] Python 解释器选择器
     - [x] 文件浏览对话框选择解释器可执行文件
     - [x] 处理解释器验证器返回结果，异常时弹出对话框要求用户自行检查确认
-    - [x] 创建「解释器环境类」，保存解释器路径等信息
-    - [x] ComboBox 中列出各解释器，将解释器环境保存在全局变量 ALL_PY_ENVs 中
-    - [x] 识别 系统解释器/venv/Poetry/conda 等
-    - [ ] 识别是否已安装 `PyInstaller`，未安装则提供「一键安装」
+    - [x] ComboBox 中列出各解释器，与全局变量 `ALL_PY_ENVs` 联动
     - [ ] 右键菜单，可以将现有的环境 pin（固定），并保存到缓存文件中，后续启动时自动加载
 - [ ] 用户自定义选项输入框
     - [ ] 允许用户自行输入选项，添加到选项列表中
@@ -41,7 +38,21 @@
     - [ ] PyInstaller 选项
     - [ ] 导入/导出选项
     - [ ] 插件（比如 Pillow 是否已安装、UPX 是否可用等）
+- [ ] 创建虚拟环境向导窗口，通过若干个步骤引导用户创建新的 venv 环境与安装依赖
 - [ ] 简洁视图（仅包含常用选项）/详细视图（包含所有 PyInstaller 可用选项） 切换
+
+## 环境管理
+
+- [x] 能够使用系统中的其他 Python 环境来进行打包
+  - [x] 创建「解释器环境类」，保存解释器路径等信息
+  - [x] 识别 系统解释器/venv/Poetry/conda 等
+  - [x] 将解释器环境保存在全局变量 `ALL_PY_ENVs` 中
+- [ ] 识别是否已安装 PyInstaller，未安装则提供「一键安装」
+- [ ] 创建新的虚拟环境
+  - [ ] 使用 venv 创建新的虚拟环境
+  - [ ] 查找用户的 `requirements.txt` 文件，分析依赖需求
+  - [ ] 如未找到需求描述文件，则通过 [pipreqs](https://github.com/bndr/pipreqs) 分析生成
+  - [ ] 安装依赖项与 PyInstaller
 
 ## 打包
 
@@ -50,17 +61,13 @@
     - [x] 使用枚举值控制参数
     - [x] 优化拼接代码
 - [x] 调用 `PyInstaller` 子进程
-    - [x] 使用 Python 解释器直接运行命令，而不是 `PyInstaller.exe`
     - [x] 使用 `QProcess` 替代 `subprocess` 以解决界面卡死问题
+    - [x] 使用 Python 解释器直接运行命令，而不是 `PyInstaller.exe`
     - [x] 优化子进程相关代码，增强异常处理
 - [ ] 打包任务
     - [x] 创建打包任务，保存所有选项
     - [ ] 导出打包任务（json 或 yaml 格式）与加载打包任务（与 [*Auto-py-to-exe*](https://github.com/brentvollebregt/auto-py-to-exe) 兼容？）
-    - [ ] [创建 `.spec` 文件](https://pyinstaller.org/en/stable/man/pyi-makespec.html)
-- [ ] 创建新的虚拟环境
-    - [ ] 已识别系统解释器（或其他可用解释器）的前提下，提供创建新的 venv 虚拟环境功能
-    - [ ] 识别 `requirements.txt`，如找到，以此为依据安装第三方包
-    - [ ] 如未找到有效的需求文件，则使用 [pipreqs](https://github.com/bndr/pipreqs) 分析生成
+    - [ ] 创建 [`.spec` 文件](https://pyinstaller.org/en/stable/man/pyi-makespec.html)
 
 ## 界面
 
@@ -69,15 +76,15 @@
     - [x] 定制各平台特有功能
 - [x] 使用 `qrc` 管理静态资源
 - [x] 翻译与国际化
-    - [x] Qt 提供的界面文本自动翻译
+    - [x] Qt 提供的界面文本自动翻译（待优化）
     - [x] 自实现的不同语言下功能差异，如“打开PyInstaller文档”指向不同的链接等
 
 ## 用户设置
 
-- [ ] 在用户家目录中创建配置文件夹与配置文件（YAML 格式？），用于保存用户设置
+- [ ] 在用户家目录中创建配置文件夹与配置文件（YAML 格式），用于保存用户设置
 - [ ] 设置条目：
     - [ ] 界面语言
-    - [ ] 是否使用 `--clean` `-y` 选项（默认自动使用）
+    - [ ] 是否使用 `--clean` `--noconfirm` 选项（默认自动使用）
     - [ ] 脚本导出格式（默认与当前平台对应，如 Windows 则为 PowerShell）
 
 ## 应用程序级
@@ -111,10 +118,11 @@
 ## 可选依赖
 
 - [ ] 在 PyPI 上提供“完整版”的发行，包含以下所有可选依赖项
-- [ ] “普通版”也要有能力检测用户是否已经安装了某个/些可选依赖项并能协同工作
+- [x] “普通版”也要有能力检测用户是否已经安装了某个/些可选依赖项并能协同工作
 - [ ] [Pillow](https://python-pillow.org/)
-    - [ ] 更精确可靠的图标文件格式识别（根据图片二进制内容判断，而不只是文件扩展名）
+    - [x] 更精确可靠的图标文件格式识别（根据图片二进制内容判断，而不只是文件扩展名）
     - [ ] 在主窗口工具栏提供图像格式转换功能，将其他格式转换为平台对应的图标格式
+- [ ] [pipreqs](https://github.com/bndr/pipreqs)：作为后备选项，分析用户项目的依赖项
 - [ ] [UPX](https://upx.github.io/)
     - [ ] [仅限 Windows 平台](https://muzing.gitbook.io/pyinstaller-docs-zh-cn/usage#shi-yong-upx)
     - [ ] 设法添加到运行时的环境变量 PATH 中
