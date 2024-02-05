@@ -29,7 +29,9 @@ class AddDataWindow(QObjTr, QWidget):
     """用于提供 PyInstaller --add-data 和 --add-binary 功能的窗口"""
 
     # 类型别名
-    data_item = tuple[Path, str]  # 数据条目，第一项为在文件系统中的路径，第二项为捆绑后环境中的路径
+    data_item = tuple[
+        Path, str
+    ]  # 数据条目，第一项为在文件系统中的路径，第二项为捆绑后环境中的路径
 
     # 自定义信号
     data_selected = Signal(list)  # 用户在添加数据窗口完成所有编辑后，提交的信号

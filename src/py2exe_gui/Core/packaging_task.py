@@ -73,7 +73,9 @@ class PackagingTask(QtCore.QObject):
                 self.using_option[PyInstOpt.script_path] = script_path
                 self.ready_to_pack.emit(True)
                 self.option_set.emit(option)
-                self.using_option[PyInstOpt.out_name] = script_path.stem  # 输出名默认与脚本名相同
+                self.using_option[PyInstOpt.out_name] = (
+                    script_path.stem
+                )  # 输出名默认与脚本名相同
                 self.option_set.emit((PyInstOpt.out_name, script_path.stem))
             else:
                 self.ready_to_pack.emit(False)

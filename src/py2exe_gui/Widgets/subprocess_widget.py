@@ -33,7 +33,9 @@ class SubProcessDlg(QObjTr, QDialog):
 
         self.info_label = QLabel(self)
         self.text_browser = QTextBrowser(self)  # 用于显示子进程输出内容
-        self.multifunction_btn = QPushButton(self)  # 可用于“取消”“打开输出位置”等的多功能按钮
+        self.multifunction_btn = QPushButton(
+            self
+        )  # 可用于“取消”“打开输出位置”等的多功能按钮
         self._setup()
 
     def _setup(self) -> None:

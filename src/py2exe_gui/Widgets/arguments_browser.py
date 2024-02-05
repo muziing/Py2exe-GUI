@@ -101,7 +101,9 @@ class ArgumentsBrowser(QObjTr, QTextBrowser):
 
         for arg in args_list[1:]:
             if arg.startswith("--") or arg.startswith("-"):
-                enriched_arg_texts.append(line_continuation)  # 添加换行，便于阅读与复制导出脚本
+                enriched_arg_texts.append(
+                    line_continuation
+                )  # 添加换行，便于阅读与复制导出脚本
                 enriched_arg_texts.append(wrap_font_tag(arg, color=colors[1]))
             else:
                 enriched_arg_texts.append(arg)
