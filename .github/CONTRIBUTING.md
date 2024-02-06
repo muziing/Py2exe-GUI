@@ -94,4 +94,4 @@ pre-commit install
 
 ## 拉取请求
 
-新建一个指向 [muziing/Py2exe-GUI](https://github.com/muziing/Py2exe-GUI) 的 `main` 分支的拉取请求，我将尽快 review`muziing/Py2exe-GUI` 的 `main` 分支的拉取请求，我将尽快 review 代码并给出反馈。
+新建一个指向 [muziing/Py2exe-GUI](https://github.com/muziing/Py2exe-GUI) 的 `main` 分支的拉取请求，我将尽快 review 代码并给出反馈。
