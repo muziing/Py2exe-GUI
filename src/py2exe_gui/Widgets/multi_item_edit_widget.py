@@ -33,7 +33,8 @@ from .dialog_widgets import PkgBrowserDlg
 class MultiItemEditWindow(QObjTr, QWidget):
     """用于添加多个条目的窗口控件，实现如 --hidden-import、--collect-submodules 等功能"""
 
-    items_selected = Signal(list)  # 用户在添加条目窗口完成所有编辑后，提交的信号.完整数据类型为 list[str]
+    # 用户在添加条目窗口完成所有编辑后，提交的信号.完整数据类型为 list[str]
+    items_selected = Signal(list)
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         """

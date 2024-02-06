@@ -65,7 +65,9 @@ class MainWindow(QObjTr, QMainWindow):
         """配置主窗口菜单栏"""
 
         file_menu = self.menu_bar.addMenu(MainWindow.tr("&File"))
-        file_menu.addAction(MainWindow.tr("Import Config From JSON File"))  # 暂时只为占位
+        file_menu.addAction(
+            MainWindow.tr("Import Config From JSON File")
+        )  # 暂时只为占位
         file_menu.addAction(MainWindow.tr("Export Config To JSON File"))  # 暂时只为占位
         file_menu.addSeparator()
         file_menu.addAction(MainWindow.tr("&Settings"))  # 暂时只为占位

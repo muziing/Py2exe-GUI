@@ -87,7 +87,9 @@ class SubProcessTool(QObject):
             self._connect_signals()
             self._process.setWorkingDirectory(self._working_directory)
             self._process.start(self.program, self._arguments, mode)
-            return self._process.waitForStarted(time_out)  # 阻塞，直到成功启动子进程或超时
+            return self._process.waitForStarted(
+                time_out
+            )  # 阻塞，直到成功启动子进程或超时
         return False
 
     def abort_process(self, timeout: int = 5000) -> bool:
@@ -99,7 +101,9 @@ class SubProcessTool(QObject):
 
         if self._process:
             self._process.terminate()
-            is_finished = self._process.waitForFinished(timeout)  # 阻塞，直到进程终止或超时
+            is_finished = self._process.waitForFinished(
+                timeout
+            )  # 阻塞，直到进程终止或超时
             if not is_finished:
                 self._process.kill()  # 超时后杀死子进程
             return is_finished

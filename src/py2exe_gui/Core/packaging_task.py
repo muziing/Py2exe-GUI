@@ -42,19 +42,19 @@ class PackagingTask(QtCore.QObject):
         # 保存打包时使用的 Python 环境
         self.pyenv: Optional[PyEnv] = None
 
-        # 保存所有参数值，None表示未设置
+        # 保存所有参数值，None 表示未设置
         self.using_option: dict[PyInstOpt, Any] = {value: None for value in PyInstOpt}
-        # TODO: 设法为值补充类型注解
-
-        # self.script_path: Optional[Path] = None
-        # self.icon_path: Optional[Path] = None
-        # self.add_data_list: Optional[list[AddDataWindow.data_item]] = None
-        # self.add_binary_list: Optional[list[AddDataWindow.data_item]] = None
-        # self.out_name: Optional[str] = None
-        # self.FD: Optional[bool] = None
-        # self.console: Optional[str] = None
-        # self.hidden_import: Optional[list[str]] = None
-        # self.clean: Optional[bool] = None
+        # self.using_option = {
+        #     PyInstOpt.script_path: Path,
+        #     PyInstOpt.icon_path: Path,
+        #     PyInstOpt.FD: bool,
+        #     PyInstOpt.console: str,
+        #     PyInstOpt.out_name: str,
+        #     PyInstOpt.add_data: list[tuple[Path, str]],
+        #     PyInstOpt.add_binary: list[tuple[Path, str]],
+        #     PyInstOpt.hidden_import: list[str],
+        #     PyInstOpt.clean: bool,
+        # }
 
     @QtCore.Slot(tuple)
     def on_opt_selected(self, option: tuple[PyInstOpt, Any]) -> None:
@@ -73,7 +73,8 @@ class PackagingTask(QtCore.QObject):
                 self.using_option[PyInstOpt.script_path] = script_path
                 self.ready_to_pack.emit(True)
                 self.option_set.emit(option)
-                self.using_option[PyInstOpt.out_name] = script_path.stem  # 输出名默认与脚本名相同
+                # 输出名默认与脚本名相同
+                self.using_option[PyInstOpt.out_name] = script_path.stem
                 self.option_set.emit((PyInstOpt.out_name, script_path.stem))
             else:
                 self.ready_to_pack.emit(False)

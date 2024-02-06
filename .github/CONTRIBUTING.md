@@ -1,6 +1,6 @@
-# Contributing
+# Code Contribution Guidelines
 
-> 简体中文版本在本文档下方。
+> 注：简体中文版在本文下方。
 
 Thank you very much for your willingness to contribute to the Py2exe-GUI project, please read the following and follow
 some ground rules in order to keep the project in good shape for rapid development.
@@ -18,7 +18,7 @@ Development environment is more complicated than use environment, ensure that yo
 ```shell
 cd Py2exe-GUI
 poetry init
-poetry install
+poetry install --extras "AddOns"
 ```
 
 You also need to install a git hook via [pre-commit](https://pre-commit.com/):
@@ -48,7 +48,7 @@ Do a pull request to the `main` branch of [muziing/Py2exe-GUI](https://github.co
 
 -----
 
-# 贡献指南
+# 代码贡献指南
 
 非常感谢你愿意为 Py2exe-GUI 项目提供贡献，请阅读以下内容，遵守一些基本规则，以便项目保持良好状态快速发展。
 
@@ -65,7 +65,7 @@ Do a pull request to the `main` branch of [muziing/Py2exe-GUI](https://github.co
 ```shell
 cd Py2exe-GUI
 poetry init
-poetry install
+poetry install --extras "AddOns"
 ```
 
 > 如果你在国内使用 PyPI 源速度较慢，可以考虑取消注释 `pyproject.toml` 文件中的 `[[tool.poetry.source]]`
@@ -94,4 +94,4 @@ pre-commit install
 
 ## 拉取请求
 
-新建一个指向 [muziing/Py2exe-GUI](https://github.com/muziing/Py2exe-GUI) 的 `main` 分支的拉取请求，我将尽快 review`muziing/Py2exe-GUI` 的 `main` 分支的拉取请求，我将尽快 review 代码并给出反馈。
+新建一个指向 [muziing/Py2exe-GUI](https://github.com/muziing/Py2exe-GUI) 的 `main` 分支的拉取请求，我将尽快 review 代码并给出反馈。
