@@ -940,4 +940,5 @@ addons = ["Pillow", "pipreqs"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.13"
+
 content-hash = "d3f4c3aaa6dd0228ac6e94d617c93118d66580d49b8eb7bb049dc140b8187a31"
