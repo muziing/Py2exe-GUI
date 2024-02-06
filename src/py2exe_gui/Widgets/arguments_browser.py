@@ -78,13 +78,13 @@ class ArgumentsBrowser(QObjTr, QTextBrowser):
     def _handle_copy_action(self) -> None:
         """处理复制事件"""
 
-        # TODO 实现复制到系统剪切板
+        self.selectAll()
         self.copy()
 
     def _handle_export_action(self) -> None:
         """处理导出事件"""
 
-        # TODO 实现到处到 PowerShell/Bash 脚本
+        # TODO 实现导出至 PowerShell/Bash 脚本
         pass
 
     def enrich_args_text(self, args_list: list[str]) -> None:
@@ -93,7 +93,7 @@ class ArgumentsBrowser(QObjTr, QTextBrowser):
         :param args_list: 参数列表
         """
 
-        # 不间断换行（续行）符
+        # 不间断换行
         line_continuation = get_line_continuation() + "<br>" + ("&nbsp;" * 4)
 
         # 首个参数一定为待打包的 Python 脚本名
@@ -101,7 +101,8 @@ class ArgumentsBrowser(QObjTr, QTextBrowser):
 
         for arg in args_list[1:]:
             if arg.startswith("--") or arg.startswith("-"):
-                enriched_arg_texts.append(line_continuation)  # 添加换行，便于阅读与复制导出脚本
+                # 添加换行，便于阅读与复制导出脚本
+                enriched_arg_texts.append(line_continuation)
                 enriched_arg_texts.append(wrap_font_tag(arg, color=colors[1]))
             else:
                 enriched_arg_texts.append(arg)

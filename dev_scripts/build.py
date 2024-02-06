@@ -39,7 +39,10 @@ def export_requirements() -> int:
         print(f"poetry export 进程错误：{e}")
         raise e
     else:
-        print(f"已将当前项目依赖导出至 requirements.txt，poetry export 返回码：{result.returncode}")
+        print(
+            "已将当前项目依赖导出至 requirements.txt，"
+            f"poetry export 返回码：{result.returncode}"
+        )
         return result.returncode
 
 
