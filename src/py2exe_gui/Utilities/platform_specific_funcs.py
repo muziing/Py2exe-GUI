@@ -3,7 +3,8 @@
 
 """一些因操作系统不同而在具体实现上有差异的功能函数
 
-注意，由于开发者没有苹果电脑，所有 macOS 功能均未经过验证
+注意：由于开发者没有苹果电脑，所有 macOS 功能均未经过验证。
+Note: All macOS features are unverified as the developer does not have a mac.
 """
 
 __all__ = [
@@ -14,6 +15,7 @@ __all__ = [
     "get_venv_python",
 ]
 
+import os
 import subprocess
 import warnings
 from pathlib import Path
@@ -83,17 +85,22 @@ def get_user_config_dir() -> Path:
     """获取当前平台用户配置文件目录路径
 
     :return: 用户配置文件目录路径
-    :raise RuntimeError: 当前操作系统不受支持时抛出
+    :raise RuntimeError: 当前操作系统不受支持或当前用户没有家目录
     """
 
     if RUNTIME_INFO.platform == Platform.windows:
-        return Path.home() / "AppData" / "Roaming"
+        user_config_path = Path.home() / "AppData" / "Roaming"
     elif RUNTIME_INFO.platform == Platform.linux:
-        return Path.home() / ".config"
+        config_root = os.environ.get("XDG_CONFIG_HOME", "~/.config")
+        user_config_path = Path(config_root).expanduser()
     elif RUNTIME_INFO.platform == Platform.macos:
-        return Path.home() / "Library" / "Application Support"
+        # I am not familiar with macOS, this is provided by AI Programming
+        # Assistant and may not be correct.
+        user_config_path = Path.home() / "Library" / "Application Support"
     else:
         raise RuntimeError("Current OS is not supported.")
+
+    return user_config_path.resolve()
 
 
 def get_user_cache_dir() -> Path:
@@ -108,6 +115,8 @@ def get_user_cache_dir() -> Path:
     elif RUNTIME_INFO.platform == Platform.linux:
         return Path.home() / ".cache"
     elif RUNTIME_INFO.platform == Platform.macos:
+        # I am not familiar with macOS, this is provided by AI Programming
+        # Assistant and may not be correct.
         return Path.home() / "Library" / "Caches"
     else:
         raise RuntimeError("Current OS is not supported.")
