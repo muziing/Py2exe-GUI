@@ -43,11 +43,11 @@ optional = true
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.5.0"
-black = "^24.1.0"
+black = "^24.2.0"
 isort = "^5.13.0"
-ruff = "^0.1.15"
+ruff = "^0.2.0"
 mypy = "^1.8.0"
-pyinstaller = "^6.2.0"
+pyinstaller = "^6.4.0"
 types-pyyaml = "^6.0.12.12"
 line-profiler = "^4.1.2"
 
