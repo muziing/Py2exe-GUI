@@ -18,7 +18,7 @@ Development environment is more complicated than use environment, ensure that yo
 ```shell
 cd Py2exe-GUI
 poetry init
-poetry install --extras "AddOns"
+poetry install --with dev --extras "AddOns"
 ```
 
 You also need to install a git hook via [pre-commit](https://pre-commit.com/):
@@ -65,7 +65,7 @@ Do a pull request to the `main` branch of [muziing/Py2exe-GUI](https://github.co
 ```shell
 cd Py2exe-GUI
 poetry init
-poetry install --extras "AddOns"
+poetry install --with dev --extras "AddOns"
 ```
 
 > 如果你在国内使用 PyPI 源速度较慢，可以考虑取消注释 `pyproject.toml` 文件中的 `[[tool.poetry.source]]`
