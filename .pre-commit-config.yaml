@@ -13,7 +13,6 @@ repos:
   rev: 24.4.2
   hooks:
     - id: black
-      language_version: python3.11
       args: ["--config", "pyproject.toml"]
 
 - repo: https://github.com/pycqa/isort
@@ -23,6 +22,6 @@ repos:
       args: [--settings-path, "./pyproject.toml"]
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.4.2
+  rev: v0.4.5
   hooks:
     - id: ruff

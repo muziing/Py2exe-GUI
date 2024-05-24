@@ -17,7 +17,6 @@ Development environment is more complicated than use environment, ensure that yo
 
 ```shell
 cd Py2exe-GUI
-poetry init
 poetry install --with dev --extras "AddOns"
 ```
 
@@ -64,7 +63,6 @@ Do a pull request to the `main` branch of [muziing/Py2exe-GUI](https://github.co
 
 ```shell
 cd Py2exe-GUI
-poetry init
 poetry install --with dev --extras "AddOns"
 ```
 
