@@ -24,7 +24,7 @@ class AppConstant:
     """应用程序级的常量"""
 
     NAME = "Py2exe-GUI"
-    VERSION = "0.3.1"
-    AUTHORS = ["muzing <muzi2001@foxmail.com>"]
+    VERSION = "0.3.2"
+    AUTHORS = ["Muzing <muzi2001@foxmail.com>"]
     LICENSE = "GPL-3.0-or-later"
     HOME_PAGE = APP_URLs["HOME_PAGE"]
