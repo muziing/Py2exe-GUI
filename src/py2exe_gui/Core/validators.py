@@ -36,10 +36,7 @@ class FilePathValidator:
 
         path = Path(script_path)
 
-        if not (path.exists() and path.is_file() and os.access(script_path, os.R_OK)):
-            return False
-
-        return True
+        return path.exists() and path.is_file() and os.access(script_path, os.R_OK)
 
     @classmethod
     def validate_icon(cls, icon_path: Union[str, Path]) -> bool:
