@@ -1,8 +1,7 @@
 # Licensed under the GPLv3 License: https://www.gnu.org/licenses/gpl-3.0.html
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
-"""自实现 QObject.tr() 方法，使得 PyCharm 等静态检查工具不再报错。
-"""
+"""自实现 QObject.tr() 方法，使得 PyCharm 等静态检查工具不再报错。"""
 
 __all__ = [
     "QObjTr",

@@ -1,5 +1,4 @@
-"""各类检查函数
-"""
+"""各类检查函数"""
 
 __all__ = [
     "check_license_statement",
