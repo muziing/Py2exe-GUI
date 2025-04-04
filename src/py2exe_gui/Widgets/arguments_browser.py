@@ -1,8 +1,7 @@
 # Licensed under the GPLv3 License: https://www.gnu.org/licenses/gpl-3.0.html
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
-"""此模块主要包含用于在界面上预览显示 PyInstaller 命令选项的 `ArgumentsBrowser` 类
-"""
+"""此模块主要包含用于在界面上预览显示 PyInstaller 命令选项的 `ArgumentsBrowser` 类"""
 
 __all__ = [
     "get_line_continuation",

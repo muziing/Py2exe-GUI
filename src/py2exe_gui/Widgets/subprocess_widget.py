@@ -1,8 +1,7 @@
 # Licensed under the GPLv3 License: https://www.gnu.org/licenses/gpl-3.0.html
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
-"""此模块主要包含用于呈现 PyInstaller 进程运行状态和输出的控件 `SubProcessDlg`
-"""
+"""此模块主要包含用于呈现 PyInstaller 进程运行状态和输出的控件 `SubProcessDlg`"""
 
 __all__ = ["SubProcessDlg"]
 

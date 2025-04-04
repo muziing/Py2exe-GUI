@@ -1,8 +1,7 @@
 # Licensed under the GPLv3 License: https://www.gnu.org/licenses/gpl-3.0.html
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
-"""本模块主要包含用于选择 Python 解释器环境的下拉框控件 `PyEnvComboBox`
-"""
+"""本模块主要包含用于选择 Python 解释器环境的下拉框控件 `PyEnvComboBox`"""
 
 __all__ = ["PyEnvComboBox"]
 

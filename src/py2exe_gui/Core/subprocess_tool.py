@@ -8,9 +8,10 @@
 
 __all__ = ["SubProcessTool"]
 
+from collections.abc import Sequence
 from enum import IntEnum
 from pathlib import Path
-from typing import Optional, Sequence, Union
+from typing import Optional, Union
 from warnings import warn
 
 from PySide6.QtCore import QIODeviceBase, QObject, QProcess, Signal

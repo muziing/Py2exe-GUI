@@ -1,8 +1,7 @@
 # Licensed under the GPLv3 License: https://www.gnu.org/licenses/gpl-3.0.html
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
-"""此模块主要包含用于提供 PyInstaller `--add-data` 和 `--add-binary` 功能的窗口类 `AddDataWindow`
-"""
+"""此模块主要包含用于提供 PyInstaller `--add-data` 和 `--add-binary` 功能的窗口类 `AddDataWindow`"""
 
 __all__ = ["AddDataWindow"]
 

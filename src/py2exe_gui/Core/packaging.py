@@ -1,13 +1,12 @@
 # Licensed under the GPLv3 License: https://www.gnu.org/licenses/gpl-3.0.html
 # For details: https://github.com/muziing/Py2exe-GUI/blob/main/README.md#license
 
-"""此模块包含实际执行打包子进程的类 `Packaging`
-"""
+"""此模块包含实际执行打包子进程的类 `Packaging`"""
 
 __all__ = ["Packaging"]
 
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 from PySide6 import QtCore
 
@@ -31,7 +30,7 @@ class Packaging(QtCore.QObject):
         super().__init__(parent)
 
         self.args_dict: dict = dict.fromkeys(PyInstOpt, "")
-        self._args: List[str] = []  # PyInstaller 命令
+        self._args: list[str] = []  # PyInstaller 命令
         self.subprocess: SubProcessTool = SubProcessTool("", parent=self)
 
     @QtCore.Slot(tuple)
